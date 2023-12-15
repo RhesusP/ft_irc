@@ -1,0 +1,23 @@
+# OSX
+.DS_Store
+
+# IDE
+.idea
+.vscode
+
+# Logs
+logs
+*.log
+
+# Secrets
+.env
+.env.*
+.env.local
+
+# Build
+.obj/*
+*.o
+ircserv
+
+# Subject
+*.subject.pdf
