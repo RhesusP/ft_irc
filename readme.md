@@ -3,17 +3,17 @@
 # ft_irc
 #### My own Internet Relay Chat server
 
-<div align="center" style="width: 75%; padding: 5%">
-
-![example](https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/Chat_re_re1u.svg)
-
-</div>
-
+<br />
+<br />
+<img src="https://42f2671d685f51e10fc6-b9fcecea3e50b3b59bdc28dead054ebc.ssl.cf5.rackcdn.com/illustrations/Chat_re_re1u.svg" height=300>
+<br />
+<br />
 </div>
 
 > **⚠️ Warning**
 > This project is currently under development.
 
+<br />
 
 ## About
 
@@ -28,9 +28,7 @@ This project was carried out as part of the [School 42](https://42.fr/en/homepag
 
 ## How IRC works ?
 
-Here is our Figjam trying to describe the various features of the IRC protocol.
-
-<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FuqmDSLjfm4qJeU6ryaQem4%2Fft_irc%3Ftype%3Dwhiteboard%26node-id%3D0%253A1%26t%3DkNFTmeqvafEZBXPM-1" allowfullscreen></iframe>
+Here is our Figjam trying to describe the various features of the IRC protocol : [ft_irc FigJam](https://www.figma.com/file/uqmDSLjfm4qJeU6ryaQem4/ft_irc?type=whiteboard&node-id=0%3A1&t=kNFTmeqvafEZBXPM-1)
 
 ## Useful Links
 
