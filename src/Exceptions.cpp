@@ -1,32 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ircserv.hpp                                        :+:      :+:    :+:   */
+/*   Exceptions.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/15 02:03:44 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 14:29:58 by cbernot          ###   ########.fr       */
+/*   Created: 2024/01/18 14:18:12 by cbernot           #+#    #+#             */
+/*   Updated: 2024/01/18 14:19:17 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef IRCSERV_HPP
-#define IRCSERV_HPP
+#include "../inc/Exceptions.hpp"
 
-#include <iostream>
-#include <vector>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <functional>
-#include <stdlib.h>
-#include <signal.h>
-#include <cstring>
+const char *BadPortException::what() const throw()
+{
+	return "Bad port";
+}
 
-#include "Server.hpp"
-#include "Channel.hpp"
-#include "User.hpp"
-#include "Exceptions.hpp"
-
-#endif
