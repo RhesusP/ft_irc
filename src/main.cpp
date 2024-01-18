@@ -6,13 +6,14 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 14:41:35 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/18 17:15:58 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ircserv.hpp"
 #include <stdio.h>
 #include <vector>
+#include <string>
 #define PORT 6697
 #define BUFF_SIZE 511
 
@@ -22,7 +23,7 @@ typedef struct s_user {
 	int			id;
 }			t_user;
 
-int	setaddr(sockaddr_in *serv_addr, int port) {
+int	setaddr(sockaddr_in *serv_addr, int port) { // server adress/socket init
 	int sockfd;
 
 	sockfd = socket(PF_INET, SOCK_STREAM, 0);
@@ -51,7 +52,7 @@ int	setaddr(sockaddr_in *serv_addr, int port) {
 	return (sockfd);
 }
 
-pollfd	new_poll(int sockfd, short event, int *nfds) {
+pollfd	new_poll(int sockfd, short event, int *nfds) { //create new pollfd and return it
 	pollfd	ufd;
 
 	ufd.fd = sockfd;
@@ -60,39 +61,7 @@ pollfd	new_poll(int sockfd, short event, int *nfds) {
 	return (ufd);
 }
 
-void logreceive(pollfd ufd, t_user usr)
-{
-	char buf[2000];
-	buf[1999] = '\0';
-	if (ufd.fd == usr.sockfd)
-		std::cout << "ready" << std::endl;
-	if (recv(ufd.fd, buf, 2000 - 1, 0) == -1)
-		perror("recv");
-	std::cout << "received :" << buf << std::endl;
-}
-
-void	read_poll(std::vector<t_user> &usrs, std::vector<pollfd> &ufds, int *nfds) {	
-	for (int i = 0; i < *nfds; i++) {
-		if (ufds[i].revents == 0)
-			continue;
-		if (ufds[i].revents == POLLIN && ufds[i].fd == ufds[0].fd){
-			t_user	newusr;
-			// memset(newusr.addr->sin_zero, 8, '\0');
-			socklen_t addrlen = sizeof(newusr.addr);
-			if ((newusr.sockfd = accept(ufds[0].fd, (sockaddr *)newusr.addr, &addrlen)) < 0)
-				return (perror("accept"));
-			std::cout << "one connection on usr " << inet_ntoa(newusr.addr->sin_addr) << std::endl;
-			usrs.push_back(newusr);
-			ufds.push_back(new_poll(newusr.sockfd, POLLIN, nfds));
-		}
-		if (ufds[i].revents == POLLIN && ufds[i].fd != ufds[0].fd)
-		{
-			logreceive(ufds[i], usrs[i - 1]);
-		}
-	}
-}
-
-void accept_new(std::vector<pollfd> *ufds)
+void accept_new(std::vector<pollfd> *ufds) //accept new connection and add it to queue
 {
 	sockaddr usr;
 	socklen_t size = sizeof(usr);
@@ -106,20 +75,22 @@ void accept_new(std::vector<pollfd> *ufds)
 	ufds->push_back(ufd);
 }
 
-void read_data(pollfd ufds)
+void read_data(pollfd ufds) //read data from socket
 {
-	char *buf[BUFF_SIZE];
+	char	buff[BUFF_SIZE];
+	int	byteread;
 	
-	buf[BUFF_SIZE - 1] = NULL;
-	recv(ufds.fd, buf, BUFF_SIZE - 2, 0);
-	std::cout << buf << std::endl;
+	byteread = recv(ufds.fd, buff, BUFF_SIZE - 1, 0);
+	buff[byteread] = '\0';
+	std::cout << "\"" << buff << "\""<< std::endl;
 }
 
-int	handle_poll(std::vector<pollfd> *ufds, int *nfds)
+int	handle_poll(std::vector<pollfd> *ufds, int *nfds) //handle poll events
 {
-	for (std::vector<pollfd>::iterator it = ufds->begin(); it != ufds->end(); it++) {
-		pollfd curr = *it;
+	for (int i = 0; i < *nfds ; i++) {
+		pollfd curr = (*ufds)[i];
 		if (curr.revents == POLLIN && (*ufds)[0].fd == curr.fd) {
+			std::cout << "new connection" << std::endl;
 			accept_new(ufds);
 			*nfds += 1;
 		}
@@ -138,38 +109,20 @@ int	main(int argc, char **argv) {
 	// }
 	(void)argc;
 	(void)argv;
-	//server
-	// sockaddr_in serv_addr;
-	// int	sockfd;
-	// int nfds;
-	// std::vector<pollfd> ufds;
-	// std::vector<t_user> usrs;
 
-	// nfds = 0;
-	// sockfd = setaddr(&serv_addr, argv[1]);
-	// if (sockfd < 0)
-	// 	return (1);
-	// ufds.push_back(new_poll(sockfd, POLLIN, &nfds));
-	// while (1) {
-	// 	if (poll(&ufds[0], nfds, 3 * 60 * 1000) < 0)
-	// 		return (-1);
-	// 	read_poll(usrs, ufds, &nfds);
-	// }
 	sockaddr_in serv_addr;
 	std::vector<pollfd> ufds;
 	int nfds = 0;
 	int servfd;
 
 	servfd = setaddr(&serv_addr, PORT);
-	ufds.push_back(new_poll(servfd, POLLIN, &nfds));
+	ufds.push_back(new_poll(servfd, POLLIN, &nfds)); // add server socket to poll
 	while(1) {
-		if (poll(&ufds[0], nfds, 3 * 60 * 1000) <= 0){
+		if (poll(&ufds[0], nfds, 3 * 60 * 1000) <= 0){ // 3 minutes timeout
 			perror("poll:");
 			return(-1);
 		}
-		std::cout << "poll found" << std::endl;
 		handle_poll(&ufds, &nfds);
-		
 	}
 	std::cout << "Welcome to ft_irc 🚀" << std::endl;
 }
