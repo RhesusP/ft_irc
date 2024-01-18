@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+         #
+#    By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/15 02:00:37 by cbernot           #+#    #+#              #
-#    Updated: 2023/12/15 02:05:25 by cbernot          ###   ########.fr        #
+#    Updated: 2024/01/18 14:36:10 by svanmeen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ NAME	=	ircserv
 
 # Files
 LST_INC	=	ircserv.hpp
-LST_SRC	=	main.cpp
+LST_SRC	=	main.cpp \
 
 # Directories
 DIR_INC	=	inc/
@@ -38,7 +38,7 @@ OBJS			:=	$(subst $(DIR_SRC), $(DIR_OBJ), $(SRCS:.cpp=.o))
 
 # Commands
 CC				:=	c++
-CFLAGS			:=	-Wall -Wextra -Werror -std=c++98
+CFLAGS			:=	-Wall -Wextra -Werror -std=c++98 -g
 CI				:=	-I $(DIR_INC)
 RM				:=	rm -rf
 
