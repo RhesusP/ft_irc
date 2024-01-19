@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Exceptions.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:18:12 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 19:48:43 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/19 15:28:13 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,9 @@ const char *ListenFailedException::what() const throw()
 const char *AcceptFailedException::what() const throw()
 {
 	return "Accept failed";
+}
+
+const char *PollFailedException::what() const throw()
+{
+	return "Poll failed";
 }

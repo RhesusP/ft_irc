@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 19:55:59 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/19 16:21:37 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ Server::Server(void)
 {
 	_password = "";
 	_port = 1234;
+	
 }
 
 Server::Server(std::string port, std::string password)
@@ -80,48 +81,86 @@ int Server::getPort(void) const
 
 void Server::init_network(void)
 {
-	int sockfd;
 	int new_fd; // For new connections
-	sockfd = socket(PF_INET, SOCK_STREAM, 0);
-	if (sockfd == -1)
+	_socket = socket(PF_INET, SOCK_STREAM, 0);
+	if (_socket == -1)
 		throw SocketFailedException();
-	std::cout << "✅ socket creation ok (return value is " << sockfd << ")" << std::endl;
+	std::cout << "✅ socket creation ok (return value is " << _socket << ")" << std::endl;
 
-	struct sockaddr_in my_addr;		// Contains my address informations
-	struct sockaddr_in remote_addr; // Contains remote host informations
+	sockaddr_in	remote_addr;// struct sockaddr_in remote_addr; // Contains remote host informations
 
 	int yes = 1;
-	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
+	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
 		throw SetsockoptFailedException();
 
-	my_addr.sin_family = AF_INET;
-	my_addr.sin_port = htons(this->_port);
-	my_addr.sin_addr.s_addr = htonl(INADDR_ANY); // Use my IP
-	memset(&my_addr.sin_zero, '\0', 8);
+	_addr.sin_family = AF_INET;
+	_addr.sin_port = htons(this->_port);
+	_addr.sin_addr.s_addr = htonl(INADDR_ANY); // Use my IP
+	memset(&_addr.sin_zero, '\0', 8);
 
 	// Associate that socket with a local port of the machine
-	if (bind(sockfd, (struct sockaddr *)&my_addr, sizeof(struct sockaddr)) == -1)
+	if (bind(_socket, (struct sockaddr *)&_addr, sizeof(struct sockaddr)) == -1)
 		throw BindFailedException();
 	// TODO handle 'ALREADYINUSE' ports
 
 	// Listen for incoming connections
-	if (listen(sockfd, MAX_CON_QUEUE) == -1)
+	if (listen(_socket, MAX_CON_QUEUE) == -1)
 		throw ListenFailedException();
+}
 
-	socklen_t sin_size;
-	while (1)
-	{
-		sin_size = sizeof(struct sockaddr_in);
-		new_fd = accept(sockfd, (struct sockaddr *)&remote_addr, &sin_size);
-		if (new_fd == -1)
-			throw AcceptFailedException();
-		char *remote_ip = inet_ntoa(remote_addr.sin_addr);
-		std::cout << "Server accept a connexion from remote ip " << remote_ip << std::endl;
-		char msg_buf[1024];
-		while (recv(new_fd, &msg_buf, 1024 - 2, 0) > 0)
-		{
-			msg_buf[1024 - 1] = '\0';
-			std::cout << "received: " << msg_buf << std::endl;
+void	Server::initpoll(void) {
+	pollfd ufd;
+	ufd.fd = _socket;
+	ufd.events = POLLIN;
+	_ufds.push_back(ufd);
+	_nfds = 1;
+}
+
+int		Server::runPoll(void) {
+	int ret;
+	
+	ret = poll(&_ufds[0], _nfds, 3 * 60 * 1000);
+	if (ret < 0)
+		throw PollFailedException();
+	else if (ret == 0)
+		return (1);
+	return (0);
+}
+
+void	Server::acceptNewConnection(void) { //TODO : implement User objs to store data and store fd
+	sockaddr_in usr; // *
+	socklen_t size = sizeof(usr); // *
+	
+	pollfd ufd;
+
+	if ((ufd.fd = accept(_ufds[0].fd, (struct sockaddr *)&usr, &size)) < 0) // *
+		throw AcceptFailedException();
+		
+	ufd.events = POLLIN;
+	_ufds.push_back(ufd);
+	_nfds++;
+}
+
+void	Server::readData(int i) { //TODO: data sent to server by client, so it's the main part of the server
+	char	buff[BUFF_SIZE];
+	int	byteread;
+	
+	byteread = recv(_ufds[i].fd, buff, BUFF_SIZE - 1, 0);
+	buff[byteread] = '\0';
+	std::cout << "\"" << buff << "\""<< std::endl;
+	
+}
+
+void	Server::handlePoll(void) {
+	for (int i = 0; i < _nfds; i++) {
+		if (_ufds[i].revents == POLLIN && _ufds[0].fd == _ufds[i].fd) {
+			std::cout << "new connection" << std::endl;
+			acceptNewConnection();
+			_nfds += 1;
+		}
+		if (_ufds[i].revents == POLLIN && _ufds[i].fd != _ufds[0].fd) {
+			std::cout << "data to read" << std::endl;
+			readData(i);
 		}
 	}
 }
