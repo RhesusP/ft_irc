@@ -6,7 +6,7 @@
 #    By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/15 02:00:37 by cbernot           #+#    #+#              #
-#    Updated: 2024/01/18 14:36:10 by svanmeen         ###   ########.fr        #
+#    Updated: 2024/01/19 14:58:51 by svanmeen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ NAME	=	ircserv
 # ------------------------------------------------------------------------------
 
 # Files
-LST_INC	=	ircserv.hpp
-LST_SRC	=	main.cpp \
+LST_INC	=	ircserv.hpp Server.hpp User.hpp Channel.hpp Exceptions.hpp
+LST_SRC	=	main.cpp Server.cpp User.cpp Channel.cpp Exceptions.cpp
 
 # Directories
 DIR_INC	=	inc/
@@ -38,7 +38,7 @@ OBJS			:=	$(subst $(DIR_SRC), $(DIR_OBJ), $(SRCS:.cpp=.o))
 
 # Commands
 CC				:=	c++
-CFLAGS			:=	-Wall -Wextra -Werror -std=c++98 -g
+# CFLAGS			:=	-Wall -Wextra -Werror -std=c++98
 CI				:=	-I $(DIR_INC)
 RM				:=	rm -rf
 
