@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/19 16:21:50 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/19 16:26:07 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ private:
 	int _port;
 	std::string _password;
 	std::vector<Channel> _channels;
+	std::vector<User> _users;
 	std::vector<pollfd> _ufds;
 	int _nfds;
 

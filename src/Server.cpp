@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/19 16:21:37 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/19 17:32:43 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,27 +128,38 @@ int		Server::runPoll(void) {
 }
 
 void	Server::acceptNewConnection(void) { //TODO : implement User objs to store data and store fd
-	sockaddr_in usr; // *
+	sockaddr_in usr;
 	socklen_t size = sizeof(usr); // *
-	
 	pollfd ufd;
 
-	if ((ufd.fd = accept(_ufds[0].fd, (struct sockaddr *)&usr, &size)) < 0) // *
+	if ((ufd.fd = accept(_socket, (struct sockaddr *)&usr.sin_addr, &size)) < 0)
 		throw AcceptFailedException();
-		
+	
+	User user(ufd.fd, usr);
 	ufd.events = POLLIN;
 	_ufds.push_back(ufd);
+	_users.push_back(user);
 	_nfds++;
 }
 
 void	Server::readData(int i) { //TODO: data sent to server by client, so it's the main part of the server
+	User	user = _users.at(i - 1);
+	pollfd	ufd = _ufds[i];
+	std::string	data;
+	
+	std::cout << "user " << inet_ntoa(user.getAddress().sin_addr) << " sent data" << std::endl;
 	char	buff[BUFF_SIZE];
 	int	byteread;
 	
-	byteread = recv(_ufds[i].fd, buff, BUFF_SIZE - 1, 0);
+	byteread = recv(ufd.fd, buff, BUFF_SIZE - 1, 0);
 	buff[byteread] = '\0';
-	std::cout << "\"" << buff << "\""<< std::endl;
-	
+	data = buff;
+	while (byteread == BUFF_SIZE - 1 && data.size() < 512) {
+		byteread = recv(ufd.fd, buff, BUFF_SIZE - 1, 0);
+		buff[byteread] = '\0';
+		data += buff;
+	}
+	std::cout << "data received: " << data << std::endl;
 }
 
 void	Server::handlePoll(void) {

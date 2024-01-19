@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 14:03:27 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/19 17:06:37 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,19 @@ private:
 	std::string _username;
 	std::string _nickname;
 	std::string _realname;
-	int sock_fd;
-	sockaddr_in addr;
+	int _sockfd;
+	sockaddr_in _addr;
 	std::vector<Channel> _channels;
+
+	bool _is_password_ok;
+	bool _is_registered;
 
 public:
 	User(void);
+	User(int &sockfd, sockaddr_in &addr);
 	~User(void);
+
+	sockaddr_in getAddress(void) const;
 };
 
 #endif
