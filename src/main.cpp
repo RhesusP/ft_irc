@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/19 14:58:26 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/19 15:04:14 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,22 +107,38 @@ int	main(int argc, char **argv) {
 	// 	std::cout << "❌ Bad usage: ./ircserv <port> <password>" << std::endl;
 	// 	return (1);
 	// }
-	(void)argc;
-	(void)argv;
+	// (void)argc;
+	// (void)argv;
 
-	sockaddr_in serv_addr;
-	std::vector<pollfd> ufds;
-	int nfds = 0;
-	int servfd;
+	// sockaddr_in serv_addr;
+	// std::vector<pollfd> ufds;
+	// int nfds = 0;
+	// int servfd;
 
-	servfd = setaddr(&serv_addr, PORT);
-	ufds.push_back(new_poll(servfd, POLLIN, &nfds)); // add server socket to poll
-	while(1) {
-		if (poll(&ufds[0], nfds, 3 * 60 * 1000) <= 0){ // 3 minutes timeout
-			perror("poll:");
-			return(-1);
-		}
-		handle_poll(&ufds, &nfds);
+	// servfd = setaddr(&serv_addr, PORT);
+	// ufds.push_back(new_poll(servfd, POLLIN, &nfds)); // add server socket to poll
+	// while(1) {
+	// 	if (poll(&ufds[0], nfds, 3 * 60 * 1000) <= 0){ // 3 minutes timeout
+	// 		perror("poll:");
+	// 		return(-1);
+	// 	}
+	// 	handle_poll(&ufds, &nfds);
+	// }
+	// std::cout << "Welcome to ft_irc 🚀" << std::endl;
+	std::string port(argv[1]);
+	std::string password(argv[2]);
+	Server server;
+
+	try
+	{
+		server.setPort(port);
+		server.setPassword(password);
+		std::cout << "Server initialized with with ip 127.0.0.1:" << server.getPort() << " and password " << server.getPassword() << std::endl;
+		server.init_network();
 	}
-	std::cout << "Welcome to ft_irc 🚀" << std::endl;
+	catch (std::exception &e)
+	{
+		std::cerr << "Error: " << e.what() << std::endl;
+		return (1);
+	}
 }
