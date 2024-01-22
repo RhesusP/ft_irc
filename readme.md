@@ -24,6 +24,7 @@ This project was carried out as part of the [School 42](https://42.fr/en/homepag
 | Author | GitHub profile |
 | - | - |
 | Samuel Vanmeenen Bachelard (svanmeen) | [@Lyptis](https://github.com/Lyptis) |
+| Léonard Levasseur (llevasse) | [@llevasse](https://github.com/llevasse) |
 | Camille Bernot (cbernot) | [@RhesusP](https://github.com/RhesusP) |
 
 ## How IRC works ?
