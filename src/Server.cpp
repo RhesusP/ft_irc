@@ -6,28 +6,11 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 19:55:59 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/18 20:00:40 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
-
-int getPort(std::string p)
-{
-	int port;
-	size_t len = p.size();
-	if (len < 4 || len > 6)
-		return -1;
-	for (size_t i = 0; i < len; i++)
-	{
-		if (!isdigit(p[i]))
-			return -1;
-	}
-	port = std::stoi(p);
-	if (port < 1024 || port > 65535)
-		return -1;
-	return port;
-}
 
 Server::Server(void)
 {
