@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/22 18:22:20 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/24 15:40:56 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Message::Message(void)
 Message::Message(std::string const &raw)
 {
 	_raw = raw;
-	std::cout << "[MESSAGE]: new message with raw '" << _raw << "'" << std::endl;
+	std::cout << "[MESSAGE] new message with raw " << _raw << std::endl;
 }
 
 Message::~Message(void) {}

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:14:43 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/22 18:20:03 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/24 15:41:53 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ private:
 
 public:
 	Message(void);
-	Message(std::string const & raw);
+	Message(std::string const &raw);
 	~Message(void);
 	std::string const &getRaw(void) const;
 	std::string const &getContent(void) const;
@@ -32,3 +32,5 @@ public:
 };
 
 #endif
+
+// /join LoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanmassaCumsociisnatoquepenatibusetmagnisdisparturientmontesnasceturridiculusmusDonecquamfelisultriciesnecpellentesqueeupretiumquissemNullaconsequatmassaquisenimDonecpedejustofringillavelaliquetnecvulputateegetarcuInenimjustorhoncusutimperdietavenenatisvitaejustoNullamdictumfeliseupedemollispretiumIntegertinciduntCrasdapibusVivamusellldldldlldldlldlldldlldlldldldlldLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanmassaCumsociisnatoquepenatibusetmagnisdisparturientmontesnasceturridiculusmusDonecquamfelisultriciesnecpellentesqueeupretiumquissemNullaconsequatmassaquisenimDonecpedejustofringillavelaliquetnecvulputateegetarcuInenimjustorhoncusutimperdietavenenatisvitaejustoNullamdictumfeliseupedemollispretiumIntegertinciduntCrasdapibusVivamusellldldldlldldlldlldldlldlldldldllddxxxxxxxxxxxxxxxxxxxxxxx
