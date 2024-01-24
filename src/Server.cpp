@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 13:03:50 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/24 14:56:25 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,11 +125,12 @@ int		Server::runPoll(void) {
 	return (0);
 }
 
-void	Server::acceptNewConnection(void) { //TODO : implement User objs to store data and store fd
+int	Server::acceptNewConnection(void) { //TODO : implement User objs to store data and store fd
 	sockaddr_in usr;
 	socklen_t size = sizeof(usr); // *
 	pollfd ufd;
 
+	std::cout << "new connection" << std::endl;
 	if ((ufd.fd = accept(_socket, (struct sockaddr *)&usr.sin_addr, &size)) < 0)
 		throw AcceptFailedException();
 	
@@ -137,6 +138,7 @@ void	Server::acceptNewConnection(void) { //TODO : implement User objs to store d
 	ufd.events = POLLIN;
 	_ufds.push_back(ufd);
 	_users.push_back(user);
+	return (1);
 }
 
 void	Server::readData(int i) { //TODO: data sent to server by client, so it's the main part of the server
@@ -144,6 +146,7 @@ void	Server::readData(int i) { //TODO: data sent to server by client, so it's th
 	pollfd	ufd = _ufds[i];
 	std::string	data;
 	
+	std::cout << "data to read" << std::endl;
 	std::cout << "user " << inet_ntoa(user.getAddress().sin_addr) << " sent data" << std::endl;
 	char	buff[BUFF_SIZE];
 	int	byteread;
@@ -151,7 +154,9 @@ void	Server::readData(int i) { //TODO: data sent to server by client, so it's th
 	byteread = recv(ufd.fd, buff, BUFF_SIZE - 1, 0);
 	buff[byteread] = '\0';
 	data = buff;
-	while (byteread == BUFF_SIZE - 1 && data.size() < 512) {
+	while ((byteread == BUFF_SIZE - 1 && data.size() < 512)) {
+		if (byteread < 0)
+			throw PollFailedException();
 		byteread = recv(ufd.fd, buff, BUFF_SIZE - 1, 0);
 		buff[byteread] = '\0';
 		data += buff;
@@ -163,48 +168,45 @@ void	Server::readData(int i) { //TODO: data sent to server by client, so it's th
 		_users.erase(_users.begin() + (i - 1));
 		_ufds.erase(_ufds.begin() + i);
 		_nfds -= 1;
+		setReply(0);
 	}
+	else
+		setReply(i);
 }
 
 void	Server::sendData(int i) {
 	User	user = _users.at(i - 1);
 	pollfd ufd = _ufds[i];
-	std::string data = "000\n"; // tease._waitingList.top().response;
+	std::string data = ":localhost 001 user :Welcome to IRC user!user@localhost\r\n"; // tease._waitingList.top().response;
 	int	sizesent;
 
+	std::cout << "data to send" << std::endl;
 	std::cout << "data sent to user " << inet_ntoa(user.getAddress().sin_addr) << std::endl;
 	sizesent = send(ufd.fd, data.c_str(), data.length(), 0);
-	std::cout << "sent <" << sizesent << "> instead of <" << data.length() << "> bytes" << std::endl;
+	std::cout << "sent <" << sizesent << "/" << data.length() << "> bytes" << std::endl;
 	_ufds.at(i).events = POLLIN;
 }
 
 void	Server::handlePoll(void) {
 	int	nfds = 0;
 	for (int i = 0; i < _nfds; i++) {
-		if (_ufds.at(i).revents == POLLIN && _socket == _ufds.at(i).fd) {
-			std::cout << "new connection" << std::endl;
-			acceptNewConnection();
-			nfds += 1;
-		}
-		if (_ufds.at(i).revents == POLLIN && _ufds.at(i).fd != _socket) {
-			std::cout << "data to read" << std::endl;
-			readData(i);
-		}
-		if (_ufds.at(i).revents == POLLOUT && _ufds.at(i).fd != _socket) {
-			std::cout << "data to send" << std::endl;
+		if (_ufds.at(i).revents == POLLIN && _socket == _ufds.at(i).fd)
+			nfds += acceptNewConnection();
+		else if (_ufds.at(i).revents == POLLOUT && _ufds.at(i).fd != _socket)
 			sendData(i);
-		}
+		else if (_ufds.at(i).revents == POLLIN && _ufds.at(i).fd != _socket)
+			readData(i);
 	}
 	_nfds += nfds;
 }
 
 
-void	Server::setReply(void) {
-	for (int i = 1; i < _nfds; i++) {
-		_ufds.at(i).events = POLLOUT;
-	}
-}
-
 void	Server::setReply(int uindex) {
-	_ufds.at(uindex).events = POLLOUT;
+	if (uindex == 0){
+		for (int i = 1; i < _nfds; i++) {
+			_ufds.at(i).events = POLLOUT;
+		}
+	}
+	else
+		_ufds.at(uindex).events = POLLOUT;
 }

@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 13:04:02 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/24 13:46:07 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ public:
 	std::vector<Channel> getChannels(void);
 	int	 runPoll(void);
 	void handlePoll(void);
-	void acceptNewConnection(void); //TODO: store client info in a User object
+	int acceptNewConnection(void); //TODO: store client info in a User object
 	void readData(int i); // TODO: data sent to server by client, so it's the main part of the server
 
 	void setReply(int uindex);

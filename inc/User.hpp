@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 10:10:02 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/24 14:55:00 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ private:
 	std::string _username;
 	std::string _nickname;
 	std::string _realname;
-	int _sockfd;
+	int _sockfd; //clear fd when user disconnect
 	sockaddr_in _addr;
 	std::vector<Channel> _channels;
 

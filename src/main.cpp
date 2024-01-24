@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/19 16:11:46 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/24 13:34:40 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	main(int argc, char **argv) {
 			}
 			server.handlePoll();
 		}
-		std::cout << "Server shutdown, poll timeout after 3min without requests" << std::endl;
+		std::cout << "Server shutdown, poll timeout after 3min blocking" << std::endl;
 	}
 	catch (std::exception &e)
 	{
