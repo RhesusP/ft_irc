@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/19 17:32:43 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/24 13:03:50 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,6 @@ void Server::init_network(void)
 		throw SocketFailedException();
 	std::cout << "✅ socket creation ok (return value is " << _socket << ")" << std::endl;
 
-	sockaddr_in	remote_addr;// struct sockaddr_in remote_addr; // Contains remote host informations
-
 	int yes = 1;
 	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
 		throw SetsockoptFailedException();
@@ -139,7 +137,6 @@ void	Server::acceptNewConnection(void) { //TODO : implement User objs to store d
 	ufd.events = POLLIN;
 	_ufds.push_back(ufd);
 	_users.push_back(user);
-	_nfds++;
 }
 
 void	Server::readData(int i) { //TODO: data sent to server by client, so it's the main part of the server
@@ -159,19 +156,55 @@ void	Server::readData(int i) { //TODO: data sent to server by client, so it's th
 		buff[byteread] = '\0';
 		data += buff;
 	}
-	std::cout << "data received: " << data << std::endl;
+	std::cout << "\"" << data << "\"" << std::endl;
+	if (data.compare(0, 4, "QUIT") == 0)
+	{
+		std::cout << "DISCONNECT" << std::endl;
+		_users.erase(_users.begin() + (i - 1));
+		_ufds.erase(_ufds.begin() + i);
+		_nfds -= 1;
+	}
+}
+
+void	Server::sendData(int i) {
+	User	user = _users.at(i - 1);
+	pollfd ufd = _ufds[i];
+	std::string data = "000\n"; // tease._waitingList.top().response;
+	int	sizesent;
+
+	std::cout << "data sent to user " << inet_ntoa(user.getAddress().sin_addr) << std::endl;
+	sizesent = send(ufd.fd, data.c_str(), data.length(), 0);
+	std::cout << "sent <" << sizesent << "> instead of <" << data.length() << "> bytes" << std::endl;
+	_ufds.at(i).events = POLLIN;
 }
 
 void	Server::handlePoll(void) {
+	int	nfds = 0;
 	for (int i = 0; i < _nfds; i++) {
-		if (_ufds[i].revents == POLLIN && _ufds[0].fd == _ufds[i].fd) {
+		if (_ufds.at(i).revents == POLLIN && _socket == _ufds.at(i).fd) {
 			std::cout << "new connection" << std::endl;
 			acceptNewConnection();
-			_nfds += 1;
+			nfds += 1;
 		}
-		if (_ufds[i].revents == POLLIN && _ufds[i].fd != _ufds[0].fd) {
+		if (_ufds.at(i).revents == POLLIN && _ufds.at(i).fd != _socket) {
 			std::cout << "data to read" << std::endl;
 			readData(i);
 		}
+		if (_ufds.at(i).revents == POLLOUT && _ufds.at(i).fd != _socket) {
+			std::cout << "data to send" << std::endl;
+			sendData(i);
+		}
 	}
+	_nfds += nfds;
+}
+
+
+void	Server::setReply(void) {
+	for (int i = 1; i < _nfds; i++) {
+		_ufds.at(i).events = POLLOUT;
+	}
+}
+
+void	Server::setReply(int uindex) {
+	_ufds.at(uindex).events = POLLOUT;
 }
