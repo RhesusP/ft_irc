@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 14:39:07 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/22 18:27:45 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 // Avoid 'use of undeclared identifier' error
 class User;
 class Channel;
+class Message;
 
 class Server
 {
@@ -27,6 +28,8 @@ private:
 	int _port;
 	std::string _password;
 	std::vector<Channel> _channels;
+	std::queue<Message> _waitingList;
+	void formatRecv(char *buf);
 
 public:
 	Server(void);
@@ -37,6 +40,7 @@ public:
 	void setPassword(std::string const &port);
 	std::string getPassword(void) const;
 	int getPort(void) const;
+	std::queue<Message> getWaitingList(void);
 	std::vector<Channel> getChannels(void);
 };
 

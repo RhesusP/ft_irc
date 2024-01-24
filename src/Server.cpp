@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 20:00:40 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/22 18:29:30 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,14 @@ int Server::getPort(void) const
 	return _port;
 }
 
+void Server::formatRecv(char* buf) {
+	std::string	msg(buf);
+	for (int i = 0; i < msg.size() ; i++)
+	{
+		// std::cout << (int)msg[i] << std::endl;
+	}
+}
+
 void Server::init_network(void)
 {
 	int sockfd;
@@ -92,6 +100,8 @@ void Server::init_network(void)
 		throw ListenFailedException();
 
 	socklen_t sin_size;
+	char msg_buf[512];
+	memset(msg_buf, 0, sizeof(msg_buf));
 	while (1)
 	{
 		sin_size = sizeof(struct sockaddr_in);
@@ -100,11 +110,14 @@ void Server::init_network(void)
 			throw AcceptFailedException();
 		char *remote_ip = inet_ntoa(remote_addr.sin_addr);
 		std::cout << "Server accept a connexion from remote ip " << remote_ip << std::endl;
-		char msg_buf[1024];
-		while (recv(new_fd, &msg_buf, 1024 - 2, 0) > 0)
+		
+		while (recv(new_fd, &msg_buf, 512 - 1, 0) > 0)
 		{
-			msg_buf[1024 - 1] = '\0';
+			msg_buf[512 - 1] = '\0';
 			std::cout << "received: " << msg_buf << std::endl;
+			formatRecv(msg_buf);
+			// Reset buffer to avoid residual data
+			memset(msg_buf, 0, sizeof(msg_buf));
 		}
 	}
 }
