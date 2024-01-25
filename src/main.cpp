@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 13:34:40 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/25 14:52:32 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,12 @@ int	main(int argc, char **argv) {
 		server.init_network();
 		server.initpoll();
 		while (1) {
-			if (server.runPoll()) {
+			int i;
+			if ((i = server.runPoll())) {
+				std::cout << "poll : " << i << std::endl;
 				break ;
 			}
+			std::cout << "poll : " << i << std::endl;
 			server.handlePoll();
 		}
 		std::cout << "Server shutdown, poll timeout after 3min blocking" << std::endl;

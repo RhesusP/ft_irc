@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 14:56:25 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/25 14:50:50 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ void	Server::initpoll(void) {
 int		Server::runPoll(void) {
 	int ret;
 	
-	ret = poll(&_ufds[0], _nfds, 3 * 60 * 1000);
+	ret = poll(&_ufds[0], _nfds,-1);
 	if (ret < 0)
 		throw PollFailedException();
 	else if (ret == 0)
@@ -152,9 +152,14 @@ void	Server::readData(int i) { //TODO: data sent to server by client, so it's th
 	int	byteread;
 	
 	byteread = recv(ufd.fd, buff, BUFF_SIZE - 1, 0);
+	std::cout << ufd.fd << " br " << byteread << std::endl;
+	if (byteread == -1)
+		throw PollFailedException();
+	if (byteread == 0)
+		return ;
 	buff[byteread] = '\0';
 	data = buff;
-	while ((byteread == BUFF_SIZE - 1 && data.size() < 512)) {
+	while (byteread == BUFF_SIZE - 1 && data.size() < 512) {
 		if (byteread < 0)
 			throw PollFailedException();
 		byteread = recv(ufd.fd, buff, BUFF_SIZE - 1, 0);
@@ -162,16 +167,16 @@ void	Server::readData(int i) { //TODO: data sent to server by client, so it's th
 		data += buff;
 	}
 	std::cout << "\"" << data << "\"" << std::endl;
-	if (data.compare(0, 4, "QUIT") == 0)
-	{
-		std::cout << "DISCONNECT" << std::endl;
-		_users.erase(_users.begin() + (i - 1));
-		_ufds.erase(_ufds.begin() + i);
-		_nfds -= 1;
-		setReply(0);
-	}
-	else
-		setReply(i);
+	// if (data.compare(0, 4, "QUIT") == 0)
+	// {
+	// 	std::cout << "DISCONNECT" << std::endl;
+	// 	_users.erase(_users.begin() + (i - 1));
+	// 	_ufds.erase(_ufds.begin() + i);
+	// 	_nfds -= 1;
+	// 	setReply(0);
+	// }
+	// else
+	// 	setReply(i);
 }
 
 void	Server::sendData(int i) {
@@ -190,12 +195,17 @@ void	Server::sendData(int i) {
 void	Server::handlePoll(void) {
 	int	nfds = 0;
 	for (int i = 0; i < _nfds; i++) {
-		if (_ufds.at(i).revents == POLLIN && _socket == _ufds.at(i).fd)
-			nfds += acceptNewConnection();
-		else if (_ufds.at(i).revents == POLLOUT && _ufds.at(i).fd != _socket)
-			sendData(i);
-		else if (_ufds.at(i).revents == POLLIN && _ufds.at(i).fd != _socket)
-			readData(i);
+		if (_ufds.at(i).fd == _socket) {
+			if (_ufds.at(i).revents == POLLIN)
+				nfds += acceptNewConnection();
+		}
+		else
+		{
+			if (_ufds.at(i).revents == POLLOUT)
+				sendData(i);
+			else if (_ufds.at(i).revents == POLLIN)
+				readData(i);
+		}
 	}
 	_nfds += nfds;
 }
