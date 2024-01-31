@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/25 14:50:50 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/31 13:51:31 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,11 +129,14 @@ int	Server::acceptNewConnection(void) { //TODO : implement User objs to store da
 	sockaddr_in usr;
 	socklen_t size = sizeof(usr); // *
 	pollfd ufd;
+	int yes = 1;
 
 	std::cout << "new connection" << std::endl;
 	if ((ufd.fd = accept(_socket, (struct sockaddr *)&usr.sin_addr, &size)) < 0)
 		throw AcceptFailedException();
 	
+	if (setsockopt(ufd.fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))== -1)
+		throw SetsockoptFailedException();
 	User user(ufd.fd, usr);
 	ufd.events = POLLIN;
 	_ufds.push_back(ufd);
@@ -167,16 +170,16 @@ void	Server::readData(int i) { //TODO: data sent to server by client, so it's th
 		data += buff;
 	}
 	std::cout << "\"" << data << "\"" << std::endl;
-	// if (data.compare(0, 4, "QUIT") == 0)
-	// {
-	// 	std::cout << "DISCONNECT" << std::endl;
-	// 	_users.erase(_users.begin() + (i - 1));
-	// 	_ufds.erase(_ufds.begin() + i);
-	// 	_nfds -= 1;
-	// 	setReply(0);
-	// }
-	// else
-	// 	setReply(i);
+	if (data.compare(0, 4, "QUIT") == 0)
+	{
+		std::cout << "DISCONNECT" << std::endl;
+		_users.erase(_users.begin() + (i - 1));
+		_ufds.erase(_ufds.begin() + i);
+		_nfds -= 1;
+		setReply(0);
+	}
+	else
+		setReply(i);
 }
 
 void	Server::sendData(int i) {
@@ -212,6 +215,7 @@ void	Server::handlePoll(void) {
 
 
 void	Server::setReply(int uindex) {
+	std::cout << uindex << std::endl;
 	if (uindex == 0){
 		for (int i = 1; i < _nfds; i++) {
 			_ufds.at(i).events = POLLOUT;
