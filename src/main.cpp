@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/25 14:52:32 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/31 18:39:46 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	main(int argc, char **argv) {
 		std::cout << "❌ Bad usage: ./ircserv <port> <password>" << std::endl;
 		return (1);
 	}
+
 	std::string port(argv[1]);
 	std::string password(argv[2]);
 	Server server;
@@ -27,19 +28,13 @@ int	main(int argc, char **argv) {
 	{
 		server.setPort(port);
 		server.setPassword(password);
-		std::cout << "Server initialized with with ip 127.0.0.1:" << server.getPort() << " and password " << server.getPassword() << std::endl;
-		server.init_network();
-		server.initpoll();
-		while (1) {
-			int i;
-			if ((i = server.runPoll())) {
-				std::cout << "poll : " << i << std::endl;
-				break ;
-			}
-			std::cout << "poll : " << i << std::endl;
+		server.initNetwork();
+		std::cout << "✅ Server initialized on port "<< server.getPort() << " and password \"" << server.getPassword() << "\" linked to socket " << server.getSocket() << std::endl;
+		server.initPoll();
+		while (1 && server.runPoll() != -1) {
 			server.handlePoll();
 		}
-		std::cout << "Server shutdown, poll timeout after 3min blocking" << std::endl;
+		std::cout << "Server shutdown, poll error" << std::endl;
 	}
 	catch (std::exception &e)
 	{

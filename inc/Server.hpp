@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 13:46:07 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/31 18:34:19 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,21 +37,28 @@ public:
 	Server(void);
 	Server(std::string port, std::string password);
 	~Server(void);
-	void init_network(void);
-	void setPort(std::string const &port);
-	void setPassword(std::string const &port);
-	void initpoll(void);
-	std::string getPassword(void) const;
-	int getPort(void) const;
-	std::vector<Channel> getChannels(void);
+	
+	void initNetwork(void);
+	void initPoll(void);
+	
+
 	int	 runPoll(void);
 	void handlePoll(void);
 	int acceptNewConnection(void); //TODO: store client info in a User object
 	void readData(int i); // TODO: data sent to server by client, so it's the main part of the server
-
 	void setReply(int uindex);
 	void setReply(void);
 	void sendData(int i);
+
+	void setPassword(std::string const &port);
+	void setPort(std::string const &port);
+
+
+	sockaddr_in getAdrr(void) const;
+	int getPort(void) const;
+	int getSocket(void) const;
+	std::string getPassword(void) const;
+	std::vector<Channel> getChannels(void);
 };
 
 #endif

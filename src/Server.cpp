@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/31 14:28:09 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/31 18:47:51 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ int getPort(std::string p)
 	return port;
 }
 
+// Constructors & Destructors
+
 Server::Server(void)
 {
 	_password = "";
@@ -48,6 +50,8 @@ Server::~Server(void)
 {
 	std::cout << "Server destructor called" << std::endl;
 }
+
+// Setters
 
 void Server::setPassword(std::string const &password)
 {
@@ -71,44 +75,52 @@ void Server::setPort(std::string const &port)
 	this->_port = p;
 }
 
-std::string Server::getPassword(void) const
-{
-	return _password;
+
+// Getters
+
+sockaddr_in Server::getAdrr(void) const {
+	return _addr;
 }
 
-int Server::getPort(void) const
-{
+int Server::getPort(void) const {
 	return _port;
 }
 
-void Server::init_network(void)
-{
-	int new_fd; // For new connections
+int Server::getSocket(void) const {
+	return _socket;
+}
+
+std::string Server::getPassword(void) const {
+	return _password;
+}
+
+// Methods
+
+/// @brief init server listening, exception thrown if failed
+/// @param  none
+void Server::initNetwork(void) {
 	_socket = socket(PF_INET, SOCK_STREAM, 0);
 	if (_socket == -1)
 		throw SocketFailedException();
-	std::cout << "✅ socket creation ok (return value is " << _socket << ")" << std::endl;
-
 	int yes = 1;
 	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
 		throw SetsockoptFailedException();
 
 	_addr.sin_family = AF_INET;
 	_addr.sin_port = htons(this->_port);
-	_addr.sin_addr.s_addr = htonl(INADDR_ANY); // Use my IP
+	_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	memset(&_addr.sin_zero, '\0', 8);
 
-	// Associate that socket with a local port of the machine
 	if (bind(_socket, (struct sockaddr *)&_addr, sizeof(struct sockaddr)) == -1)
 		throw BindFailedException();
-	// TODO handle 'ALREADYINUSE' ports
-
-	// Listen for incoming connections
+	
 	if (listen(_socket, MAX_CON_QUEUE) == -1)
 		throw ListenFailedException();
 }
 
-void	Server::initpoll(void) {
+/// @brief add listening socket to pollfd vector
+/// @param  none
+void	Server::initPoll(void) {
 	pollfd ufd;
 	ufd.fd = _socket;
 	ufd.events = POLLIN;
@@ -116,6 +128,8 @@ void	Server::initpoll(void) {
 	_nfds = 1;
 }
 
+/// @brief run poll on pollfd vector, throw exception if failed
+/// @param  none
 int		Server::runPoll(void) {
 	int ret;
 	
@@ -127,6 +141,9 @@ int		Server::runPoll(void) {
 	return (0);
 }
 
+/// @brief accept new nonblock connection & add pollfd to _ufds throw exception if failed
+/// @param  none
+/// @return 1 if no exception thrown
 int	Server::acceptNewConnection(void) { //TODO : implement User objs to store data and store fd
 	sockaddr_in usr;
 	socklen_t size = sizeof(usr); // *
