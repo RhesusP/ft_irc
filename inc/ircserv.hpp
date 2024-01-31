@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:03:44 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 13:05:31 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/31 13:59:04 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,14 @@
 #include <signal.h>
 #include <cstring>
 #include <sstream>
+#include <map>
+#include <vector>
 
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
 #include "Exceptions.hpp"
 #include "Message.hpp"
+#include "Utils.hpp"
 
 #endif
