@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 15:40:56 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/01/24 21:14:07 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 Message::Message(void)
 {
 	_raw = "";
-	_content = "";
+	_source = "";
+	_command = "";
+	_response = ""; 
 }
 
 Message::Message(std::string const &raw)
@@ -26,10 +28,13 @@ Message::Message(std::string const &raw)
 
 Message::~Message(void) {}
 
-std::string const &Message::getContent(void) const
+void Message::parser(void)
 {
-	return _content;
+	size_t from = 0;
+	if (_raw[0] == '@')
+		setTags()
 }
+
 
 std::string const &Message::getRaw(void) const
 {
