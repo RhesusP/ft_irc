@@ -6,11 +6,13 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/31 13:51:31 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/01/31 14:28:09 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
+#include "fcntl.h"
+#include "unistd.h"
 
 int getPort(std::string p)
 {
@@ -137,6 +139,8 @@ int	Server::acceptNewConnection(void) { //TODO : implement User objs to store da
 	
 	if (setsockopt(ufd.fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))== -1)
 		throw SetsockoptFailedException();
+	if (fcntl(ufd.fd, F_SETFL, O_NONBLOCK))
+		throw SetsockoptFailedException();
 	User user(ufd.fd, usr);
 	ufd.events = POLLIN;
 	_ufds.push_back(ufd);
@@ -159,7 +163,13 @@ void	Server::readData(int i) { //TODO: data sent to server by client, so it's th
 	if (byteread == -1)
 		throw PollFailedException();
 	if (byteread == 0)
+	{
+		close(ufd.fd);
+		_users.erase(_users.begin() + (i - 1));
+		_ufds.erase(_ufds.begin() + i);
+		_nfds -= 1;
 		return ;
+	}
 	buff[byteread] = '\0';
 	data = buff;
 	while (byteread == BUFF_SIZE - 1 && data.size() < 512) {
