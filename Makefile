@@ -6,7 +6,7 @@
 #    By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/15 02:00:37 by cbernot           #+#    #+#              #
-#    Updated: 2024/01/24 12:25:00 by cbernot          ###   ########.fr        #
+#    Updated: 2024/02/01 11:42:56 by cbernot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,8 @@ NAME	=	ircserv
 # ------------------------------------------------------------------------------
 
 # Files
-LST_INC	=	ircserv.hpp Server.hpp User.hpp Channel.hpp Exceptions.hpp Message.hpp
-LST_SRC	=	main.cpp Server.cpp User.cpp Channel.cpp Exceptions.cpp Message.cpp
+LST_INC	=	ircserv.hpp Server.hpp User.hpp Channel.hpp Exceptions.hpp Message.hpp Utils.hpp
+LST_SRC	=	main.cpp Server.cpp User.cpp Channel.cpp Exceptions.cpp Message.cpp Utils.cpp
 
 # Directories
 DIR_INC	=	inc/

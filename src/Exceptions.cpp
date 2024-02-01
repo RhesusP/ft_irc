@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:18:12 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 19:48:43 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/01 15:03:15 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,3 +41,9 @@ const char *AcceptFailedException::what() const throw()
 {
 	return "Accept failed";
 }
+
+const char *BadCommandException::what() const throw()
+{
+	return "Unknown command";
+}
+

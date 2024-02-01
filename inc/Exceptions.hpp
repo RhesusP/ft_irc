@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:14:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/18 19:54:59 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/01 15:00:45 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,12 @@ public:
 };
 
 class AcceptFailedException : public std::exception
+{
+public:
+	virtual const char *what() const throw();
+};
+
+class BadCommandException : public std::exception
 {
 public:
 	virtual const char *what() const throw();
