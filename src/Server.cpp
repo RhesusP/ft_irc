@@ -6,13 +6,33 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/31 18:47:51 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/01 11:30:35 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
 #include "fcntl.h"
 #include "unistd.h"
+
+std::string	receve(int fd) {
+	std::string	ret;
+	char		buf[BUFF_SIZE];
+	int 		byteread;
+
+	byteread = recv(fd, buf, BUFF_SIZE - 1, 0);
+	if (byteread <= 0)
+		throw RecvFailedException();
+	buf[byteread] = '\0';
+	ret = buf;
+	while (byteread == BUFF_SIZE - 1 && ret.size() < 512) {
+		if (byteread <= 0)
+			throw RecvFailedException();
+		byteread = recv(fd, buf, BUFF_SIZE - 1, 0);
+		buf[byteread] = '\0';
+		ret += buf;
+	}
+	return (ret);
+}
 
 int getPort(std::string p)
 {
@@ -150,7 +170,7 @@ int	Server::acceptNewConnection(void) { //TODO : implement User objs to store da
 	pollfd ufd;
 	int yes = 1;
 
-	std::cout << "new connection" << std::endl;
+	std::cout << COGRE << "new connection" << CORES << std::endl;
 	if ((ufd.fd = accept(_socket, (struct sockaddr *)&usr.sin_addr, &size)) < 0)
 		throw AcceptFailedException();
 	
@@ -158,55 +178,43 @@ int	Server::acceptNewConnection(void) { //TODO : implement User objs to store da
 		throw SetsockoptFailedException();
 	if (fcntl(ufd.fd, F_SETFL, O_NONBLOCK))
 		throw SetsockoptFailedException();
-	User user(ufd.fd, usr);
 	ufd.events = POLLIN;
 	_ufds.push_back(ufd);
-	_users.push_back(user);
+	
+	std::string entry_message;
+	try {
+		entry_message = receve(ufd.fd);
+	}
+	catch (std::exception &e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		entry_message = "QUIT :Error";
+	}
+	
 	return (1);
 }
 
+void Server::disconnectBrutal(int i) {
+	pollfd ufd = _ufds.at(i);
+	
+	close(ufd.fd);
+	_ufds.erase(_ufds.begin() + i);
+	_nfds--;
+}
+
 void	Server::readData(int i) { //TODO: data sent to server by client, so it's the main part of the server
-	User	user = _users.at(i - 1);
 	pollfd	ufd = _ufds[i];
 	std::string	data;
 	
-	std::cout << "data to read" << std::endl;
-	std::cout << "user " << inet_ntoa(user.getAddress().sin_addr) << " sent data" << std::endl;
-	char	buff[BUFF_SIZE];
-	int	byteread;
+	std::cout << "data to read on fd>" << ufd.fd << std::endl;
 	
-	byteread = recv(ufd.fd, buff, BUFF_SIZE - 1, 0);
-	std::cout << ufd.fd << " br " << byteread << std::endl;
-	if (byteread == -1)
-		throw PollFailedException();
-	if (byteread == 0)
-	{
-		close(ufd.fd);
-		_users.erase(_users.begin() + (i - 1));
-		_ufds.erase(_ufds.begin() + i);
-		_nfds -= 1;
-		return ;
+	try {
+		data = receve(ufd.fd);
 	}
-	buff[byteread] = '\0';
-	data = buff;
-	while (byteread == BUFF_SIZE - 1 && data.size() < 512) {
-		if (byteread < 0)
-			throw PollFailedException();
-		byteread = recv(ufd.fd, buff, BUFF_SIZE - 1, 0);
-		buff[byteread] = '\0';
-		data += buff;
+		catch (std::exception &e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		this->disconnectBrutal(i);
 	}
-	std::cout << "\"" << data << "\"" << std::endl;
-	if (data.compare(0, 4, "QUIT") == 0)
-	{
-		std::cout << "DISCONNECT" << std::endl;
-		_users.erase(_users.begin() + (i - 1));
-		_ufds.erase(_ufds.begin() + i);
-		_nfds -= 1;
-		setReply(0);
-	}
-	else
-		setReply(i);
+	std::cout << COYEL << data << CORES << std::endl;
 }
 
 void	Server::sendData(int i) {

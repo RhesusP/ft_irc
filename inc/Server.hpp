@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/31 18:34:19 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/01 10:51:53 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ public:
 	void setReply(int uindex);
 	void setReply(void);
 	void sendData(int i);
+	void disconnectBrutal(int i);
 
 	void setPassword(std::string const &port);
 	void setPort(std::string const &port);

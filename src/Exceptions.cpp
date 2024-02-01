@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:18:12 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/19 15:28:13 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/01 10:56:33 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,40 @@
 
 const char *BadPortException::what() const throw()
 {
-	return "Bad port";
+	return "\033[0;31mBad port\033[0m";
 }
 
 const char *SocketFailedException::what() const throw()
 {
-	return "Socket creation failed";
+	return "\033[0;31mSocket creation failed\033[0m";
 }
 
 const char *SetsockoptFailedException::what() const throw()
 {
-	return "Setsockopt failed";
+	return "\033[0;31mSetsockopt failed\033[0m";
 }
 
 const char *BindFailedException::what() const throw()
 {
-	return "Binding port failed";
+	return "\033[0;31mBinding port failed\033[0m";
 }
 
 const char *ListenFailedException::what() const throw()
 {
-	return "Listen failed";
+	return "\033[0;31mListen failed\033[0m";
 }
 
 const char *AcceptFailedException::what() const throw()
 {
-	return "Accept failed";
+	return "\033[0;31mAccept failed\033[0m";
 }
 
 const char *PollFailedException::what() const throw()
 {
-	return "Poll failed";
+	return "\033[0;31mPoll failed\033[0m";
+}
+
+const char *RecvFailedException::what() const throw()
+{
+	return "\033[0;31mRecv failed\033[0m";
 }
