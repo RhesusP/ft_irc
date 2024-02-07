@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:18:12 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/01 10:56:33 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/07 11:43:32 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,9 @@ const char *PollFailedException::what() const throw()
 const char *RecvFailedException::what() const throw()
 {
 	return "\033[0;31mRecv failed\033[0m";
+}
+
+const char *FatalException::what() const throw()
+{
+	return "\033[0;31mFatal error : To Define\033[0m";
 }

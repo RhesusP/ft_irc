@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 10:09:56 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/07 13:20:26 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,27 @@ User::User(int &sockfd, sockaddr_in &addr) {
 	_is_password_ok = false;
 }
 
+User::User(int &sockfd) : _sockfd(sockfd), _is_registered(false), _is_password_ok(false) {}
+
 User::~User(void) {}
+
+void User::setSocket(int val) {
+	_sockfd = val;
+}
+
 
 sockaddr_in User::getAddress(void) const {
 	return _addr;
+}
+
+int	User::getSocket(void) const {
+	return _sockfd;
+}
+
+std::string User::getRealName(void) const {
+	return _realname;
+}
+
+bool User::getRegistered(void) const {
+	return _is_registered;
 }

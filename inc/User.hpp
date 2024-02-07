@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/24 14:55:00 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/07 12:39:00 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,15 @@ private:
 public:
 	User(void);
 	User(int &sockfd, sockaddr_in &addr);
+	User(int &sockfd);
 	~User(void);
 
+	void setSocket(int val);
+
 	sockaddr_in getAddress(void) const;
+	int	getSocket(void) const;
+	std::string getRealName(void) const;
+	bool getRegistered(void) const;
 };
 
 #endif
