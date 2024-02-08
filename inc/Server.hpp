@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/07 13:25:30 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/08 12:25:31 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ public:
 	
 	void initNetwork(void);
 	void initPoll(void);
-	
+
+	void status(void);
 
 	int	 runPoll(void);
 	void handlePoll(void);
@@ -55,6 +56,8 @@ public:
 	
 	int getUserFrom(int fd) const;
 	int getUserFrom(std::string realname) const;
+	// int getPollfdFrom(int fd) const;
+	int clearUfd(int fd);
 
 	void setPassword(std::string const &port);
 	void setPort(std::string const &port);

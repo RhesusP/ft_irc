@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/31 18:39:46 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/08 12:24:56 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	main(int argc, char **argv) {
 		server.initPoll();
 		while (1 && server.runPoll() != -1) {
 			server.handlePoll();
+			server.status();
 		}
 		std::cout << "Server shutdown, poll error" << std::endl;
 	}
