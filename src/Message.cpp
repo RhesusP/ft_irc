@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/02 15:27:26 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/09 16:10:11 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,15 +168,76 @@ std::string Message::getCommand(std::string const &raw)
 	return rawCopy;
 }
 
-void getParameters(std::string const &raw)
+void delete_space_element(std::vector<std::string> & tab)
+{
+	std::vector<std::string>::iterator it_beg = tab.begin();
+	std::vector<std::string>::iterator it_end = tab.end();
+	std::vector<std::string>::iterator it_temp;
+
+	while (it_beg != tab.end())
+	{
+		if ((*it_beg).size() == 0)
+		{
+			std::cout << "erasing '" << *it_beg << "'" << std::endl;
+			it_temp = it_beg + 1;
+			tab.erase(it_beg);
+			it_beg = it_temp;
+		}
+		else
+			++it_beg;
+	}
+}
+
+void Message::getParameters(std::string const &raw)
 {
 	// TODO need to split raw by space delimiter and remove extra spaces
 	// TODO handle trailing ? (https://modern.ircdocs.horse/#parameters)
+
+	std::vector<std::string> tab = split(raw, " ");
+	// std::cout << "size before: " << tab.size();
+	for (size_t i = 0 ; i < tab.size() ; i++)
+	{
+		if (tab[i][0] == ':')
+		{
+			int index = i;
+			std::cout << ": detected at index " << index << std::endl;
+			for (size_t j = i + 1; j < tab.size() ; j++)
+			{
+				std::cout << "merging '" << tab[i] << "' and ' " << tab[j] << "'" << std::endl;		// OK
+				tab[i].append(" " + tab[j]);
+				index = j;
+			}
+			std::cout << "After merging, we're at index " << index << std::endl;
+			for (size_t j = i + 1; j < tab.size() ; j++)
+			{
+				std::cout << "erasing '" << tab[j] << "'" << std::endl;		// OK
+				tab.erase(tab.begin() + j);
+				index = j;
+			}
+			std::cout << "After deleting, we're at index " << index << std::endl;
+			break;
+		}
+	}
+	// std::cout << "size after: " << tab.size();
+	delete_space_element(tab);
+	// for (size_t i = 0; i < tab.size(); i++)
+	// {
+	// 	std::cout << "processing '" << tab[i] << "'" << std::endl;
+	// 	if (tab[i].size() == 0)
+	// 	{
+	// 		std::cout << "'" << tab[i] << "' have a 0 size" << std::endl;
+	// 		std::cout << "erasing '" << tab[i] << "'" << std::endl;		// OK
+	// 		tab.erase(tab.begin() + i);
+	// 	}
+	// }
+	// std::cout << "size after after: " << tab.size();
+	_parameters = tab;
 }
 
 Message::Message(std::string const &raw)
 {
-	_raw = raw;
+	// _raw = raw;
+	_raw = "CAP REQ             :sasl message-tags foo";
 	// TODO Check raw size. If > 512, throw exception and send ERR_INPUTTOOLONG (417) to client
 	std::cout << "[MESSAGE] new message with raw " << _raw << std::endl;
 	try
@@ -184,7 +245,7 @@ Message::Message(std::string const &raw)
 		_raw = getTags(_raw);
 		_raw = getSource(_raw);
 		_raw = getCommand(_raw);
-		// getParameters(_raw);
+		getParameters(_raw);
 		std::cout << *this << std::endl;
 	}
 	catch (std::exception &e)
@@ -233,7 +294,8 @@ std::ostream &operator<<(std::ostream &o, Message &rhs)
 	}
 	std::cout << "\tSource: " << source << std::endl;
 	std::cout << "\tCommand:" << printCmd(cmd) << std::endl;
+	std::cout << "\tParameters: " << source << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
-		std::cout << "\t\t" << params[i] << std::endl;
+		std::cout << "\t\t'" << params[i] << "'" << std::endl;
 	return o;
 }
