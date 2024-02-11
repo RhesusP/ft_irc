@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/08 11:37:41 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/11 16:19:41 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,12 @@ private:
 	std::string _username;
 	std::string _nickname;
 	std::string _realname;
-	int _sockfd; //clear fd when user disconnect
+	int _sockfd;
 	sockaddr_in _addr;
 	std::vector<Channel> _channels;
 
-	bool _is_password_ok;
+	std::time_t	_timeval;
+
 	bool _is_registered;
 
 	bool _go_offline;
@@ -46,8 +47,7 @@ public:
 	std::string getRealName(void) const;
 	bool getRegistered(void) const;
 	bool getStatus(void) const;
-
-	void	offline(void);
+	std::time_t timeElapsed(void) const;
 };
 
 #endif

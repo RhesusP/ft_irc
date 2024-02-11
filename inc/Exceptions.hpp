@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:14:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/07 11:42:42 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/11 16:53:41 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,12 @@ public:
 };
 
 class FatalException : public std::exception
+{
+public:
+	virtual const char *what() const throw();
+};
+
+class UsernameAlreadyUsedException : public std::exception
 {
 public:
 	virtual const char *what() const throw();

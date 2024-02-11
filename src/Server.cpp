@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/08 12:25:45 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/11 16:53:54 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,24 +62,12 @@ void	Server::readData(int i) {
 	int	index = Server::getUserFrom(ufd.fd);
 	std::string	data;
 
-	try {
-		data = receve(ufd.fd);
-	}
-	catch (std::exception &e) {
-		std::cerr << "Error: " << e.what() << std::endl;
-		disconnectBrutal(i);
-		return ;
-	}
+	data = receve(ufd.fd);
 	if (index == -1) {
 		User user(ufd.fd);
-		//user.formatRecv(data);  TOIMPLEMENT
-		if (user.getRegistered())
-			disconnectBadPwd(i);
-		if (getUserFrom(user.getRealName()) == -1)
-			_users.push_back(user);
-		// else						TOIMPLEMENT
-			//update user existing
+		_users.push_back(user);
 		std::cout << COYEL << data << COGRE << "from " << user.getSocket() << " is " << (user.getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
+		//user.formatRecv()
 	}
 	else {
 		User user = _users.at(index);
@@ -88,6 +76,9 @@ void	Server::readData(int i) {
 	}
 }
 
+
+/// @brief NOT FUNCTIONAL
+/// @param i  index of _ufds
 void	Server::sendData(int i) {
 	pollfd ufd = _ufds[i];
 	int	index = Server::getUserFrom(ufd.fd);
@@ -115,24 +106,16 @@ int		Server::clearUfd(int fd) {
 	return (-1);
 }
 
+/// @brief Close sockets and reset/erase users disconnecting
 void	Server::status() {
-	int nbconnected = 0;
-	int nbuser = 0;
 	int usize = _users.size();
 	for (int i = 0; i < usize; i++) {
 		User user = _users.at(i);
 		bool ustatus = _users.at(i).getStatus();
-		if (ustatus && user.getSocket() != -1) {
-			if (user.getRegistered()) {
-				clearUfd(user.getSocket());
-				user.offline();
-			}
-			else {
-				clearUfd(user.getSocket());
-				_users.erase(_users.begin() + i);
-			}
-			nbconnected++;
+		if (ustatus) {
+			clearUfd(user.getSocket());
+			_users.erase(_users.begin() + i);
+			usize--;
 		}
-		nbuser++;
 	}
 }

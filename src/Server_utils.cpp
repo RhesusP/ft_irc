@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:51:22 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/08 12:25:12 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/11 16:51:25 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,12 +84,7 @@ void Server::disconnectBadPwd(int i) {
 void Server::disconnectBrutal(int i) {
 	pollfd ufd = _ufds.at(i);
 	int socket = ufd.fd;
-	// User user = _users.at(getUserFrom(ufd.fd));
-	
-	// if (user.getRegistered())  ///LOGOUT PROCESS
-	// 	user.Reset();
-	// else
-	// 	_users.erase(user);
+
 	close(ufd.fd);
 	_ufds.erase(_ufds.begin() + i);
 	_nfds--;
@@ -116,16 +111,23 @@ int		Server::runPoll(void) {
 void	Server::handlePoll(void) {
 	int	nfds = 0;
 	for (int i = 0; i < _nfds; i++) {
-		if (_ufds.at(i).fd == _socket) {
-			if (_ufds.at(i).revents == POLLIN)
-				nfds += acceptNewConnection();
+		try {
+			if (_ufds.at(i).fd == _socket) {
+				if (_ufds.at(i).revents == POLLIN)
+					nfds += acceptNewConnection();
+			}
+			else
+			{
+				if (_ufds.at(i).revents == POLLOUT)
+					sendData(i);
+				else if (_ufds.at(i).revents == POLLIN)
+					readData(i);
+			}
 		}
-		else
-		{
-			if (_ufds.at(i).revents == POLLOUT)
-				sendData(i);
-			else if (_ufds.at(i).revents == POLLIN)
-				readData(i);
+		catch (std::exception &e) {
+			std::cerr << e.what() << std::endl;
+			disconnectBrutal(i); // set_disconnect (reason);
+			//if bad pwd del ufd but no user or at least check
 		}
 	}
 	_nfds += nfds;

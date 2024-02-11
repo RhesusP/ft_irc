@@ -6,11 +6,11 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:56:55 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/08 10:59:57 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/11 15:43:07 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ircserv.hpp"
+#include "../inc/ircserv.hpp" 
 
 std::string	receve(int fd) {
 	std::string	ret;

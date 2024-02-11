@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:18:12 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/08 11:47:24 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/11 16:34:36 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,9 @@ const char *RecvFailedException::what() const throw()
 const char *FatalException::what() const throw()
 {
 	return "\033[0;31mFatal error : To Define\033[0m";
+}
+
+const char *UsernameAlreadyUsedException::what() const throw()
+{
+	return "\033[0;31mUsername Already in use on server, disconnect user recommanded\033[0m";
 }

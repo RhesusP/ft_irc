@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:03:44 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/08 12:26:01 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/11 16:13:26 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 # include <poll.h>
 #include "fcntl.h"
 #include "unistd.h"
+#include <ctime>
 
 #include "Server.hpp"
 #include "Channel.hpp"
