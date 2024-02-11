@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/11 16:54:57 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/11 16:58:40 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+
+/*
+no TO for password
+even if client hard quit without sendind QUIT , server respond like it has, the reason just changes and send ERROR to client
+User DO NOT need to be kept in memory after logout of server
+*/
+
 
 int	main(int argc, char **argv) {
 	if (argc != 3) {
