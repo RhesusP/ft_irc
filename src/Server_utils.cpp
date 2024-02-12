@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:51:22 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/11 16:51:25 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/12 12:01:03 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Server::Server(void) {
 Server::Server(std::string port, std::string password) {
 	this->setPort(port);
 	this->_password = password;
+	size = sizeof(sockaddr_in);
 }
 
 Server::~Server(void) {
@@ -126,7 +127,7 @@ void	Server::handlePoll(void) {
 		}
 		catch (std::exception &e) {
 			std::cerr << e.what() << std::endl;
-			disconnectBrutal(i); // set_disconnect (reason);
+			disconnectBrutal(i); // addCommand(QUIT, NULL, "Connection lost");
 			//if bad pwd del ufd but no user or at least check
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/11 16:53:54 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/12 12:02:54 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,7 @@ int	Server::getUserFrom(std::string realname) const {
 /// @return 1 if no exception thrown
 int	Server::acceptNewConnection(void) { //TODO : implement User objs to store data and store fd
 	sockaddr_in usr;
-	socklen_t size = sizeof(usr); // * <- put in private member ?
 	pollfd ufd;
-	int yes = 1; // <- put in private member ?
 
 	std::cout << COGRE << "new connection" << CORES << std::endl; //LOG
 	if ((ufd.fd = accept(_socket, (struct sockaddr *)&usr.sin_addr, &size)) < 0)
@@ -50,8 +48,10 @@ int	Server::acceptNewConnection(void) { //TODO : implement User objs to store da
 		throw SetsockoptFailedException();
 	if (fcntl(ufd.fd, F_SETFL, O_NONBLOCK))
 		throw SetsockoptFailedException();
+	User user(ufd.fd, usr);
 	ufd.events = POLLIN;
 	_ufds.push_back(ufd);
+	_users.push_back(user);
 	return (1);
 }
 
@@ -63,17 +63,17 @@ void	Server::readData(int i) {
 	std::string	data;
 
 	data = receve(ufd.fd);
-	if (index == -1) {
-		User user(ufd.fd);
-		_users.push_back(user);
-		std::cout << COYEL << data << COGRE << "from " << user.getSocket() << " is " << (user.getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
-		//user.formatRecv()
-	}
-	else {
-		User user = _users.at(index);
-		//user.formatRecv()			TOIMPLEMENT
-		std::cout << COYEL << data << COGRE << "from " << user.getSocket() << " is " << (user.getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
-	}
+	// if (index == -1) {
+	// 	User user(ufd.fd);
+	// 	_users.push_back(user);
+	// 	std::cout << COYEL << data << COGRE << "from " << user.getSocket() << " is " << (user.getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
+	// 	//user.formatRecv()
+	// }
+	// else {
+	User *user = &_users.at(index);
+	//user.formatRecv()			TOIMPLEMENT
+	std::cout << COYEL << data << COGRE << "from " << user->getSocket() << " is " << (user->getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
+	// }
 }
 
 
@@ -82,11 +82,9 @@ void	Server::readData(int i) {
 void	Server::sendData(int i) {
 	pollfd ufd = _ufds[i];
 	int	index = Server::getUserFrom(ufd.fd);
-	// User	user;
-	// if (index >= 0)
-	// 	user = _users.at(index);
+	User	user = _users.at(index);
 	
-	std::string data = ":localhost 001 user :Welcome to IRC user!user@localhost\r\n"; // user.tease._waitingList.top().response;
+	std::string data = ""; // user.tease._waitingList.top().response;
 	int	sizesent;
 
 	std::cout << "data sent to user connected on socket " << ufd.fd << std::endl;
@@ -111,11 +109,16 @@ void	Server::status() {
 	int usize = _users.size();
 	for (int i = 0; i < usize; i++) {
 		User user = _users.at(i);
-		bool ustatus = _users.at(i).getStatus();
-		if (ustatus) {
-			clearUfd(user.getSocket());
-			_users.erase(_users.begin() + i);
-			usize--;
-		}
+		//if (user._reply.empty()) {
+			bool ustatus = _users.at(i).getStatus();
+			if (ustatus) {
+				clearUfd(user.getSocket());
+				_users.erase(_users.begin() + i);
+				usize--;
+			}
+		// }
+		// else {
+			// setReply(i);
+		// }
 	}
 }

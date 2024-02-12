@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/08 12:25:31 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/12 12:00:12 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ private:
 	int _nfds;
 
 public:
+	const int yes = 1;
+	socklen_t size;
+
 	Server(void);
 	Server(std::string port, std::string password);
 	~Server(void);

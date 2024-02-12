@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/11 16:58:40 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/12 10:20:37 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <string>
 
 /*
-no TO for password
+no TimeOut for password
 even if client hard quit without sendind QUIT , server respond like it has, the reason just changes and send ERROR to client
 User DO NOT need to be kept in memory after logout of server
 */
@@ -30,15 +30,13 @@ int	main(int argc, char **argv) {
 
 	std::string port(argv[1]);
 	std::string password(argv[2]);
-	Server server;
 	try
 	{
-		server.setPort(port);
-		server.setPassword(password);
+		Server server(port, password);
 		server.initNetwork();
 		std::cout << "✅ Server initialized on port "<< server.getPort() << " and password \"" << server.getPassword() << "\" linked to socket " << server.getSocket() << std::endl;
 		server.initPoll();
-		while (1 && server.runPoll() != -1) {
+		while (server.runPoll() != -1) {
 			server.handlePoll();
 			server.status();
 		}

@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/11 16:28:18 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/12 10:03:20 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,7 @@
 User::User(void): _go_offline(false), _is_registered(false) {
 }
 
-User::User(int &sockfd, sockaddr_in &addr) {
-	_sockfd = sockfd;
-	_addr = addr;
-	_is_registered = false;
-}
+User::User(int &sockfd, sockaddr_in &addr) : _sockfd(sockfd), _addr(addr), _is_registered(false), _go_offline(false) {}
 
 User::User(int &sockfd) : _sockfd(sockfd), _is_registered(false), _go_offline(false) {}
 
