@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/12 12:00:12 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 10:36:38 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ private:
 	std::vector<Channel> _channels;
 	std::vector<User> _users;
 	std::vector<pollfd> _ufds;
-	int _nfds;
+	int _nfds; // TODO ufds.size() ?
 
 public:
 	const int yes = 1;

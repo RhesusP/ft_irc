@@ -6,13 +6,13 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:56:55 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/11 15:43:07 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 11:01:54 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ircserv.hpp" 
 
-std::string	receve(int fd) {
+std::string	receve(int fd) { // TODO : Watch out for overlap 512
 	std::string	ret;
 	char		buf[BUFF_SIZE];
 	int 		byteread;

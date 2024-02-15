@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/12 12:02:54 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 09:57:48 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,17 +63,9 @@ void	Server::readData(int i) {
 	std::string	data;
 
 	data = receve(ufd.fd);
-	// if (index == -1) {
-	// 	User user(ufd.fd);
-	// 	_users.push_back(user);
-	// 	std::cout << COYEL << data << COGRE << "from " << user.getSocket() << " is " << (user.getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
-	// 	//user.formatRecv()
-	// }
-	// else {
 	User *user = &_users.at(index);
 	//user.formatRecv()			TOIMPLEMENT
 	std::cout << COYEL << data << COGRE << "from " << user->getSocket() << " is " << (user->getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
-	// }
 }
 
 

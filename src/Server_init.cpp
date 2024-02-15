@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:53:42 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/08 10:57:59 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 10:36:17 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void Server::initNetwork(void) {
 	_socket = socket(PF_INET, SOCK_STREAM, 0);
 	if (_socket == -1)
 		throw SocketFailedException();
-	int yes = 1;
 	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
 		throw SetsockoptFailedException();
 
