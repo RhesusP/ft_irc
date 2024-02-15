@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 12:05:53 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/16 19:19:50 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,12 +114,16 @@ std::string Message::getTags(std::string const &raw)
 	for (std::vector<std::string>::iterator it = tags_tab.begin(); it != tags_tab.end(); it++)
 	{
 		tag_tab = ::split(*it, "=");
-		if (tag_tab.size() != 2)	// TODO accept if value is null
+		if (tag_tab.size() > 2)
 			throw BadTagException();
 		std::vector<std::string>::iterator ita = tag_tab.begin();
 		std::string key = *ita;
 		++ita;
-		std::string value = *ita;
+		std::string value;
+		if (ita == tag_tab.end())
+			value = "";
+		else
+			value = *ita;
 		_tags.insert(std::pair<std::string, std::string>(key, value));
 		tag_tab.clear();
 	}
@@ -130,40 +134,28 @@ std::string Message::getTags(std::string const &raw)
 
 std::string Message::getSource(std::string const &raw)
 {
-	int i = 0;
-	while (raw[i] == ' ')
-		i++;
-	if (raw[i] != ':')
-		return raw;
-	int endpos = raw.find(" ");
-	_source = raw.substr(1, endpos - 1);
-	std::string rawCopy = raw;
+	std::string str = trim(raw, " ");
+	if (str[0] != ':')
+		return str;
+	int endpos = str.find(" ");
+	_source = str.substr(1, endpos - 1);
+	std::string rawCopy = str;
 	rawCopy.erase(0, endpos + 1);
 	return rawCopy;
 }
 
 std::string Message::getCommand(std::string const &raw)
 {
-	int endpos = raw.find(" ");
-	std::string str = raw.substr(0, endpos);
-	if (str.size() == 3 && isdigit(str[0]))	//TODO /!\ To handle
+	std::string str = trim(raw, " ");
+	int endpos = str.find(" ");
+	std::string s = str.substr(0, endpos);
+	for (int i = 0; i < s.size(); i++)
 	{
-		for (int i = 0; i < str.size(); i++)
-		{
-			if (!isdigit(str[i]))
-				throw BadCommandException();
-		}
+		if (!isalpha(s[i]))
+			throw BadCommandException();
 	}
-	else
-	{
-		for (int i = 0; i < str.size(); i++)
-		{
-			if (!isalpha(str[i]))
-				throw BadCommandException();
-		}
-		_command = stocmd(str);
-	}
-	std::string rawCopy = raw;
+	_command = stocmd(s);
+	std::string rawCopy = str;
 	rawCopy.erase(0, endpos + 1);
 	return rawCopy;
 }
@@ -178,7 +170,6 @@ void delete_space_element(std::vector<std::string> & tab)
 	{
 		if ((*it_beg).size() == 0)
 		{
-			std::cout << "erasing '" << *it_beg << "'" << std::endl;
 			it_temp = it_beg + 1;
 			tab.erase(it_beg);
 			it_beg = it_temp;
@@ -188,62 +179,63 @@ void delete_space_element(std::vector<std::string> & tab)
 	}
 }
 
+bool have_void_element(std::vector<std::string> & tab)
+{
+	for (size_t i = 0; i < tab.size() ; i++)
+	{
+		if ((tab[i]).size() == 0)
+			return true;
+	}
+	return false;
+}
+
 void Message::getParameters(std::string const &raw)
 {
-	// TODO need to split raw by space delimiter and remove extra spaces
-	// TODO handle trailing ? (https://modern.ircdocs.horse/#parameters)
-
 	std::vector<std::string> tab = split(raw, " ");
-	// std::cout << "size before: " << tab.size();
 	for (size_t i = 0 ; i < tab.size() ; i++)
 	{
 		if (tab[i][0] == ':')
 		{
 			int index = i;
-			std::cout << ": detected at index " << index << std::endl;
+			tab[i].erase(0, 1);
 			for (size_t j = i + 1; j < tab.size() ; j++)
 			{
-				std::cout << "merging '" << tab[i] << "' and ' " << tab[j] << "'" << std::endl;		// OK
 				tab[i].append(" " + tab[j]);
 				index = j;
 			}
-			std::cout << "After merging, we're at index " << index << std::endl;
 			for (size_t j = i + 1; j < tab.size() ; j++)
 			{
-				std::cout << "erasing '" << tab[j] << "'" << std::endl;		// OK
 				tab.erase(tab.begin() + j);
 				index = j;
 			}
-			std::cout << "After deleting, we're at index " << index << std::endl;
+			tab.erase(tab.end() - 1);
 			break;
 		}
 	}
-	// std::cout << "size after: " << tab.size();
-	delete_space_element(tab);
-	// for (size_t i = 0; i < tab.size(); i++)
-	// {
-	// 	std::cout << "processing '" << tab[i] << "'" << std::endl;
-	// 	if (tab[i].size() == 0)
-	// 	{
-	// 		std::cout << "'" << tab[i] << "' have a 0 size" << std::endl;
-	// 		std::cout << "erasing '" << tab[i] << "'" << std::endl;		// OK
-	// 		tab.erase(tab.begin() + i);
-	// 	}
-	// }
-	// std::cout << "size after after: " << tab.size();
+	while (have_void_element(tab))
+	{
+		for (size_t i = 0; i < tab.size() ; i++)
+		{
+			if ((tab[i]).size() == 0)
+			{
+				tab.erase(tab.begin() + i);
+				break;
+			}
+		}
+	}
 	_parameters = tab;
 }
 
 Message::Message(std::string const &raw)
 {
 	_raw = raw;
-	// _raw = "CAP REQ             :sasl message-tags foo";
 	// TODO Check raw size. If > 512, throw exception and send ERR_INPUTTOOLONG (417) to client
 	std::cout << "[MESSAGE] new message with raw " << _raw << std::endl;
 	try
 	{
 		_raw = getTags(_raw);
 		_raw = getSource(_raw);
+		std::cout << "raw after source: " << _raw << std::endl;
 		_raw = getCommand(_raw);
 		getParameters(_raw);
 		std::cout << *this << std::endl;
@@ -297,8 +289,8 @@ std::ostream &operator<<(std::ostream &o, Message &rhs)
 		++it_beg_tags;
 	}
 	std::cout << "\tSource: " << source << std::endl;
-	std::cout << "\tCommand:" << printCmd(cmd) << std::endl;
-	std::cout << "\tParameters: " << source << std::endl;
+	std::cout << "\tCommand: " << printCmd(cmd) << std::endl;
+	std::cout << "\tParameters: " << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << "\t\t'" << params[i] << "'" << std::endl;
 	return o;
