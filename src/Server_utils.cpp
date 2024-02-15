@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:51:22 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/12 12:01:03 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 12:31:55 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,14 +134,18 @@ void	Server::handlePoll(void) {
 	_nfds += nfds;
 }
 
-
-void	Server::setReply(int uindex) {
-	std::cout << uindex << std::endl;
-	if (uindex == 0){
-		for (int i = 1; i < _nfds; i++) {
-			_ufds.at(i).events = POLLOUT;
-		}
+pollfd *Server::getPollfdFrom(int fd) {
+	for (int i = 0; i < _nfds; i++) {
+		if (_ufds.at(i).fd == fd)
+			return (&_ufds.at(i));
 	}
-	else
-		_ufds.at(uindex).events = POLLOUT;
+	return (NULL);
+}
+
+void	Server::setReply(std::vector<User> dest) {
+	for (int i = 0; i < dest.size(); i++) {
+		pollfd	*ufd = getPollfdFrom(dest.at(i).getSocket());
+		if (ufd)
+			ufd->events = POLLOUT;
+	}
 }

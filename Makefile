@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+         #
+#    By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/15 02:00:37 by cbernot           #+#    #+#              #
-#    Updated: 2024/02/15 11:52:20 by cbernot          ###   ########.fr        #
+#    Updated: 2024/02/15 12:46:03 by svanmeen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 

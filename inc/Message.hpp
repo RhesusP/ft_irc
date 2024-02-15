@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:14:43 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 11:24:10 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/15 13:46:00 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define MESSAGE_HPP
 
 #include "ircserv.hpp"
+
+class Server;
 
 enum command
 {
@@ -44,12 +46,14 @@ public:
 class Message
 {
 private:
+	Server	*_server;
 	std::string _raw;
 	std::map<std::string, std::string> _tags;
 	std::string _source;
 	command _command;
 	std::vector<std::string> _parameters;
 	std::string _response;
+	User	*_author;
 
 	// author
 	// array of recipients
@@ -61,7 +65,7 @@ private:
 
 public:
 	Message(void);
-	Message(std::string const &raw);
+	Message(std::string const &raw, Server * server, User *author);
 	~Message(void);
 
 	std::map<std::string, std::string> & getTags(void);

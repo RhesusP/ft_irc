@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 12:08:32 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:00:11 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,7 @@ private:
 	std::vector<User> _users;
 	std::vector<pollfd> _ufds;
 	int _nfds; // TODO ufds.size() ?
-	std::queue<Message> _waitingList;
-	void formatRecv(std::string rec, User &usr);
+	void formatRecv(std::string rec, User *usr);
 
 public:
 	const int yes = 1;
@@ -53,8 +52,7 @@ public:
 	void handlePoll(void);
 	int acceptNewConnection(void); //TODO: store client info in a User object
 	void readData(int i); // TODO: data sent to server by client, so it's the main part of the server
-	void setReply(int uindex);
-	void setReply(void);
+	void setReply(std::vector<User> dest);
 	void sendData(int i);
 
 	void disconnectBadPwd(int i);
@@ -62,7 +60,7 @@ public:
 	
 	int getUserFrom(int fd) const;
 	int getUserFrom(std::string realname) const;
-	// int getPollfdFrom(int fd) const;
+	pollfd *getPollfdFrom(int fd);
 	int clearUfd(int fd);
 
 	void setPassword(std::string const &port);

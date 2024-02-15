@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 12:05:53 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:46:11 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,8 +234,10 @@ void Message::getParameters(std::string const &raw)
 	_parameters = tab;
 }
 
-Message::Message(std::string const &raw)
+Message::Message(std::string const &raw, Server * server, User *author)
 {
+	_server = server;
+	_author = author;
 	_raw = raw;
 	// _raw = "CAP REQ             :sasl message-tags foo";
 	// TODO Check raw size. If > 512, throw exception and send ERR_INPUTTOOLONG (417) to client
@@ -250,7 +252,10 @@ Message::Message(std::string const &raw)
 		// TODO processmsg();
 		// check ta command et l'appeler
 		// if (_response)
-			// setPollout(author, &dest[0]);
+			// setReply(std::vector<User> dest);
+		std::vector<User> dest;
+		dest.push_back(*author);
+		server->setReply(dest);
 	}
 	catch (std::exception &e)
 	{

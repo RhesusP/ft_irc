@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 12:08:35 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:49:00 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,12 @@ void	Server::readData(int i) {
 	std::string	data;
 
 	data = receve(ufd.fd);
-	User user = _users.at(index);
-	formatRecv(data, user);
-	std::cout << COGRE << "from " << user.getSocket() << " is " << (user.getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
+	User *user = &_users.at(index);
+	user->formatRecv(data, this);
+	std::cout << COGRE << "from " << user->getSocket() << " is " << (user->getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
 }
 
-void Server::formatRecv(std::string rec, User &usr)
+void User::formatRecv(std::string rec, Server *server)
 {
 	std::string msg;
 	std::string delimiter = "\r\n";
@@ -76,7 +76,7 @@ void Server::formatRecv(std::string rec, User &usr)
 	while ((pos = rec.find(delimiter)) != std::string::npos)
 	{
 		msg = rec.substr(0, pos);
-		this->_waitingList.push(Message(msg));
+		this->_waitingList.push(Message(msg, server, this));
 		// TODO pollout si reponse
 		rec.erase(0, pos + delimiter.length());
 	}
@@ -87,14 +87,16 @@ void Server::formatRecv(std::string rec, User &usr)
 void	Server::sendData(int i) {
 	pollfd ufd = _ufds[i];
 	int	index = Server::getUserFrom(ufd.fd);
-	User	user = _users.at(index);
+	User	*user = &(_users.at(index));
 	
-	std::string data = ""; // user.tease._waitingList.top().response;
+	std::string data = "Bonjour\n\r"; // user.tease._waitingList.top().response;
 	int	sizesent;
 
-	std::cout << "data sent to user connected on socket " << ufd.fd << std::endl;
+	std::cout << "sent to user connected on socket " << ufd.fd << std::endl;
 	sizesent = send(ufd.fd, data.c_str(), data.length(), 0);
-	_ufds.at(i).events = POLLIN;
+	std::cout << sizesent << "/" << data.length() << std::endl;
+	// if (user->_waitingList.empty())
+		_ufds.at(i).events = POLLIN;
 }
 
 int		Server::clearUfd(int fd) {

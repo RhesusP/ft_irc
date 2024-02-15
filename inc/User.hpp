@@ -6,7 +6,7 @@
 /*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/11 16:19:41 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:45:53 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 
 // Avoid 'use of undeclared identifier' error
 class Channel;
+class Message;
+class Server;
 
 class User
 {
@@ -27,6 +29,7 @@ private:
 	int _sockfd;
 	sockaddr_in _addr;
 	std::vector<Channel> _channels;
+	std::queue<Message> _waitingList;
 
 	std::time_t	_timeval;
 
@@ -42,6 +45,7 @@ public:
 
 	void setSocket(int val);
 
+	void formatRecv(std::string rec, Server *server);
 	sockaddr_in getAddress(void) const;
 	int	getSocket(void) const;
 	std::string getRealName(void) const;
