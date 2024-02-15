@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+         #
+#    By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/15 02:00:37 by cbernot           #+#    #+#              #
-#    Updated: 2024/02/08 12:26:06 by svanmeen         ###   ########.fr        #
+#    Updated: 2024/02/15 11:52:20 by cbernot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,12 +19,12 @@ NAME	=	ircserv
 # ------------------------------------------------------------------------------
 
 # Files
-LST_INC	=	ircserv.hpp Server.hpp User.hpp Channel.hpp Exceptions.hpp
+LST_INC	=	ircserv.hpp Server.hpp User.hpp Channel.hpp Exceptions.hpp Message.hpp Utils.hpp
 LST_SRC	=	main.cpp utils.cpp \
 			Server.cpp Server_init.cpp Server_utils.cpp \
 			User.cpp \
 			Channel.cpp \
-			Exceptions.cpp
+			Exceptions.cpp Message.cpp Utils.cpp
 
 # Directories
 DIR_INC	=	inc/

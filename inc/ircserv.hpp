@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:03:44 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/11 16:13:26 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 11:54:27 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <vector>
+#include <queue>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -24,15 +25,20 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <cstring>
-# include <poll.h>
+#include <poll.h>
 #include "fcntl.h"
 #include "unistd.h"
 #include <ctime>
+#include <sstream>
+#include <map>
+#include <vector>
 
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "User.hpp"
 #include "Exceptions.hpp"
+#include "Message.hpp"
+#include "Utils.hpp"
 
 
 # define CORED "\033[0;31m"

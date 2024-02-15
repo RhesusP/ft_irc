@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 09:57:48 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 11:58:53 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,24 @@ void	Server::readData(int i) {
 
 	data = receve(ufd.fd);
 	User *user = &_users.at(index);
+	formatRecv(data);
 	//user.formatRecv()			TOIMPLEMENT
 	std::cout << COYEL << data << COGRE << "from " << user->getSocket() << " is " << (user->getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
 }
 
+void Server::formatRecv(std::string rec)
+{
+	std::string msg;
+	std::string delimiter = "\r\n";
+	size_t pos = 0;
+	while ((pos = rec.find(delimiter)) != std::string::npos)
+	{
+		msg = rec.substr(0, pos);
+		this->_waitingList.push(Message(msg));
+		// TODO pollout si reponse
+		rec.erase(0, pos + delimiter.length());
+	}
+}
 
 /// @brief NOT FUNCTIONAL
 /// @param i  index of _ufds

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 10:36:38 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 11:58:50 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 // Avoid 'use of undeclared identifier' error
 class User;
 class Channel;
+class Message;
 
 class Server
 {
@@ -32,6 +33,8 @@ private:
 	std::vector<User> _users;
 	std::vector<pollfd> _ufds;
 	int _nfds; // TODO ufds.size() ?
+	std::queue<Message> _waitingList;
+	void formatRecv(std::string rec);
 
 public:
 	const int yes = 1;
@@ -70,6 +73,7 @@ public:
 	int getPort(void) const;
 	int getSocket(void) const;
 	std::string getPassword(void) const;
+	std::queue<Message> getWaitingList(void);
 	std::vector<Channel> getChannels(void);
 };
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Exceptions.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 14:14:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/11 16:53:41 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/15 11:53:23 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,12 @@ public:
 };
 
 class PollFailedException : public std::exception
+{
+public:
+	virtual const char *what() const throw();
+};
+
+class BadCommandException : public std::exception
 {
 public:
 	virtual const char *what() const throw();
