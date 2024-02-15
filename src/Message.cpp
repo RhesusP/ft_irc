@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/09 16:10:11 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/15 11:20:06 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ std::string Message::getTags(std::string const &raw)
 	for (std::vector<std::string>::iterator it = tags_tab.begin(); it != tags_tab.end(); it++)
 	{
 		tag_tab = ::split(*it, "=");
-		if (tag_tab.size() != 2)
+		if (tag_tab.size() != 2)	// TODO accept if value is null
 			throw BadTagException();
 		std::vector<std::string>::iterator ita = tag_tab.begin();
 		std::string key = *ita;
@@ -247,6 +247,8 @@ Message::Message(std::string const &raw)
 		_raw = getCommand(_raw);
 		getParameters(_raw);
 		std::cout << *this << std::endl;
+		// TODO processmsg();
+		// check ta command et l'appeler
 	}
 	catch (std::exception &e)
 	{

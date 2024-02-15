@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/01/31 13:48:43 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/15 11:32:52 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void Server::formatRecv(char *buf)
 	{
 		msg = rec.substr(0, pos);
 		this->_waitingList.push(Message(msg));
+		// TODO pollout si reponse
 		rec.erase(0, pos + delimiter.length());
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:14:43 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/02 14:58:53 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/15 11:24:10 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,9 @@ private:
 	command _command;
 	std::vector<std::string> _parameters;
 	std::string _response;
+
+	// author
+	// array of recipients
 
 	std::string getTags(std::string const &raw);
 	std::string getSource(std::string const &raw);
