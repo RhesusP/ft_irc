@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 11:20:06 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/15 12:05:53 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,8 +236,8 @@ void Message::getParameters(std::string const &raw)
 
 Message::Message(std::string const &raw)
 {
-	// _raw = raw;
-	_raw = "CAP REQ             :sasl message-tags foo";
+	_raw = raw;
+	// _raw = "CAP REQ             :sasl message-tags foo";
 	// TODO Check raw size. If > 512, throw exception and send ERR_INPUTTOOLONG (417) to client
 	std::cout << "[MESSAGE] new message with raw " << _raw << std::endl;
 	try
@@ -249,6 +249,8 @@ Message::Message(std::string const &raw)
 		std::cout << *this << std::endl;
 		// TODO processmsg();
 		// check ta command et l'appeler
+		// if (_response)
+			// setPollout(author, &dest[0]);
 	}
 	catch (std::exception &e)
 	{

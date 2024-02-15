@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 11:58:53 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/15 12:08:35 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,12 @@ void	Server::readData(int i) {
 	std::string	data;
 
 	data = receve(ufd.fd);
-	User *user = &_users.at(index);
-	formatRecv(data);
-	//user.formatRecv()			TOIMPLEMENT
-	std::cout << COYEL << data << COGRE << "from " << user->getSocket() << " is " << (user->getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
+	User user = _users.at(index);
+	formatRecv(data, user);
+	std::cout << COGRE << "from " << user.getSocket() << " is " << (user.getRegistered() ? "registered" : "unregistered") <<CORES << std::endl;
 }
 
-void Server::formatRecv(std::string rec)
+void Server::formatRecv(std::string rec, User &usr)
 {
 	std::string msg;
 	std::string delimiter = "\r\n";

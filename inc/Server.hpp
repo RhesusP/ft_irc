@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 11:58:50 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/15 12:08:32 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ private:
 	std::vector<pollfd> _ufds;
 	int _nfds; // TODO ufds.size() ?
 	std::queue<Message> _waitingList;
-	void formatRecv(std::string rec);
+	void formatRecv(std::string rec, User &usr);
 
 public:
 	const int yes = 1;
