@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/11 16:19:41 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/22 19:14:45 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,37 +17,42 @@
 
 // Avoid 'use of undeclared identifier' error
 class Channel;
+class Server;
 
 class User
 {
 private:
-	std::string _username;
-	std::string _nickname;
-	std::string _realname;
-	int _sockfd;
-	sockaddr_in _addr;
+	int	_fd;
+	int _port;
+	std::string _username;		// set by USER command
+	std::string _realname;		// set by USER command
+	std::string _nickname;		// set by NICK command
+	std::string _hostname;
+	bool _isAuth;
+	int _isRegistered;			// Must be 2 to be fully registered
 	std::vector<Channel> _channels;
-
-	std::time_t	_timeval;
-
-	bool _is_registered;
-
-	bool _go_offline;
+	Server*	_server;
+	std::string _msgStash;
 
 public:
 	User(void);
-	User(int &sockfd, sockaddr_in &addr);
-	User(int &sockfd);
+	User(Server* server, int fd, std::string const & hostname, int port);
 	~User(void);
 
-	void setSocket(int val);
+	std::string const & getNickname(void) const;
+	std::string const & getUsername(void) const;
+	std::string const & getRealname(void) const;
 
-	sockaddr_in getAddress(void) const;
-	int	getSocket(void) const;
-	std::string getRealName(void) const;
-	bool getRegistered(void) const;
-	bool getStatus(void) const;
-	std::time_t timeElapsed(void) const;
+	void setNickname(std::string const & nickname);
+	void setUsername(std::string const & username);
+	void setRealname(std::string const & realname);
+
+	int getFD(void) const;
+	bool getIsAuth(void) const;
+	void setAuth(bool auth);
+	int getIsRegistered(void) const;
+	void setRegistered(int registered);
+
 };
 
 #endif

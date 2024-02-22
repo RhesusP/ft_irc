@@ -3,42 +3,104 @@
 /*                                                        :::      ::::::::   */
 /*   Server_init.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:53:42 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/15 10:36:17 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/22 15:45:54 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
 
+const char* setSocketNonBlockingException::what() const throw() {
+	return ("setSocketNonBlocking failed");
+}
+
+
 /// @brief init server listening, exception thrown if failed
 /// @param  none
 void Server::initNetwork(void) {
-	_socket = socket(PF_INET, SOCK_STREAM, 0);
-	if (_socket == -1)
+	int opt_val = 1;
+	_servSocket = socket(PF_INET, SOCK_STREAM, 0);
+	if (_servSocket == -1)
 		throw SocketFailedException();
-	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
+	if (setsockopt(_servSocket, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof(opt_val)) == -1)
 		throw SetsockoptFailedException();
-
-	_addr.sin_family = AF_INET;
-	_addr.sin_port = htons(this->_port);
-	_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	memset(&_addr.sin_zero, '\0', 8);
-
-	if (bind(_socket, (struct sockaddr *)&_addr, sizeof(struct sockaddr)) == -1)
-		throw BindFailedException();
-	
-	if (listen(_socket, MAX_CON_QUEUE) == -1)
-		throw ListenFailedException();
-}
-
-/// @brief add listening socket to pollfd vector
-/// @param  none
-void	Server::initPoll(void) {
-	pollfd ufd;
-	ufd.fd = _socket;
+	struct pollfd ufd;
+	ufd.fd = _servSocket;
 	ufd.events = POLLIN;
-	_ufds.push_back(ufd);
-	_nfds = 1;
+	_clients_fds.push_back(ufd);
+	setSocketNonBlocking(_servSocket);
+
+	sockaddr_in addr;
+
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(this->_port);
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	memset(&addr.sin_zero, '\0', 8);
+
+	if (bind(_servSocket, (struct sockaddr *)&addr, sizeof(struct sockaddr)) == -1)
+	{
+		close(_servSocket);
+		throw BindFailedException();
+	}
+	std::cout << "✅ Server initialized on port "<< this->getPort() << " and password \"" << this->getPassword() << "\" linked to socket " << this->getSocket() << std::endl;
+	
+	if (listen(_servSocket, MAX_CON_QUEUE) == -1)
+		throw ListenFailedException();
+	std::cout << "Waiting for connection..." << std::endl;
+	while (1)
+	{
+		waitingForClient();
+	}
+
 }
+
+void Server::waitingForClient(void)
+{
+	pollfd ufd;
+	ufd.fd = _servSocket;
+
+	int ret = poll(&_clients_fds[0], _users.size() + 1, -1);
+	
+	if (ret == -1)
+		throw PollFailedException();
+	for (size_t i = 0 ; i < _users.size() + 1 ; i++)
+	{
+		if (_clients_fds[i].revents == 0)
+			continue;
+		if (_clients_fds[i].fd == _servSocket)
+			acceptNewConnection();
+		else if (i > 0)
+		{
+			std::cout << "need to receive data from user" << std::endl;
+			User user = _users[i - 1];
+			std::cout << "user socket: " << user.getFD() << std::endl;
+			readData(user);
+		}
+		// else if (i > 0) // TODO receive data
+	}	
+}
+
+
+void	Server::setSocketNonBlocking(int fd)
+{
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0 )
+	{
+		std::cerr << "Error: failed to set socket non-blocking" << std::endl;
+		if (fd != _servSocket)
+			removeUser(fd);
+	}
+}
+
+
+
+// /// @brief add listening socket to pollfd vector
+// /// @param  none
+// void	Server::initPoll(void) {
+// 	pollfd ufd;
+// 	ufd.fd = _servSocket;
+// 	ufd.events = POLLIN;
+// 	_ufds.push_back(ufd);
+// 	_nfds = 1;
+// }

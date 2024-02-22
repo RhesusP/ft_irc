@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:03:44 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 11:54:27 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/22 17:24:22 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # define BUFF_SIZE 512
 
 #include <iostream>
+#include <cerrno>
 #include <vector>
 #include <queue>
 #include <sys/types.h>
@@ -39,7 +40,8 @@
 #include "Exceptions.hpp"
 #include "Message.hpp"
 #include "Utils.hpp"
-
+#include "Commands.hpp"
+#include "Replies.hpp"
 
 # define CORED "\033[0;31m"
 # define COGRE "\033[0;32m"

@@ -6,7 +6,7 @@
 #    By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/15 02:00:37 by cbernot           #+#    #+#              #
-#    Updated: 2024/02/15 11:52:20 by cbernot          ###   ########.fr        #
+#    Updated: 2024/02/22 18:59:23 by cbernot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,21 +19,27 @@ NAME	=	ircserv
 # ------------------------------------------------------------------------------
 
 # Files
-LST_INC	=	ircserv.hpp Server.hpp User.hpp Channel.hpp Exceptions.hpp Message.hpp Utils.hpp
+LST_INC	=	ircserv.hpp Server.hpp User.hpp Channel.hpp Exceptions.hpp Message.hpp Utils.hpp Commands.hpp Replies.hpp
+
 LST_SRC	=	main.cpp utils.cpp \
 			Server.cpp Server_init.cpp Server_utils.cpp \
 			User.cpp \
 			Channel.cpp \
-			Exceptions.cpp Message.cpp Utils.cpp
+			Exceptions.cpp Message.cpp Utils.cpp \
+
+LST_CMD = Pass.cpp Commands.cpp Unknown.cpp Quit.cpp User.cpp Nick.cpp
 
 # Directories
 DIR_INC	=	inc/
 DIR_SRC	=	src/
 DIR_OBJ	=	.obj/
+DIR_CMD = commands/
+
 
 # Shortcuts
 INCS			:=	$(addprefix $(DIR_INC), $(LST_INC))
-SRCS			:=	$(addprefix $(DIR_SRC), $(LST_SRC))
+SRCS			:=	$(addprefix $(DIR_SRC), $(LST_SRC)) \
+					$(addprefix $(DIR_SRC)$(DIR_CMD), $(LST_CMD))
 OBJS			:=	$(subst $(DIR_SRC), $(DIR_OBJ), $(SRCS:.cpp=.o))
 
 # ------------------------------------------------------------------------------
@@ -79,7 +85,8 @@ $(DIR_OBJ)%.o: $(DIR_SRC)%.cpp $(INCS) | $(DIR_OBJ)
 	@echo "$(ERASE)$(BOLD)$(NAME)$(RESET)$(GREEN) compiling... $(RESET)$<"
 
 $(DIR_OBJ):
-	@mkdir -p $(DIR_OBJ)
+	@mkdir -p $(DIR_OBJ) \
+	$(DIR_OBJ)$(DIR_CMD)
 	@echo "$(ERASE)$(BOLD)$(NAME)$(RESET)$(GREEN) objects directory created.$(RESET)"
 
 # Cleaning

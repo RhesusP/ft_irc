@@ -6,13 +6,11 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:51:22 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/22 10:31:51 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/22 14:45:22 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
-
-// Constructors & Destructors
 
 Server::Server(void) {
 	_password = "";
@@ -30,26 +28,21 @@ Server::~Server(void) {
 	std::cout << "Server destructor called" << std::endl;
 }
 
-// Getters
-
-sockaddr_in Server::getAdrr(void) const {
-	return _addr;
-}
+// sockaddr_in Server::getAdrr(void) const {
+// 	return _addr;
+// }
 
 int Server::getPort(void) const {
 	return _port;
 }
 
 int Server::getSocket(void) const {
-	return _socket;
+	return _servSocket;
 }
 
 std::string Server::getPassword(void) const {
 	return _password;
 }
-
-
-// Setters
 
 void Server::setPassword(std::string const &password) {
 	this->_password = password;
@@ -72,76 +65,75 @@ void Server::setPort(std::string const &port) {
 }
 
 
-// Disconnect
-
-void Server::disconnectBadPwd(int i) {
-	pollfd ufd = _ufds.at(i);
+// // Disconnect
+// void Server::disconnectBadPwd(int i) {
+// 	pollfd ufd = _ufds.at(i);
 	
-	close(ufd.fd);
-	_ufds.erase(_ufds.begin() + i);
-	_nfds--;
-}
+// 	close(ufd.fd);
+// 	_ufds.erase(_ufds.begin() + i);
+// 	_nfds--;
+// }
 
-void Server::disconnectBrutal(int i) {
-	pollfd ufd = _ufds.at(i);
-	int socket = ufd.fd;
+// void Server::disconnectBrutal(int i) {
+// 	pollfd ufd = _ufds.at(i);
+// 	int socket = ufd.fd;
 
-	close(ufd.fd);
-	_ufds.erase(_ufds.begin() + i);
-	_nfds--;
-	std::cerr << "Disconnect User on socket " << socket << std::endl;
-}
+// 	close(ufd.fd);
+// 	_ufds.erase(_ufds.begin() + i);
+// 	_nfds--;
+// 	std::cerr << "Disconnect User on socket " << socket << std::endl;
+// }
 
-// POLL handeler
+// // POLL handeler
 
-/// @brief run poll on pollfd vector, throw exception if failed
-/// @param  none
-int		Server::runPoll(void) {
-	int ret;
+// /// @brief run poll on pollfd vector, throw exception if failed
+// /// @param  none
+// int		Server::runPoll(void) {
+// 	int ret;
 	
-	ret = poll(&_ufds[0], _nfds,-1);
-	if (ret < 0)
-		throw PollFailedException();
-	else if (ret == 0)
-		return (1);
-	return (0);
-}
+// 	ret = poll(&_ufds[0], _nfds,-1);
+// 	if (ret < 0)
+// 		throw PollFailedException();
+// 	else if (ret == 0)
+// 		return (1);
+// 	return (0);
+// }
 
-/// @brief handle revents of poll
-/// @param none
-void	Server::handlePoll(void) {
-	int	nfds = 0;
-	for (int i = 0; i < _nfds; i++) {
-		try {
-			if (_ufds.at(i).fd == _socket) {
-				if (_ufds.at(i).revents == POLLIN)
-					nfds += acceptNewConnection();
-			}
-			else
-			{
-				if (_ufds.at(i).revents == POLLOUT)
-					sendData(i);
-				else if (_ufds.at(i).revents == POLLIN)
-					readData(i);
-			}
-		}
-		catch (std::exception &e) {
-			std::cerr << e.what() << std::endl;
-			disconnectBrutal(i); // addCommand(QUIT, NULL, "Connection lost");
-			//if bad pwd del ufd but no user or at least check
-		}
-	}
-	_nfds += nfds;
-}
+// /// @brief handle revents of poll
+// /// @param none
+// void	Server::handlePoll(void) {
+// 	int	nfds = 0;
+// 	for (int i = 0; i < _nfds; i++) {
+// 		try {
+// 			if (_ufds.at(i).fd == _servSocket) {
+// 				if (_ufds.at(i).revents == POLLIN)
+// 					nfds += acceptNewConnection();
+// 			}
+// 			else
+// 			{
+// 				if (_ufds.at(i).revents == POLLOUT)
+// 					sendData(i);
+// 				else if (_ufds.at(i).revents == POLLIN)
+// 					readData(i);
+// 			}
+// 		}
+// 		catch (std::exception &e) {
+// 			std::cerr << e.what() << std::endl;
+// 			disconnectBrutal(i); // addCommand(QUIT, NULL, "Connection lost");
+// 			//if bad pwd del ufd but no user or at least check
+// 		}
+// 	}
+// 	_nfds += nfds;
+// }
 
 
-void	Server::setReply(int uindex) {
-	std::cout << uindex << std::endl;
-	if (uindex == 0){
-		for (int i = 1; i < _nfds; i++) {
-			_ufds.at(i).events = POLLOUT;
-		}
-	}
-	else
-		_ufds.at(uindex).events = POLLOUT;
-}
+// void	Server::setReply(int uindex) {
+// 	std::cout << uindex << std::endl;
+// 	if (uindex == 0){
+// 		for (int i = 1; i < _nfds; i++) {
+// 			_ufds.at(i).events = POLLOUT;
+// 		}
+// 	}
+// 	else
+// 		_ufds.at(uindex).events = POLLOUT;
+// }

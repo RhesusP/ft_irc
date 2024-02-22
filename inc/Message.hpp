@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:14:43 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/17 21:09:11 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/22 17:47:38 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,10 @@
 #define MESSAGE_HPP
 
 #include "ircserv.hpp"
+#include "User.hpp"
 
 class Server;
-
-enum command
-{
-	CAP,
-	PASS,
-	NICK,
-	USER,
-	PING,
-	PONG,
-	OPER,
-	QUIT,
-	PRIVMSG,
-
-	KICK,
-	INVITE,
-	TOPIC,
-	MODE,
-
-	UNKNOWN
-};
+// class User;
 
 class BadTagException : public std::exception
 {
@@ -49,12 +31,14 @@ private:
 	std::string _raw;
 	std::map<std::string, std::string> _tags;
 	std::string _source;
-	command _command;
+	std::string _command;
+	User *_author;
 	std::vector<std::string> _parameters;
 	std::string _response;
 	Server*	_server;
-	// author
-	// array of recipients
+
+
+
 
 	std::string getTags(std::string const &raw);
 	std::string getSource(std::string const &raw);
@@ -63,12 +47,12 @@ private:
 
 public:
 	Message(void);
-	Message(std::string const &raw, Server *server);
+	Message(Server *server, User *user, std::string const &raw);
 	~Message(void);
 
 	std::map<std::string, std::string> & getTags(void);
 	std::string const & getSource(void);
-	command	getCommand(void);
+	std::string const &	getCommand(void) const;
 	std::vector<std::string> getParameters(void);
 	void	processMessage(void);
 };
