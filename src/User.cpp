@@ -3,49 +3,94 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/12 10:03:20 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/03/01 12:18:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/User.hpp"
 
-User::User(void): _go_offline(false), _is_registered(false) {
+User::User(void) {
+	_fd = -1;
+	_port = -1;
+	_username = "";
+	_nickname = "";
+	_realname = "";
+	_hostname = "";
+	_isAuth = false;
 }
-
-User::User(int &sockfd, sockaddr_in &addr) : _sockfd(sockfd), _addr(addr), _is_registered(false), _go_offline(false) {}
-
-User::User(int &sockfd) : _sockfd(sockfd), _is_registered(false), _go_offline(false) {}
 
 User::~User(void) {}
 
-void User::setSocket(int val) {
-	_sockfd = val;
+User::User(Server* server, int fd, std::string const & hostname, int port) {
+	std::cout << "User " << fd << " | " << hostname << " created" << std::endl;
+	_server = server;
+	_fd = fd;
+	_hostname = hostname;
+	_port = port;
+	_username = "";
+	_nickname = "";
+	_realname = "";
+	_isAuth = false;
 }
 
-
-sockaddr_in User::getAddress(void) const {
-	return _addr;
+int User::getFD(void) const {
+	return _fd;
 }
 
-int	User::getSocket(void) const {
-	return _sockfd;
+std::string const & User::getNickname(void) const
+{
+	return _nickname;
 }
 
-std::string User::getRealName(void) const {
+bool User::getIsAuth(void) const
+{
+	return _isAuth;
+}
+
+void User::setAuth(bool auth)
+{
+	_isAuth = auth;
+}
+
+std::string const & User::getHostname(void) const
+{
+	return _hostname;
+}
+
+std::string const & User::getUsername(void) const
+{
+	return _username;
+}
+
+void User::setUsername(std::string const & username)
+{
+	_username = username;
+}
+
+void User::setNickname(std::string const & nickname)
+{
+	_nickname = nickname;
+}
+
+std::string const & User::getRealname(void) const
+{
 	return _realname;
 }
 
-bool User::getRegistered(void) const {
-	return _is_registered;
+void User::setRealname(std::string const & realname)
+{
+	_realname = realname;
 }
 
-bool User::getStatus(void) const {
-	return _go_offline;
-}
+std::string User::getIdentity(void) const
+{
+	std::string nick, user, host;
 
-std::time_t User::timeElapsed(void) const {
-	return (std::time(NULL) - _timeval);
+	nick = _nickname.empty() ? "*" : _nickname;
+	user = _username.empty() ? "*" : _username;
+	host = _hostname.empty() ? "*" : _hostname;
+	return (nick + "!" + user + "@" + host);
 }

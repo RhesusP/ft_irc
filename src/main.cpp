@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/12 10:20:37 by svanmeen         ###   ########.fr       */
+/*   Updated: 2024/02/22 14:45:37 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,12 @@ int	main(int argc, char **argv) {
 	{
 		Server server(port, password);
 		server.initNetwork();
-		std::cout << "✅ Server initialized on port "<< server.getPort() << " and password \"" << server.getPassword() << "\" linked to socket " << server.getSocket() << std::endl;
-		server.initPoll();
-		while (server.runPoll() != -1) {
-			server.handlePoll();
-			server.status();
-		}
-		std::cout << "Server shutdown, poll error" << std::endl;
+		// server.initPoll();
+		// while (server.runPoll() != -1) {
+		// 	server.handlePoll();
+		// 	server.status();
+		// }
+		// std::cout << "Server shutdown, poll error" << std::endl;
 	}
 	catch (std::exception &e)
 	{

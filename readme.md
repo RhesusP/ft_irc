@@ -31,6 +31,28 @@ This project was carried out as part of the [School 42](https://42.fr/en/homepag
 
 Here is our Figjam trying to describe the various features of the IRC protocol : [ft_irc FigJam](https://www.figma.com/file/uqmDSLjfm4qJeU6ryaQem4/ft_irc?type=whiteboard&node-id=0%3A1&t=kNFTmeqvafEZBXPM-1)
 
+## Replies
+
+For the following commands : 
+ - 
+
+the reply prefix is 
+```txt
+:nick_k1000!user_k1000@masked-jfiv0p.rev.sfr.net
+```
+
+or 
+
+```
+:librenet.europnet.org
+```
+
+
+| Author | Prefix |
+| - | - |
+| Server | `@time=2024-02-29T19:55:43.036Z :librenet.europnet.org` |
+| Client |  |
+
 ## Useful Links
 
 - [Internet Relay Chat Protocol (RFC1459)](https://datatracker.ietf.org/doc/html/rfc1459)

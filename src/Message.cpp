@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/16 19:19:50 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 12:28:18 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,87 +17,6 @@ const char *BadTagException::what() const throw()
 	return "Bad tag";
 }
 
-command stocmd(std::string const &str)
-{
-	std::cout << "command to assign: " << str << std::endl;
-	if (str == "CAP")
-		return CAP;
-	else if (str == "PASS")
-		return PASS;
-	else if (str == "NICK")
-		return NICK;
-	else if (str == "USER")
-		return USER;
-	else if (str == "PING")
-		return PING;
-	else if (str == "PONG")
-		return PONG;
-	else if (str == "OPER")
-		return OPER;
-	else if (str == "QUIT")
-		return QUIT;
-	else if (str == "KICK")
-		return KICK;
-	else if (str == "INVITE")
-		return INVITE;
-	else if (str == "TOPIC")
-		return TOPIC;
-	else if (str == "MODE")
-		return MODE;
-	else if (str == "PRIVMSG")
-		return PRIVMSG;
-	else
-		return UNKNOWN;
-}
-
-std::string printCmd(command cmd)
-{
-	switch (cmd)
-	{
-	case CAP:
-		return "CAP"; 
-		break;
-	case PASS:
-		return "PASS"; 
-		break;
-	case NICK:
-		return "NICK"; 
-		break;
-	case USER:
-		return "USER"; 
-		break;
-	case PING:
-		return "PING"; 
-		break;
-	case PONG:
-		return "PONG"; 
-		break;
-	case OPER:
-		return "OPER"; 
-		break;
-	case QUIT:
-		return "QUIT"; 
-		break;
-	case KICK:
-		return "KICK"; 
-		break;
-	case INVITE:
-		return "INVITE"; 
-		break;
-	case TOPIC:
-		return "TOPIC"; 
-		break;
-	case MODE:
-		return "MODE"; 
-		break;
-	case PRIVMSG:
-		return "PRIVMSG";
-		break;
-	default:
-		return "UNKNOWN"; 
-		break;
-	}
-}
 
 Message::Message(void)
 {
@@ -147,16 +66,23 @@ std::string Message::getSource(std::string const &raw)
 std::string Message::getCommand(std::string const &raw)
 {
 	std::string str = trim(raw, " ");
+	std::string s;
 	int endpos = str.find(" ");
-	std::string s = str.substr(0, endpos);
+	if (endpos != std::string::npos)
+		s = str.substr(0, endpos);
+	else
+		s = str;
 	for (int i = 0; i < s.size(); i++)
 	{
 		if (!isalpha(s[i]))
 			throw BadCommandException();
 	}
-	_command = stocmd(s);
+	_command = s;
 	std::string rawCopy = str;
-	rawCopy.erase(0, endpos + 1);
+	if (endpos != std::string::npos)
+		rawCopy.erase(0, endpos + 1);
+	else
+		rawCopy.clear();
 	return rawCopy;
 }
 
@@ -208,7 +134,7 @@ void Message::getParameters(std::string const &raw)
 				tab.erase(tab.begin() + j);
 				index = j;
 			}
-			tab.erase(tab.end() - 1);
+			// tab.erase(tab.end() - 1);
 			break;
 		}
 	}
@@ -226,27 +152,99 @@ void Message::getParameters(std::string const &raw)
 	_parameters = tab;
 }
 
-Message::Message(std::string const &raw)
+void Message::processMessage(void)
 {
+	int nb_cmds = 7;
+	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER"};
+	CmdMotd cmdMotd(_server);
+	CmdNick cmdNick(_server);
+	CmdPass cmdPass(_server);
+	CmdPing cmdPing(_server);
+	CmdQuit cmdQuit(_server);
+	CmdUnknown mdUnknown(_server);
+	CmdUser cmdUser(_server);
+
+	Command* cmds[nb_cmds] = {
+		&cmdMotd,
+		&cmdNick,
+		&cmdPass,
+		&cmdPing,
+		&cmdQuit,
+		&mdUnknown,
+		&cmdUser
+	};
+
+	for (int i = 0; i < nb_cmds; i++)
+	{
+		if (this->_command == cmds_name[i])
+		{
+			std::cout << "Command found: " << cmds_name[i] << std::endl;
+			if (cmds[i]->getNeedAuth() && !_author->getIsAuth())
+			{
+				_server->sendData(ERR_NOTREGISTERED(_author->getNickname()), _author->getFD());
+				return;
+			}
+			std::cout << "executing command" << std::endl;
+			cmds[i]->execute(_author, this);
+			return;
+		}
+	}
+	if (this->_command != "CAP")
+	{
+		CmdUnknown cmdUnknown(_server);
+		cmdUnknown.execute(_author, this);
+	}
+
+
+
+	// if (this->_command == "PASS")
+	// {
+	// 	CmdPass cmdPass(_server);
+	// 	cmdPass.execute(_author, this);
+	// }
+	// else if (this->_command == "USER")
+	// {
+	// 	CmdUser cmdUser(_server);
+	// 	cmdUser.execute(_author, this);
+	// }
+	// else if (this->_command == "NICK")
+	// {
+	// 	CmdNick cmdNick(_server);
+	// 	cmdNick.execute(_author, this);
+	// }
+	// else if (this->_command == "PING")
+	// {
+	// 	CmdPing cmdPing(_server);
+	// 	cmdPing.execute(_author, this);
+	// }
+	// else
+	// {
+	// 	if (this->_command != "CAP")
+	// 	{
+	// 		CmdUnknown cmdUnknown(_server);
+	// 		cmdUnknown.execute(_author, this);
+	// 	}
+	// }
+}
+
+Message::Message(Server *server, User *user, std::string const &raw)
+{
+	_server = server;
 	_raw = raw;
 	// TODO Check raw size. If > 512, throw exception and send ERR_INPUTTOOLONG (417) to client
-	std::cout << "[MESSAGE] new message with raw " << _raw << std::endl;
+	PRINT_INFO("New message with raw '" << _raw << "'");
 	try
 	{
 		_raw = getTags(_raw);
 		_raw = getSource(_raw);
-		std::cout << "raw after source: " << _raw << std::endl;
 		_raw = getCommand(_raw);
 		getParameters(_raw);
-		std::cout << *this << std::endl;
-		// TODO processmsg();
-		// check ta command et l'appeler
-		// if (_response)
-			// setPollout(author, &dest[0]);
+		_author = user;
+		processMessage();
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Error: " << e.what() << std::endl;
+		PRINT_ERROR("Error: " << e.what());
 	}
 }
 
@@ -262,7 +260,7 @@ std::string const &Message::getSource(void)
 	return _source;
 }
 
-command Message::getCommand(void)
+std::string const & Message::getCommand(void) const
 {
 	return _command;
 }
@@ -276,7 +274,6 @@ std::ostream &operator<<(std::ostream &o, Message &rhs)
 {
 	std::map<std::string, std::string> tags = rhs.getTags();
 	std::string source = rhs.getSource();
-	command cmd = rhs.getCommand();
 	std::vector<std::string> params = rhs.getParameters();
 
 	std::cout << "============ NEW MESSAGE ============" << std::endl;
@@ -289,7 +286,7 @@ std::ostream &operator<<(std::ostream &o, Message &rhs)
 		++it_beg_tags;
 	}
 	std::cout << "\tSource: " << source << std::endl;
-	std::cout << "\tCommand: " << printCmd(cmd) << std::endl;
+	std::cout << "\tCommand: " << rhs.getCommand() << std::endl;
 	std::cout << "\tParameters: " << std::endl;
 	for (size_t i = 0; i < params.size(); i++)
 		std::cout << "\t\t'" << params[i] << "'" << std::endl;
