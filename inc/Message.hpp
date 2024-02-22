@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:14:43 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/15 11:24:10 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/17 21:09:11 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define MESSAGE_HPP
 
 #include "ircserv.hpp"
+
+class Server;
 
 enum command
 {
@@ -50,7 +52,7 @@ private:
 	command _command;
 	std::vector<std::string> _parameters;
 	std::string _response;
-
+	Server*	_server;
 	// author
 	// array of recipients
 
@@ -61,13 +63,14 @@ private:
 
 public:
 	Message(void);
-	Message(std::string const &raw);
+	Message(std::string const &raw, Server *server);
 	~Message(void);
 
 	std::map<std::string, std::string> & getTags(void);
 	std::string const & getSource(void);
 	command	getCommand(void);
 	std::vector<std::string> getParameters(void);
+	void	processMessage(void);
 };
 
 std::ostream &operator<<(std::ostream &o, Message &rhs);

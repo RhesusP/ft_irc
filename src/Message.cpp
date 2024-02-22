@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/16 19:19:50 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/22 10:30:21 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ const char *BadTagException::what() const throw()
 
 command stocmd(std::string const &str)
 {
-	std::cout << "command to assign: " << str << std::endl;
 	if (str == "CAP")
 		return CAP;
 	else if (str == "PASS")
@@ -226,8 +225,82 @@ void Message::getParameters(std::string const &raw)
 	_parameters = tab;
 }
 
-Message::Message(std::string const &raw)
+void Message::processMessage(void)
 {
+	if (_command == PRIVMSG)
+	{
+		// processPrivmsg();
+	}
+	else if (_command == PASS)
+	{
+		std::string serv_pwd = _server->getPassword();
+		if (_parameters.size() == 1)
+		{
+			if (_parameters[0] == serv_pwd)
+			{
+				_response = "001";
+				// _server->addUser();
+			}
+			else
+			{
+				// _response = "ERR_PASSWDMISMATCH";
+			}
+		}
+		else
+		{
+			// _response = "ERR_NEEDMOREPARAMS";
+		}
+
+	}
+	else if (_command == NICK)
+	{
+		// processNick();
+	}
+	else if (_command == USER)
+	{
+		// processUser();
+	}
+	else if (_command == PING)
+	{
+		// processPing();
+	}
+	else if (_command == PONG)
+	{
+		// processPong();
+	}
+	else if (_command == OPER)
+	{
+		// processOper();
+	}
+	else if (_command == CAP)
+	{
+		// processCap();
+	}
+	else if (_command == KICK)
+	{
+		// processKick();
+	}
+	else if (_command == INVITE)
+	{
+		// processInvite();
+	}
+	else if (_command == TOPIC)
+	{
+		// processTopic();
+	}
+	else if (_command == MODE)
+	{
+		// processMode();
+	}
+	else
+	{
+		std::cout << "Unknown command" << std::endl;
+	}
+}
+
+Message::Message(std::string const &raw, Server *server)
+{
+	_server = server;
 	_raw = raw;
 	// TODO Check raw size. If > 512, throw exception and send ERR_INPUTTOOLONG (417) to client
 	std::cout << "[MESSAGE] new message with raw " << _raw << std::endl;
@@ -235,10 +308,10 @@ Message::Message(std::string const &raw)
 	{
 		_raw = getTags(_raw);
 		_raw = getSource(_raw);
-		std::cout << "raw after source: " << _raw << std::endl;
 		_raw = getCommand(_raw);
 		getParameters(_raw);
 		std::cout << *this << std::endl;
+		processMessage();
 		// TODO processmsg();
 		// check ta command et l'appeler
 		// if (_response)
