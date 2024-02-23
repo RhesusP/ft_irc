@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 16:12:38 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/23 12:09:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ private:
 	std::vector<User> _users;
 	
 	std::vector<struct pollfd> _clients_fds;				// clients by ufds
-	int _nfds; // TODO ufds.size() ?
+	std::time_t	_creation_time;
 	// std::queue<Message> _waitingList;
 	void formatRecv(std::string rec, User &usr);
 	void setSocketNonBlocking(int fd);
@@ -62,7 +62,10 @@ public:
 	int getPort(void) const;
 	int getSocket(void) const;
 	std::string getPassword(void) const;
-	
+	std::vector<User> getUsers(void) const;
+	time_t getCreationTime(void) const;
+	std::vector<struct pollfd> getClientsFds(void) const;
+
 	
 	// void initPoll(void);
 

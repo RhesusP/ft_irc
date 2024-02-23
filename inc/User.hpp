@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 19:14:45 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/23 11:17:36 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ public:
 	std::string const & getNickname(void) const;
 	std::string const & getUsername(void) const;
 	std::string const & getRealname(void) const;
+	std::string const & getHostname(void) const;
 
 	void setNickname(std::string const & nickname);
 	void setUsername(std::string const & username);

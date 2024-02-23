@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 18:15:53 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/23 12:25:32 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class Command
 		Command();
 		virtual ~Command(void);
 		virtual void execute(User *user, Message message);
+		void welcome(User *user);
 };
 
 
@@ -64,6 +65,14 @@ class CmdUnknown : public Command
 	public:
 		CmdUnknown(Server *server);
 		~CmdUnknown(void);
+		void execute(User *user, Message *message);
+};
+
+class CmdMotd : public Command
+{
+	public:
+		CmdMotd(Server *server);
+		~CmdMotd(void);
 		void execute(User *user, Message *message);
 };
 

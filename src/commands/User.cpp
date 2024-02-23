@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:16:24 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 19:18:54 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/23 12:11:44 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,9 @@ void CmdUser::execute(User *user, Message *message)
 	std::cout << "Set username to " << user->getUsername() << std::endl;
 	user->setRealname(args[3]);
 	std::cout << "Set realname to " << user->getRealname() << std::endl;
+
+	if (user->getIsAuth() && user->getNickname().size() > 0 && user->getUsername().size() > 0)
+	{
+		welcome(user);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:51:22 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/22 14:45:22 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/23 11:26:10 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 Server::Server(void) {
 	_password = "";
 	_port = 1234;
-	
+	_creation_time = time(NULL);
 }
 
 Server::Server(std::string port, std::string password) {
 	this->setPort(port);
 	this->_password = password;
 	size = sizeof(sockaddr_in);
+	_creation_time = time(NULL);
 }
 
 Server::~Server(void) {

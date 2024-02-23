@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 17:48:39 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/23 13:48:53 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ void Server::readData(User &user) {
 	do
 	{
 		size = recv(user.getFD(), buf, BUFF_SIZE, 0);
+		std::cout << "Received " << size << " bytes from " << user.getFD() << std::endl;
 		if (size == -1)
 		{
 			if (errno != EAGAIN && errno != EWOULDBLOCK)
@@ -119,6 +120,7 @@ void Server::readData(User &user) {
 		{
 			buf[size] = '\0';
 			std::string data = buf;
+			std::cout << "Data received: " << data << std::endl;
 			formatRecv(data, user);
 		}
 	} while (1);
@@ -151,7 +153,7 @@ ssize_t Server::sendData(std::string message, int fd)
 void Server::formatRecv(std::string rec, User &user)
 {
 	std::string msg;
-	std::string delimiter = "\r\n";
+	std::string delimiter = "\n";		// TODO check for \r\n (this don't work with nc command)
 	size_t pos = 0;
 	while ((pos = rec.find(delimiter)) != std::string::npos)
 	{
@@ -161,6 +163,21 @@ void Server::formatRecv(std::string rec, User &user)
 		// TODO pollout si reponse
 		rec.erase(0, pos + delimiter.length());
 	}
+}
+
+std::vector<User> Server::getUsers(void) const
+{
+	return _users;
+}
+
+time_t Server::getCreationTime(void) const
+{
+	return _creation_time;
+}
+
+std::vector<struct pollfd> Server::getClientsFds(void) const
+{
+	return _clients_fds;
 }
 
 // /// @brief NOT FUNCTIONAL

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:46:35 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 18:55:08 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/23 11:47:38 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void CmdPass::execute(User *user, Message *message)
 {
 	std::string response;
 	std::vector<std::string> args = message->getParameters();
+
 	if (args.size() != 1)
 	{
 		response = ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand());
@@ -39,6 +40,7 @@ void CmdPass::execute(User *user, Message *message)
 	if (args[0] == _server->getPassword())
 	{
 		user->setAuth(true);
+		return ;
 	}
 	else
 	{

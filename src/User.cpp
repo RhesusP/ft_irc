@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 19:15:00 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/23 11:17:50 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,11 @@ void User::setAuth(bool auth)
 int User::getIsRegistered(void) const
 {
 	return _isRegistered;
+}
+
+std::string const & User::getHostname(void) const
+{
+	return _hostname;
 }
 
 void User::setRegistered(int registered)
