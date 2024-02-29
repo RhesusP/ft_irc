@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 13:48:53 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 15:29:59 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,18 +80,18 @@ void	Server::acceptNewConnection(void) {
 	int socket;
 	sockaddr_in usr;
 	socklen_t size = sizeof(sockaddr_in);
-	std::cout << "New connection detected" << std::endl;
+	std::cout << "\033[96mNew connection detected\033[39m" << std::endl;
 	do {
 		socket = accept(_servSocket, (struct sockaddr *)&usr, &size);
 		if (socket == -1)
 		{
 			if (errno != EAGAIN && errno != EWOULDBLOCK)
-				std::cerr << "Error: failed to accept new connection" << std::endl;
+				std::cerr << "\033[91mError: failed to accept new connection\033[39m" << std::endl;
 			break;
 		}
 		addUser(socket, inet_ntoa(usr.sin_addr), htons(usr.sin_port));
 	} while (socket != -1);
-	std::cout << "New connection accepted" << std::endl;
+	std::cout << "\033[92mNew connection accepted\033[39m" << std::endl;
 }
 
 void Server::readData(User &user) {
@@ -105,7 +105,7 @@ void Server::readData(User &user) {
 		{
 			if (errno != EAGAIN && errno != EWOULDBLOCK)
 			{
-				std::cerr << "Error: failed to read data from socket" << std::endl;
+				std::cerr << "\033[91mError: failed to read data from socket\033[39m" << std::endl;
 				removeUser(user.getFD());
 			}
 			break;
@@ -120,7 +120,7 @@ void Server::readData(User &user) {
 		{
 			buf[size] = '\0';
 			std::string data = buf;
-			std::cout << "Data received: " << data << std::endl;
+			std::cout << "Data received: '" << data << "'" << std::endl;
 			formatRecv(data, user);
 		}
 	} while (1);
@@ -152,17 +152,24 @@ ssize_t Server::sendData(std::string message, int fd)
 
 void Server::formatRecv(std::string rec, User &user)
 {
+	static std::string stash = "";
+	std::string delimiter = "\n";
 	std::string msg;
-	std::string delimiter = "\n";		// TODO check for \r\n (this don't work with nc command)
 	size_t pos = 0;
+	
+	rec = stash + rec;
 	while ((pos = rec.find(delimiter)) != std::string::npos)
 	{
-		msg = rec.substr(0, pos);
-		// this->_waitingList.push(Message(msg, this));
+		if (rec.size() > 1 && rec.at(pos - 1) == '\r')
+			msg = rec.substr(0, pos - 1);
+		else
+			msg = rec.substr(0, pos);
+		std::cout << "\033[92m Message received: '" << msg << "'\033[39m" << std::endl;
 		Message(this, &user, msg);
-		// TODO pollout si reponse
+		stash = "";
 		rec.erase(0, pos + delimiter.length());
 	}
+	stash = rec;
 }
 
 std::vector<User> Server::getUsers(void) const
