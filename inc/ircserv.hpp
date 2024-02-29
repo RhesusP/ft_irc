@@ -6,13 +6,24 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:03:44 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 17:24:22 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 16:15:23 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef IRCSERV_HPP
 #define IRCSERV_HPP
 # define BUFF_SIZE 512
+
+# define INFO		"\033[94m"
+# define SUCCESS	"\033[32m"
+# define WARNING	"\033[33m"
+# define ERROR		"\033[31m"
+# define RESET		"\033[39m"
+
+# define PRINT_INFO(msg)	std::cout << INFO << msg << RESET << std::endl
+# define PRINT_SUCCESS(msg)	std::cout << SUCCESS << msg << RESET << std::endl
+# define PRINT_WARNING(msg)	std::cout << WARNING << msg << RESET << std::endl
+# define PRINT_ERROR(msg)	std::cout << ERROR << msg << RESET << std::endl
 
 #include <iostream>
 #include <cerrno>
@@ -42,12 +53,6 @@
 #include "Utils.hpp"
 #include "Commands.hpp"
 #include "Replies.hpp"
-
-# define CORED "\033[0;31m"
-# define COGRE "\033[0;32m"
-# define CORES "\033[0m"
-# define COYEL "\033[0;33m"
-
 
 std::string	receve(int fd);
 
