@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 11:39:53 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 12:19:27 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool is_nickname_valid(std::string const & nick)
 CmdNick::CmdNick(Server *server)
 {
 	_server = server;
-	_need_auth = true;
+	_need_auth = false;
 }
 
 CmdNick::~CmdNick(void){}

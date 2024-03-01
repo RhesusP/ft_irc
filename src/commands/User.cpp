@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:16:24 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/29 20:21:28 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 12:19:51 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 CmdUser::CmdUser(Server *server)
 {
 	_server = server;
-	_need_auth = true;
+	_need_auth = false;
 }
 
 CmdUser::~CmdUser(void){}

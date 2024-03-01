@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/29 20:30:38 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 12:16:12 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ class Command
 	public:
 		Command();
 		virtual ~Command(void);
-		virtual void execute(User *user, Message message);
+		virtual void execute(User *user, Message *message);
+		bool getNeedAuth(void) const;
 		void welcome(User *user);
 		int reply(std::string response, int fd);
 };
@@ -82,6 +83,14 @@ class CmdPing : public Command
 	public:
 		CmdPing(Server *server);
 		~CmdPing(void);
+		void execute(User *user, Message *message);
+};
+
+class CmdJoin : public Command
+{
+	public:
+		CmdJoin(Server *server);
+		~CmdJoin(void);
 		void execute(User *user, Message *message);
 };
 
