@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 11:17:36 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 11:46:20 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,11 @@ private:
 	std::string _username;		// set by USER command
 	std::string _realname;		// set by USER command
 	std::string _nickname;		// set by NICK command
-	std::string _hostname;
+	std::string _hostname;		// set during connection process
 	bool _isAuth;
-	int _isRegistered;			// Must be 2 to be fully registered
 	std::vector<Channel> _channels;
 	Server*	_server;
-	std::string _msgStash;
+	std::string _msgStash;		// TODO implement if we lost a message while reading from several sockets
 
 public:
 	User(void);
@@ -43,6 +42,7 @@ public:
 	std::string const & getUsername(void) const;
 	std::string const & getRealname(void) const;
 	std::string const & getHostname(void) const;
+	std::string getIdentity(void) const;
 
 	void setNickname(std::string const & nickname);
 	void setUsername(std::string const & username);
@@ -51,9 +51,6 @@ public:
 	int getFD(void) const;
 	bool getIsAuth(void) const;
 	void setAuth(bool auth);
-	int getIsRegistered(void) const;
-	void setRegistered(int registered);
-
 };
 
 #endif

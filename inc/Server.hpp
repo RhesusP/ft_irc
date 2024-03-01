@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 12:09:16 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 19:43:03 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ private:
 	
 	int _port;
 	std::string _password;
+	std::string _name;
 	std::vector<Channel> _channels;
 	std::vector<User> _users;
 	
@@ -60,6 +61,7 @@ public:
 	void setPassword(std::string const &port);
 	void setPort(std::string const &port);
 	int getPort(void) const;
+	std::string const & getName(void) const;
 	int getSocket(void) const;
 	std::string getPassword(void) const;
 	std::vector<User> getUsers(void) const;

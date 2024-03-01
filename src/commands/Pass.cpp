@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:46:35 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 11:47:38 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 20:18:03 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,16 @@ void CmdPass::execute(User *user, Message *message)
 {
 	std::string response;
 	std::vector<std::string> args = message->getParameters();
+	int fd = user->getFD();
 
 	if (args.size() != 1)
 	{
-		response = ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand());
-		_server->sendData(response, user->getFD());
+		this->reply(ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
 		return;
 	}
 	if (user->getIsAuth())
 	{
-		response = ERR_ALREADYREGISTERED(user->getNickname());
-		_server->sendData(response, user->getFD());
+		this->reply(ERR_ALREADYREGISTERED(user->getNickname()), fd);
 		return;
 	}
 	if (args[0] == _server->getPassword())
@@ -44,7 +43,6 @@ void CmdPass::execute(User *user, Message *message)
 	}
 	else
 	{
-		response = ERR_PASSWDMISMATCH(user->getNickname());
-		_server->sendData(response, user->getFD());
+		this->reply(ERR_PASSWDMISMATCH(user->getNickname()), fd);
 	}
 }

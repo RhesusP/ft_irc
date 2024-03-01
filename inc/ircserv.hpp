@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:03:44 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/29 16:15:23 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 20:08:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # define PRINT_SUCCESS(msg)	std::cout << SUCCESS << msg << RESET << std::endl
 # define PRINT_WARNING(msg)	std::cout << WARNING << msg << RESET << std::endl
 # define PRINT_ERROR(msg)	std::cout << ERROR << msg << RESET << std::endl
+
+# define SERVER_NAME "ircserv"
 
 #include <iostream>
 #include <cerrno>

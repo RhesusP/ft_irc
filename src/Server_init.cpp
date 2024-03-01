@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:53:42 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/22 15:45:54 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 19:43:37 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,14 @@ void Server::initNetwork(void) {
 		close(_servSocket);
 		throw BindFailedException();
 	}
-	std::cout << "✅ Server initialized on port "<< this->getPort() << " and password \"" << this->getPassword() << "\" linked to socket " << this->getSocket() << std::endl;
-	
+	PRINT_SUCCESS("Server initialized on port " << this->getPort() << " and password \"" << this->getPassword() << "\" linked to socket " << this->getSocket());	
 	if (listen(_servSocket, MAX_CON_QUEUE) == -1)
 		throw ListenFailedException();
-	std::cout << "Waiting for connection..." << std::endl;
+	PRINT_INFO("Server listening on port " << this->getPort());
 	while (1)
 	{
 		waitingForClient();
 	}
-
 }
 
 void Server::waitingForClient(void)
@@ -73,12 +71,9 @@ void Server::waitingForClient(void)
 			acceptNewConnection();
 		else if (i > 0)
 		{
-			std::cout << "need to receive data from user" << std::endl;
 			User user = _users[i - 1];
-			std::cout << "user socket: " << user.getFD() << std::endl;
 			readData(user);
 		}
-		// else if (i > 0) // TODO receive data
 	}	
 }
 
@@ -87,7 +82,7 @@ void	Server::setSocketNonBlocking(int fd)
 {
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0 )
 	{
-		std::cerr << "Error: failed to set socket non-blocking" << std::endl;
+		PRINT_ERROR("Error: failed to set socket non-blocking");
 		if (fd != _servSocket)
 			removeUser(fd);
 	}

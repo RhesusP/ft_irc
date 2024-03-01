@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 12:25:32 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 20:30:38 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class Command
 		virtual ~Command(void);
 		virtual void execute(User *user, Message message);
 		void welcome(User *user);
+		int reply(std::string response, int fd);
 };
 
 
@@ -73,6 +74,14 @@ class CmdMotd : public Command
 	public:
 		CmdMotd(Server *server);
 		~CmdMotd(void);
+		void execute(User *user, Message *message);
+};
+
+class CmdPing : public Command
+{
+	public:
+		CmdPing(Server *server);
+		~CmdPing(void);
 		void execute(User *user, Message *message);
 };
 

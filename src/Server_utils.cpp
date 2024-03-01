@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:51:22 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/23 11:26:10 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 19:44:03 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 Server::Server(void) {
 	_password = "";
 	_port = 1234;
+	_name = SERVER_NAME;
 	_creation_time = time(NULL);
 }
 
 Server::Server(std::string port, std::string password) {
 	this->setPort(port);
 	this->_password = password;
+	_name = SERVER_NAME;
 	size = sizeof(sockaddr_in);
 	_creation_time = time(NULL);
 }
@@ -28,10 +30,6 @@ Server::Server(std::string port, std::string password) {
 Server::~Server(void) {
 	std::cout << "Server destructor called" << std::endl;
 }
-
-// sockaddr_in Server::getAdrr(void) const {
-// 	return _addr;
-// }
 
 int Server::getPort(void) const {
 	return _port;

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:16:24 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 12:11:44 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 20:21:28 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,21 @@ void CmdUser::execute(User *user, Message *message)
 {
 	std::string response;
 	std::vector<std::string> args = message->getParameters();
+	int fd = user->getFD();
 	
 	if (!user->getIsAuth())
 	{
-		response = ERR_PASSWDMISMATCH(user->getNickname());
-		_server->sendData(response, user->getFD());
+		this->reply(ERR_PASSWDMISMATCH(user->getNickname()), fd);
 		return;
 	}
 	if (user->getUsername().size() > 0 || user->getRealname().size() > 0)
 	{
-		response = ERR_ALREADYREGISTERED(user->getNickname());
-		_server->sendData(response, user->getFD());
+		this->reply(ERR_ALREADYREGISTERED(user->getNickname()), fd);
 		return;
 	}
 	if (!(args.size() == 4 && args[0].size() > 0 && args[1] == "0" && args[2] == "*" && args[3].size() > 0))
 	{
-		response = ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand());
-		_server->sendData(response, user->getFD());
+		this->reply(ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
 		return;
 	}
 	user->setUsername(args[0]);

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 13:46:54 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/02/29 19:50:56 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,12 @@ std::string Message::getSource(std::string const &raw)
 std::string Message::getCommand(std::string const &raw)
 {
 	std::string str = trim(raw, " ");
+	std::string s;
 	int endpos = str.find(" ");
-	std::string s = str.substr(0, endpos);
+	if (endpos != std::string::npos)
+		s = str.substr(0, endpos);
+	else
+		s = str;
 	for (int i = 0; i < s.size(); i++)
 	{
 		if (!isalpha(s[i]))
@@ -75,7 +79,10 @@ std::string Message::getCommand(std::string const &raw)
 	}
 	_command = s;
 	std::string rawCopy = str;
-	rawCopy.erase(0, endpos + 1);
+	if (endpos != std::string::npos)
+		rawCopy.erase(0, endpos + 1);
+	else
+		rawCopy.clear();
 	return rawCopy;
 }
 
@@ -162,6 +169,11 @@ void Message::processMessage(void)
 		CmdNick cmdNick(_server);
 		cmdNick.execute(_author, this);
 	}
+	else if (this->_command == "PING")
+	{
+		CmdPing cmdPing(_server);
+		cmdPing.execute(_author, this);
+	}
 	else
 	{
 		if (this->_command != "CAP")
@@ -177,7 +189,7 @@ Message::Message(Server *server, User *user, std::string const &raw)
 	_server = server;
 	_raw = raw;
 	// TODO Check raw size. If > 512, throw exception and send ERR_INPUTTOOLONG (417) to client
-	std::cout << "[MESSAGE] new message with raw " << _raw << std::endl;
+	PRINT_INFO("New message with raw '" << _raw << "'");
 	try
 	{
 		_raw = getTags(_raw);
@@ -185,20 +197,11 @@ Message::Message(Server *server, User *user, std::string const &raw)
 		_raw = getCommand(_raw);
 		getParameters(_raw);
 		_author = user;
-		std::cout << *this << std::endl;
 		processMessage();
-
-		// _response = "Hello";
-		// _server->sendData(_response, user.getFD());
-
-		// TODO processmsg();
-		// check ta command et l'appeler
-		// if (_response)
-			// setPollout(author, &dest[0]);
 	}
 	catch (std::exception &e)
 	{
-		std::cerr << "Error: " << e.what() << std::endl;
+		PRINT_ERROR("Error: " << e.what());
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:44:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 13:20:10 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 11:47:10 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,21 @@ void Command::execute(User *user, Message message) {}
 void Command::welcome(User *user)
 {
 	std::string response;
-
-	response = RPL_WELCOME(user->getNickname(), user->getUsername(), user->getUsername(), user->getHostname());
-	_server->sendData(response, user->getFD());
-	response = RPL_YOURHOST(user->getNickname());
-	_server->sendData(response, user->getFD());
+	int fd = user->getFD();
 	time_t creationTime = _server->getCreationTime();
 	std::string creationTimeString = std::ctime(&creationTime);
-	response = RPL_CREATED(user->getNickname(), creationTimeString);
-	_server->sendData(response, user->getFD());
-	// TODO need to send RPL_ISUPPORT
-	response = RPL_LUSERCLIENT(std::to_string(_server->getUsers().size()));
-	_server->sendData(response, user->getFD());
-	
-	response = RPL_LUSERME(std::to_string(_server->getClientsFds().size() - 1));
-	_server->sendData(response, user->getFD());
-
 	CmdMotd motd(_server);
-	motd.execute(user, NULL);
 
+	this->reply(RPL_WELCOME(user->getNickname(), _server->getName(), user->getIdentity()), fd);
+	this->reply(RPL_YOURHOST(user->getNickname(), _server->getName()), fd);
+	this->reply(RPL_CREATED(user->getNickname(), creationTimeString), fd);
+	// TODO need to send RPL_ISUPPORT
+	this->reply(RPL_LUSERCLIENT(user->getNickname(), std::to_string(_server->getUsers().size())), fd);
+	this->reply(RPL_LUSERME(user->getNickname(), std::to_string(_server->getClientsFds().size() - 1)), fd);
+	motd.execute(user, NULL);
+}
+
+int  Command::reply(std::string response, int fd)
+{
+	return (_server->sendData(response, fd));
 }

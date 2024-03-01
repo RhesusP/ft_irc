@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 11:17:50 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 10:51:37 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ User::User(Server* server, int fd, std::string const & hostname, int port) {
 	_nickname = "";
 	_realname = "";
 	_isAuth = false;
-	_isRegistered = 0;
 }
 
 int User::getFD(void) const {
@@ -57,19 +56,9 @@ void User::setAuth(bool auth)
 	_isAuth = auth;
 }
 
-int User::getIsRegistered(void) const
-{
-	return _isRegistered;
-}
-
 std::string const & User::getHostname(void) const
 {
 	return _hostname;
-}
-
-void User::setRegistered(int registered)
-{
-	_isRegistered = registered;
 }
 
 std::string const & User::getUsername(void) const
@@ -97,41 +86,12 @@ void User::setRealname(std::string const & realname)
 	_realname = realname;
 }
 
+std::string User::getIdentity(void) const
+{
+	std::string nick, user, host;
 
-// User::User(void): _go_offline(false), _is_registered(false) {
-// }
-
-// User::User(int &sockfd, sockaddr_in &addr) : _sockfd(sockfd), _addr(addr), _is_registered(false), _go_offline(false) {}
-
-// User::User(int &sockfd) : _sockfd(sockfd), _is_registered(false), _go_offline(false) {}
-
-// User::~User(void) {}
-
-// void User::setSocket(int val) {
-// 	_sockfd = val;
-// }
-
-
-// sockaddr_in User::getAddress(void) const {
-// 	return _addr;
-// }
-
-// int	User::getSocket(void) const {
-// 	return _sockfd;
-// }
-
-// std::string User::getRealName(void) const {
-// 	return _realname;
-// }
-
-// bool User::getRegistered(void) const {
-// 	return _is_registered;
-// }
-
-// bool User::getStatus(void) const {
-// 	return _go_offline;
-// }
-
-// std::time_t User::timeElapsed(void) const {
-// 	return (std::time(NULL) - _timeval);
-// }
+	nick = _nickname.empty() ? "*" : _nickname;
+	user = _username.empty() ? "*" : _username;
+	host = _hostname.empty() ? "*" : _hostname;
+	return (nick + "!" + user + "@" + host);
+}

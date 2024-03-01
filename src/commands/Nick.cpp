@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/23 12:11:34 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 11:39:53 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,16 @@ void CmdNick::execute(User *user, Message *message)
 {
 	std::string response;
 	std::vector<std::string> args = message->getParameters();
+	int fd = user->getFD();
 
 	if (!user->getIsAuth())
 	{
-		response = ERR_PASSWDMISMATCH(user->getNickname());
-		_server->sendData(response, user->getFD());
+		this->reply(ERR_PASSWDMISMATCH(user->getNickname()), fd);
 		return;
 	}
 	if (args.size() != 1)
 	{
-		response = ERR_NONICKNAMEGIVEN(user->getNickname());
-		_server->sendData(response, user->getFD());
+		this->reply(ERR_NONICKNAMEGIVEN(user->getNickname()), fd);
 		return;
 	}
 	std::vector<User> users = _server->getUsers();
@@ -57,15 +56,13 @@ void CmdNick::execute(User *user, Message *message)
 	{
 		if (users[i].getNickname() == args[0])
 		{
-			response = ERR_NICKNAMEINUSE(user->getNickname(), user->getNickname());
-			_server->sendData(response, user->getFD());
+			this->reply(ERR_NICKNAMEINUSE(user->getNickname(), user->getNickname()), fd);
 			return;
 		}
 	}
 	if (!is_nickname_valid(args[0]))
 	{
-		response = ERR_ERRONEUSNICKNAME(user->getNickname(), user->getNickname());
-		_server->sendData(response, user->getFD());
+		this->reply(ERR_ERRONEUSNICKNAME(user->getNickname(), user->getNickname()), fd);
 		return;
 	}
 	user->setNickname(args[0]);
