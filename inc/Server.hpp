@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/29 19:43:03 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 17:15:38 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ private:
 	std::vector<struct pollfd> _clients_fds;				// clients by ufds
 	std::time_t	_creation_time;
 	// std::queue<Message> _waitingList;
-	void formatRecv(std::string rec, User &usr);
+	void formatRecv(std::string rec, User *usr);
 	void setSocketNonBlocking(int fd);
 	void waitingForClient(void);
 
@@ -54,7 +54,7 @@ public:
 	void initNetwork(void);
 	void addUser(int socket, char *ip, int port);
 	void removeUser(int socket);
-	void readData(User &User);
+	void readData(User *User);
 	void acceptNewConnection(void);
 	ssize_t sendData(std::string message, int fd);
 
@@ -68,32 +68,10 @@ public:
 	time_t getCreationTime(void) const;
 	std::vector<struct pollfd> getClientsFds(void) const;
 
-	
-	// void initPoll(void);
-
-	// void status(void);
-
-	// int	 runPoll(void);
-	// void handlePoll(void);
-	// int acceptNewConnection(void); //TODO: store client info in a User object
-	// void readData(int i); // TODO: data sent to server by client, so it's the main part of the server
-	// void setReply(int uindex);
-	// void setReply(void);
-	// void sendData(int i);
-
-	// void disconnectBadPwd(int i);
-	// void disconnectBrutal(int i);
-	
-	// int getUserFrom(int fd) const;
-	// int getUserFrom(std::string realname) const;
-	// // int getPollfdFrom(int fd) const;
-	// int clearUfd(int fd);
-
-
-
-	// sockaddr_in getAdrr(void) const;
-	// std::queue<Message> getWaitingList(void);
-	// std::vector<Channel> getChannels(void);
+	std::vector<Channel> getChannels(void) const;
+	Channel *getChannel(std::string const &name);
+	void addChannel(Channel &channel);
+	void removeChannel(Channel &channel);
 };
 
 #endif

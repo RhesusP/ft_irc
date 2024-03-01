@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 11:27:25 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 18:29:38 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,26 +73,25 @@ void	Server::acceptNewConnection(void) {
 	PRINT_SUCCESS("New connection accepted");
 }
 
-void Server::readData(User &user) {
+void Server::readData(User *user) {
 	char buf[BUFF_SIZE];
 	int size;
 	do
 	{
-		size = recv(user.getFD(), buf, BUFF_SIZE, 0);
-		// std::cout << "Received " << size << " bytes from " << user.getFD() << std::endl;
+		size = recv(user->getFD(), buf, BUFF_SIZE, 0);
 		if (size == -1)
 		{
 			if (errno != EAGAIN && errno != EWOULDBLOCK)
 			{
-				PRINT_ERROR("Error: failed to read data from socket " + user.getFD());
-				removeUser(user.getFD());
+				PRINT_ERROR("Error: failed to read data from socket " + user->getFD());
+				removeUser(user->getFD());
 			}
 			break;
 		}
 		else if (size == 0)
 		{
-			std::cout << "User " << user.getFD() << " disconnected" << std::endl;
-			removeUser(user.getFD());
+			std::cout << "User " << user->getFD() << " disconnected" << std::endl;
+			removeUser(user->getFD());
 			break;
 		}
 		else
@@ -117,20 +116,20 @@ ssize_t Server::sendData(std::string message, int fd)
 	std::time_t now = time(NULL);
 
 	message = "@time=" + timestr(now) + + " :" + _name + " " + message;
+	if (message[message.size() - 1] != '\n' && message[message.size() - 2] != '\r')
+		message += "\r\n";
 
 	std::cout << "Sending message" << std::endl;
 	std::cout << "\t📨: " << message;
 	std::cout << "\t👤: " << fd << std::endl;
 
-	if (message[message.size() - 1] != '\n' && message[message.size() - 2] != '\r')
-		message += "\r\n";
 	ssize_t size = send(fd, message.c_str(), message.size(), 0);
-	if (size != message.size())
+	if ((unsigned int)size != message.size())
 		std::cerr << "Error: failed to send message to " << fd << std::endl;
 	return size;
 }
 
-void Server::formatRecv(std::string rec, User &user)
+void Server::formatRecv(std::string rec, User *user)
 {
 	static std::string stash = "";
 	std::string delimiter = "\n";
@@ -144,10 +143,10 @@ void Server::formatRecv(std::string rec, User &user)
 			msg = rec.substr(0, pos - 1);
 		else
 			msg = rec.substr(0, pos);
-		PRINT_INFO("Received message: '" + msg + "'");
-		
-		// std::cout << INFO << "Received message: '" << msg << "'" << RESET << std::endl;
-		Message(this, &user, msg);
+		std::stringstream ss;
+		ss << "Received message: '" << msg << "' from " << user->getFD() << " (auth: " << (user->getIsAuth() ? "true" : "false") << ")";
+		PRINT_INFO(ss.str());
+		Message(this, user, msg);
 		stash = "";
 		rec.erase(0, pos + delimiter.length());
 	}
@@ -172,4 +171,41 @@ std::vector<struct pollfd> Server::getClientsFds(void) const
 std::string const & Server::getName(void) const
 {
 	return _name;
+}
+
+void Server::addChannel(Channel &channel)	// TODO : check if channel already exists
+{
+	if (getChannel(channel.getName()) != NULL)
+	{
+		PRINT_ERROR("Error: channel " + channel.getName() + " already exists");
+		return;
+	}
+	_channels.push_back(channel);
+}
+
+void Server::removeChannel(Channel &channel)
+{
+	for (size_t i = 0 ; i < _channels.size() ; i++)
+	{
+		if (_channels.at(i) == channel)
+		{
+			_channels.erase(_channels.begin() + i);
+			break;
+		}
+	}
+}
+
+std::vector<Channel> Server::getChannels(void) const
+{
+	return _channels;
+}
+
+Channel *Server::getChannel(std::string const &name)
+{
+	for (size_t i = 0 ; i < _channels.size() ; i++)
+	{
+		if (_channels.at(i).getName() == name)
+			return &_channels.at(i);
+	}
+	return NULL;
 }

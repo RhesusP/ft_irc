@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:44:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 12:16:11 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 18:08:39 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ bool Command::getNeedAuth(void) const
 	return _need_auth;
 }
 
-void Command::execute(User *user, Message *message) {}
+void Command::execute(User *user, Message *message) {
+	(void)user;
+	(void)message;
+}
 
 void Command::welcome(User *user)
 {
@@ -35,8 +38,11 @@ void Command::welcome(User *user)
 	this->reply(RPL_YOURHOST(user->getNickname(), _server->getName()), fd);
 	this->reply(RPL_CREATED(user->getNickname(), creationTimeString), fd);
 	// TODO need to send RPL_ISUPPORT
-	this->reply(RPL_LUSERCLIENT(user->getNickname(), std::to_string(_server->getUsers().size())), fd);
-	this->reply(RPL_LUSERME(user->getNickname(), std::to_string(_server->getClientsFds().size() - 1)), fd);
+	std::stringstream ss;
+	ss << _server->getUsers().size();
+	this->reply(RPL_LUSERCLIENT(user->getNickname(), ss.str()), fd);
+	ss << _server->getClientsFds().size() - 1;
+	this->reply(RPL_LUSERME(user->getNickname(), ss.str()), fd);
 	motd.execute(user, NULL);
 }
 

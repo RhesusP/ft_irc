@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 11:40:51 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 19:13:33 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 18:06:04 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 std::vector<std::string>	split(std::string str, std::string delimiter)
 {
 	std::vector<std::string> res;
-	int pos = 0;
+	unsigned int pos = 0;
 	int del_len = delimiter.size();
 	while (pos < str.size())
 	{

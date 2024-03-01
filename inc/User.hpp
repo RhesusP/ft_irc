@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 11:46:20 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 16:50:56 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,9 @@ public:
 
 	int getFD(void) const;
 	bool getIsAuth(void) const;
-	void setAuth(bool auth);
+	void setIsAuth(bool auth);
+
+	bool operator==(User const & rhs) const;
 };
 
 #endif

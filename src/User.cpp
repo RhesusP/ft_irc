@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 12:18:16 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 17:31:03 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ bool User::getIsAuth(void) const
 	return _isAuth;
 }
 
-void User::setAuth(bool auth)
+void User::setIsAuth(bool auth)
 {
 	_isAuth = auth;
 }
@@ -93,4 +93,9 @@ std::string User::getIdentity(void) const
 	user = _username.empty() ? "*" : _username;
 	host = _hostname.empty() ? "*" : _hostname;
 	return (nick + "!" + user + "@" + host);
+}
+
+bool User::operator==(User const & rhs) const
+{
+	return (_fd == rhs.getFD() && _nickname == rhs.getNickname());
 }

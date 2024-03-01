@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:46:35 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 12:19:31 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 17:20:37 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ void CmdPass::execute(User *user, Message *message)
 	}
 	if (args[0] == _server->getPassword())
 	{
-		user->setAuth(true);
+		user->setIsAuth(true);
+		PRINT_SUCCESS("User " << user->getFD() << " is now authentified");
+		PRINT_INFO("User " << user->getFD() << " is auth: " << user->getIsAuth());
 		return ;
 	}
 	else

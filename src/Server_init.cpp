@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:53:42 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/02/29 19:43:37 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 18:28:57 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@ const char* setSocketNonBlockingException::what() const throw() {
 	return ("setSocketNonBlocking failed");
 }
 
-
-/// @brief init server listening, exception thrown if failed
-/// @param  none
 void Server::initNetwork(void) {
 	int opt_val = 1;
 	_servSocket = socket(PF_INET, SOCK_STREAM, 0);
@@ -56,9 +53,6 @@ void Server::initNetwork(void) {
 
 void Server::waitingForClient(void)
 {
-	pollfd ufd;
-	ufd.fd = _servSocket;
-
 	int ret = poll(&_clients_fds[0], _users.size() + 1, -1);
 	
 	if (ret == -1)
@@ -70,13 +64,9 @@ void Server::waitingForClient(void)
 		if (_clients_fds[i].fd == _servSocket)
 			acceptNewConnection();
 		else if (i > 0)
-		{
-			User user = _users[i - 1];
-			readData(user);
-		}
+			readData(&(_users[i - 1]));
 	}	
 }
-
 
 void	Server::setSocketNonBlocking(int fd)
 {
@@ -87,15 +77,3 @@ void	Server::setSocketNonBlocking(int fd)
 			removeUser(fd);
 	}
 }
-
-
-
-// /// @brief add listening socket to pollfd vector
-// /// @param  none
-// void	Server::initPoll(void) {
-// 	pollfd ufd;
-// 	ufd.fd = _servSocket;
-// 	ufd.events = POLLIN;
-// 	_ufds.push_back(ufd);
-// 	_nfds = 1;
-// }

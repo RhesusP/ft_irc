@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 12:19:27 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 18:29:24 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void CmdNick::execute(User *user, Message *message)
 	std::vector<std::string> args = message->getParameters();
 	int fd = user->getFD();
 
+	std::cout << "User " << user->getFD() << " is auth:" << user->getIsAuth() << " is trying to change nickname" << std::endl;
 	if (!user->getIsAuth())
 	{
 		this->reply(ERR_PASSWDMISMATCH(user->getNickname()), fd);

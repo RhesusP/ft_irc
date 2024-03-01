@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 12:28:18 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 18:30:19 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ const char *BadTagException::what() const throw()
 {
 	return "Bad tag";
 }
-
 
 Message::Message(void)
 {
@@ -67,12 +66,12 @@ std::string Message::getCommand(std::string const &raw)
 {
 	std::string str = trim(raw, " ");
 	std::string s;
-	int endpos = str.find(" ");
+	size_t endpos = str.find(" ");
 	if (endpos != std::string::npos)
 		s = str.substr(0, endpos);
 	else
 		s = str;
-	for (int i = 0; i < s.size(); i++)
+	for (unsigned int i = 0; i < s.size(); i++)
 	{
 		if (!isalpha(s[i]))
 			throw BadCommandException();
@@ -89,7 +88,6 @@ std::string Message::getCommand(std::string const &raw)
 void delete_space_element(std::vector<std::string> & tab)
 {
 	std::vector<std::string>::iterator it_beg = tab.begin();
-	std::vector<std::string>::iterator it_end = tab.end();
 	std::vector<std::string>::iterator it_temp;
 
 	while (it_beg != tab.end())
@@ -122,17 +120,17 @@ void Message::getParameters(std::string const &raw)
 	{
 		if (tab[i][0] == ':')
 		{
-			int index = i;
+			// int index = i;
 			tab[i].erase(0, 1);
 			for (size_t j = i + 1; j < tab.size() ; j++)
 			{
 				tab[i].append(" " + tab[j]);
-				index = j;
+				// index = j;
 			}
 			for (size_t j = i + 1; j < tab.size() ; j++)
 			{
 				tab.erase(tab.begin() + j);
-				index = j;
+				// index = j;
 			}
 			// tab.erase(tab.end() - 1);
 			break;
@@ -154,8 +152,8 @@ void Message::getParameters(std::string const &raw)
 
 void Message::processMessage(void)
 {
-	int nb_cmds = 7;
-	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER"};
+	int nb_cmds = 8;
+	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN"};
 	CmdMotd cmdMotd(_server);
 	CmdNick cmdNick(_server);
 	CmdPass cmdPass(_server);
@@ -163,6 +161,7 @@ void Message::processMessage(void)
 	CmdQuit cmdQuit(_server);
 	CmdUnknown mdUnknown(_server);
 	CmdUser cmdUser(_server);
+	CmdJoin CmdJoin(_server);
 
 	Command* cmds[nb_cmds] = {
 		&cmdMotd,
@@ -171,20 +170,18 @@ void Message::processMessage(void)
 		&cmdPing,
 		&cmdQuit,
 		&mdUnknown,
-		&cmdUser
+		&cmdUser,
+		&CmdJoin
 	};
-
 	for (int i = 0; i < nb_cmds; i++)
 	{
 		if (this->_command == cmds_name[i])
 		{
-			std::cout << "Command found: " << cmds_name[i] << std::endl;
 			if (cmds[i]->getNeedAuth() && !_author->getIsAuth())
 			{
 				_server->sendData(ERR_NOTREGISTERED(_author->getNickname()), _author->getFD());
 				return;
 			}
-			std::cout << "executing command" << std::endl;
 			cmds[i]->execute(_author, this);
 			return;
 		}
@@ -194,37 +191,6 @@ void Message::processMessage(void)
 		CmdUnknown cmdUnknown(_server);
 		cmdUnknown.execute(_author, this);
 	}
-
-
-
-	// if (this->_command == "PASS")
-	// {
-	// 	CmdPass cmdPass(_server);
-	// 	cmdPass.execute(_author, this);
-	// }
-	// else if (this->_command == "USER")
-	// {
-	// 	CmdUser cmdUser(_server);
-	// 	cmdUser.execute(_author, this);
-	// }
-	// else if (this->_command == "NICK")
-	// {
-	// 	CmdNick cmdNick(_server);
-	// 	cmdNick.execute(_author, this);
-	// }
-	// else if (this->_command == "PING")
-	// {
-	// 	CmdPing cmdPing(_server);
-	// 	cmdPing.execute(_author, this);
-	// }
-	// else
-	// {
-	// 	if (this->_command != "CAP")
-	// 	{
-	// 		CmdUnknown cmdUnknown(_server);
-	// 		cmdUnknown.execute(_author, this);
-	// 	}
-	// }
 }
 
 Message::Message(Server *server, User *user, std::string const &raw)

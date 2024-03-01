@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 12:25:41 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 14:51:17 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 18:09:07 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ CmdMotd::~CmdMotd(void){}
 
 void CmdMotd::execute(User *user, Message *message)
 {
+	(void)message;
 	std::string response;
 	int fd = user->getFD();
 
