@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 10:51:37 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 12:18:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ User::User(void) {
 	_realname = "";
 	_hostname = "";
 	_isAuth = false;
-	_isRegistered = 0;
 }
 
 User::~User(void) {}

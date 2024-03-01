@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 10:34:19 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/01 12:06:23 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,7 @@
 #define ERR_NONICKNAMEGIVEN(client)						"431 " + client + " :No nickname given\r\n"
 
 #define ERR_ERRONEUSNICKNAME(client, nick)				"432 " + client + " " + nick + " :Erroneus nickname\r\n"
+
+#define ERR_NOTREGISTERED(nick)							"451 " + nick + " :You have not registered\r\n"
 
 #endif
