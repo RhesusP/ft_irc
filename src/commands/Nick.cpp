@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 18:00:40 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 19:42:36 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ bool is_nickname_valid(std::string const & nick)
 {
 	if (nick.size() < 1)
 		return false;
-	if (nick[0] == ':' || nick[0] == '#' || nick[0] == '&')
+	if (nick[0] == ':' || nick[0] == '#' || nick[0] == '&' || nick[0] == '~' || nick[0] == '+' || nick[0] == '%')
 		return false;
 	for (size_t i = 0; i < nick.size(); i++)
 	{
-		if (nick[i] == ' ' || nick[i] == '\r' || nick[i] == '\n' || nick[i] == '\t')
+		if (nick[i] == ' ' || nick[i] == ',' || nick[i] == '*' || nick[i] == '?' || nick[i] == '!' || nick[i] == '@' || nick[i] == '\r' || nick[i] == '\n' || nick[i] == '\t')
 			return false;
 	}
 	return true;
