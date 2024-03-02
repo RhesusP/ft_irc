@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 17:31:03 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 17:57:44 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,13 @@ std::string User::getIdentity(void) const
 	user = _username.empty() ? "*" : _username;
 	host = _hostname.empty() ? "*" : _hostname;
 	return (nick + "!" + user + "@" + host);
+}
+
+bool User::isRegistered(void) const
+{
+	if (_nickname.size() > 0 && _username.size() > 0 && _realname.size() > 0)
+		return true;
+	return false;
 }
 
 bool User::operator==(User const & rhs) const

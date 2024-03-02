@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 12:16:12 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 17:59:42 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,13 @@ class Command
 	protected:
 		Server *_server;
 		bool _need_auth;
+		bool _need_registration;
 	public:
 		Command();
 		virtual ~Command(void);
 		virtual void execute(User *user, Message *message);
 		bool getNeedAuth(void) const;
+		bool getNeedRegistration(void) const;
 		void welcome(User *user);
 		int reply(std::string response, int fd);
 };

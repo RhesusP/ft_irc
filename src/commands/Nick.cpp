@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 18:29:24 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 18:00:40 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ bool is_nickname_valid(std::string const & nick)
 CmdNick::CmdNick(Server *server)
 {
 	_server = server;
-	_need_auth = false;
+	_need_auth = true;
+	_need_registration = false;
 }
 
 CmdNick::~CmdNick(void){}
@@ -40,12 +41,6 @@ void CmdNick::execute(User *user, Message *message)
 	std::vector<std::string> args = message->getParameters();
 	int fd = user->getFD();
 
-	std::cout << "User " << user->getFD() << " is auth:" << user->getIsAuth() << " is trying to change nickname" << std::endl;
-	if (!user->getIsAuth())
-	{
-		this->reply(ERR_PASSWDMISMATCH(user->getNickname()), fd);
-		return;
-	}
 	if (args.size() != 1)
 	{
 		this->reply(ERR_NONICKNAMEGIVEN(user->getNickname()), fd);
@@ -67,8 +62,7 @@ void CmdNick::execute(User *user, Message *message)
 		return;
 	}
 	user->setNickname(args[0]);
-	std::cout << "User " << user->getNickname() << " has been renamed" << std::endl;
-
+	PRINT_SUCCESS("User " << user->getFD() << " has been renamed");
 	if (user->getIsAuth() && user->getNickname().size() > 0 && user->getUsername().size() > 0)
 	{
 		welcome(user);

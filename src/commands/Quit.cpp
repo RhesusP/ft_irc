@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 10:25:05 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/29 21:02:44 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 18:01:17 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ CmdQuit::CmdQuit(Server *server)
 {
 	_server = server;
 	_need_auth = false;
+	_need_registration = false;
 }
 
 CmdQuit::~CmdQuit(void){}

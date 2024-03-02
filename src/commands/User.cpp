@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:16:24 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 17:18:37 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 18:01:39 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 CmdUser::CmdUser(Server *server)
 {
 	_server = server;
-	_need_auth = false;
+	_need_auth = true;
+	_need_registration = false;
 }
 
 CmdUser::~CmdUser(void){}
@@ -26,11 +27,6 @@ void CmdUser::execute(User *user, Message *message)
 	std::vector<std::string> args = message->getParameters();
 	int fd = user->getFD();
 	
-	if (!user->getIsAuth())
-	{
-		this->reply(ERR_PASSWDMISMATCH(user->getNickname()), fd);
-		return;
-	}
 	if (user->getUsername().size() > 0 || user->getRealname().size() > 0)
 	{
 		this->reply(ERR_ALREADYREGISTERED(user->getNickname()), fd);

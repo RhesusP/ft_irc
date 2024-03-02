@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 12:25:41 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 18:09:07 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 18:00:27 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ CmdMotd::CmdMotd(Server *server)
 {
 	_server = server;
 	_need_auth = true;
+	_need_registration = true;
 }
 
 CmdMotd::~CmdMotd(void){}

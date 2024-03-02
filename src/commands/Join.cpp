@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 18:09:27 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 18:00:14 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ CmdJoin::CmdJoin(Server *server)
 {
 	_server = server;
 	_need_auth = true;
+	_need_registration = true;
 }
 
 CmdJoin::~CmdJoin(void){}

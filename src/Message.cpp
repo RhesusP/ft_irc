@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 18:30:19 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 18:07:37 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@ void Message::processMessage(void)
 	{
 		if (this->_command == cmds_name[i])
 		{
-			if (cmds[i]->getNeedAuth() && !_author->getIsAuth())
+			if ((cmds[i]->getNeedAuth() && !_author->getIsAuth()) || (cmds[i]->getNeedRegistration() && !_author->isRegistered()))
 			{
 				_server->sendData(ERR_NOTREGISTERED(_author->getNickname()), _author->getFD());
 				return;

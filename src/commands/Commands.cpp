@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:44:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 18:08:39 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 17:59:35 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@ Command::~Command(void){}
 bool Command::getNeedAuth(void) const
 {
 	return _need_auth;
+}
+
+bool Command::getNeedRegistration(void) const
+{
+	return _need_registration;
 }
 
 void Command::execute(User *user, Message *message) {
