@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 19:42:36 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 01:28:15 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,36 +35,37 @@ CmdNick::CmdNick(Server *server)
 
 CmdNick::~CmdNick(void){}
 
-void CmdNick::execute(User *user, Message *message)
+void CmdNick::execute(Message *message)
 {
-	std::string response;
+	User *user = message->getAuthor();
 	std::vector<std::string> args = message->getParameters();
 	int fd = user->getFD();
+	std::string serv_name = _server->getName();
 
 	if (args.size() != 1)
 	{
-		this->reply(ERR_NONICKNAMEGIVEN(user->getNickname()), fd);
+		this->reply(serv_name, ERR_NONICKNAMEGIVEN(user->getNickname()), fd);
 		return;
 	}
-	std::vector<User> users = _server->getUsers();
+	std::vector<User *> users = _server->getUsers();
 
 	for (size_t i = 0 ; i < users.size() ; i++)
 	{
-		if (users[i].getNickname() == args[0])
+		if (users[i]->getNickname() == args[0])
 		{
-			this->reply(ERR_NICKNAMEINUSE(user->getNickname(), user->getNickname()), fd);
+			this->reply(serv_name, ERR_NICKNAMEINUSE(user->getNickname(), user->getNickname()), fd);
 			return;
 		}
 	}
 	if (!is_nickname_valid(args[0]))
 	{
-		this->reply(ERR_ERRONEUSNICKNAME(user->getNickname(), user->getNickname()), fd);
+		this->reply(serv_name, ERR_ERRONEUSNICKNAME(user->getNickname(), user->getNickname()), fd);
 		return;
 	}
 	user->setNickname(args[0]);
 	PRINT_SUCCESS("User " << user->getFD() << " has been renamed");
 	if (user->getIsAuth() && user->getNickname().size() > 0 && user->getUsername().size() > 0)
 	{
-		welcome(user);
+		welcome(message);
 	}
 }

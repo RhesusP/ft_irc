@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 19:35:44 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 18:01:01 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 00:08:29 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,17 @@ CmdPing::CmdPing(Server *server)
 
 CmdPing::~CmdPing(void){}
 
-void CmdPing::execute(User *user, Message *message)
+void CmdPing::execute(Message *message)
 {
-	std::string response;
+	User *user = message->getAuthor();
 	std::vector<std::string> args = message->getParameters();
 	int fd = user->getFD();
+	std::string serv_name = _server->getName();
 
 	if (args.size() != 1)
 	{
-		this->reply(ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
+		this->reply(serv_name, ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
 		return;
 	}
-	this->reply("PONG " + _server->getName() + " :" + args[0], fd);
+	this->reply(serv_name, "PONG " + _server->getName() + " :" + args[0], fd);
 }

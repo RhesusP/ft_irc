@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 17:15:38 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 16:53:24 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ public:
 	void removeUser(int socket);
 	void readData(User *User);
 	void acceptNewConnection(void);
-	ssize_t sendData(std::string message, int fd);
+	ssize_t sendData(std::string sender, std::string message, int fd);
 
 	void setPassword(std::string const &port);
 	void setPort(std::string const &port);
@@ -64,14 +64,16 @@ public:
 	std::string const & getName(void) const;
 	int getSocket(void) const;
 	std::string getPassword(void) const;
-	std::vector<User> getUsers(void) const;
+	std::vector<User *> getUsers(void);
 	time_t getCreationTime(void) const;
-	std::vector<struct pollfd> getClientsFds(void) const;
+	std::vector<struct pollfd> getClientsFds(void);
 
-	std::vector<Channel> getChannels(void) const;
+	std::vector<Channel *> getChannels(void);
 	Channel *getChannel(std::string const &name);
-	void addChannel(Channel &channel);
-	void removeChannel(Channel &channel);
+	Channel *addChannel(Channel channel);
+	void removeChannel(Channel channel);
 };
+
+std::ostream & operator<<(std::ostream & o, Server & rhs);
 
 #endif

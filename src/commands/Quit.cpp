@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 10:25:05 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 18:01:17 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 00:08:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,16 @@ CmdQuit::CmdQuit(Server *server)
 
 CmdQuit::~CmdQuit(void){}
 
-void CmdQuit::execute(User *user, Message *message)
+void CmdQuit::execute(Message *message)
 {
-	std::string response;
-	std::vector<std::string> args = message->getParameters();
-	int fd = user->getFD();
+	(void)message;
+	// std::string response;
+	// std::vector<std::string> args = message->getParameters();
+	// int fd = user->getFD();
 
-	this->reply("ERROR: " + user->getNickname() + " quit the server.", fd);
-	// TODO send quit message to all user's channels
+	// this->reply("ERROR: " + user->getNickname() + " quit the server.", fd);
+	// // TODO send quit message to all user's channels
 	
 	
-	this->reply("ERROR :Closing Link: " + user->getNickname() + " (" + args[0] + ")", fd);
+	// this->reply("ERROR :Closing Link: " + user->getNickname() + " (" + args[0] + ")", fd);
 }

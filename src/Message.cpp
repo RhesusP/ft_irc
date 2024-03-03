@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 18:07:37 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 19:48:56 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,8 +152,8 @@ void Message::getParameters(std::string const &raw)
 
 void Message::processMessage(void)
 {
-	int nb_cmds = 8;
-	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN"};
+	int nb_cmds = 9;
+	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART"};
 	CmdMotd cmdMotd(_server);
 	CmdNick cmdNick(_server);
 	CmdPass cmdPass(_server);
@@ -162,6 +162,7 @@ void Message::processMessage(void)
 	CmdUnknown mdUnknown(_server);
 	CmdUser cmdUser(_server);
 	CmdJoin CmdJoin(_server);
+	CmdPart CmdPart(_server);
 
 	Command* cmds[nb_cmds] = {
 		&cmdMotd,
@@ -171,7 +172,8 @@ void Message::processMessage(void)
 		&cmdQuit,
 		&mdUnknown,
 		&cmdUser,
-		&CmdJoin
+		&CmdJoin,
+		&CmdPart
 	};
 	for (int i = 0; i < nb_cmds; i++)
 	{
@@ -179,17 +181,27 @@ void Message::processMessage(void)
 		{
 			if ((cmds[i]->getNeedAuth() && !_author->getIsAuth()) || (cmds[i]->getNeedRegistration() && !_author->isRegistered()))
 			{
-				_server->sendData(ERR_NOTREGISTERED(_author->getNickname()), _author->getFD());
+				_server->sendData(_server->getName(), ERR_NOTREGISTERED(_author->getNickname()), _author->getFD());
 				return;
 			}
-			cmds[i]->execute(_author, this);
+			// if (this->_command == "PASS" || this->_command == "NICK" || this->_command == "USER")
+				// cmds[i]->execute(this);
+			cmds[i]->execute(this);
+			// _server->addChannel(Channel(_server, "test", _author));
+
+			// std::vector<Channel *> channels = _server->getChannels();
+			// for (size_t i = 0; i < channels.size(); i++)
+			// {
+			// 	std::cout << *channels[i] << std::endl;
+			// }
+
 			return;
 		}
 	}
 	if (this->_command != "CAP")
 	{
 		CmdUnknown cmdUnknown(_server);
-		cmdUnknown.execute(_author, this);
+		cmdUnknown.execute(this);
 	}
 }
 
@@ -198,20 +210,12 @@ Message::Message(Server *server, User *user, std::string const &raw)
 	_server = server;
 	_raw = raw;
 	// TODO Check raw size. If > 512, throw exception and send ERR_INPUTTOOLONG (417) to client
-	PRINT_INFO("New message with raw '" << _raw << "'");
-	try
-	{
-		_raw = getTags(_raw);
-		_raw = getSource(_raw);
-		_raw = getCommand(_raw);
-		getParameters(_raw);
-		_author = user;
-		processMessage();
-	}
-	catch (std::exception &e)
-	{
-		PRINT_ERROR("Error: " << e.what());
-	}
+	_raw = getTags(_raw);
+	_raw = getSource(_raw);
+	_raw = getCommand(_raw);
+	getParameters(_raw);
+	_author = user;
+	processMessage();
 }
 
 Message::~Message(void) {}
@@ -234,6 +238,11 @@ std::string const & Message::getCommand(void) const
 std::vector<std::string> Message::getParameters(void)
 {
 	return _parameters;
+}
+
+User* Message::getAuthor(void) const
+{
+	return _author;
 }
 
 std::ostream &operator<<(std::ostream &o, Message &rhs)

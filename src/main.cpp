@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/15 02:01:30 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 14:45:37 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 16:52:45 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,6 @@ int	main(int argc, char **argv) {
 	{
 		Server server(port, password);
 		server.initNetwork();
-		// server.initPoll();
-		// while (server.runPoll() != -1) {
-		// 	server.handlePoll();
-		// 	server.status();
-		// }
-		// std::cout << "Server shutdown, poll error" << std::endl;
 	}
 	catch (std::exception &e)
 	{

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:14:43 by cbernot           #+#    #+#             */
-/*   Updated: 2024/02/22 17:47:38 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 00:04:53 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ public:
 	std::string const & getSource(void);
 	std::string const &	getCommand(void) const;
 	std::vector<std::string> getParameters(void);
+	User* getAuthor(void) const;
 	void	processMessage(void);
 };
 

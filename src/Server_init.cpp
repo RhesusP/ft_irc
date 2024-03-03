@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:53:42 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/03/01 18:28:57 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 19:53:59 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void Server::initNetwork(void) {
 	while (1)
 	{
 		waitingForClient();
+		std::cout << *this << std::endl;
 	}
 }
 

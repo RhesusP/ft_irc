@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:46:35 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 18:00:47 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 00:08:47 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,21 @@ CmdPass::CmdPass(Server *server)
 
 CmdPass::~CmdPass(void){}
 
-void CmdPass::execute(User *user, Message *message)
+void CmdPass::execute(Message *message)
 {
-	std::string response;
+	User *user = message->getAuthor();
 	std::vector<std::string> args = message->getParameters();
 	int fd = user->getFD();
+	std::string serv_name = _server->getName();
 
 	if (args.size() != 1)
 	{
-		this->reply(ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
+		this->reply(serv_name, ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
 		return;
 	}
 	if (user->getIsAuth())
 	{
-		this->reply(ERR_ALREADYREGISTERED(user->getNickname()), fd);
+		this->reply(serv_name, ERR_ALREADYREGISTERED(user->getNickname()), fd);
 		return;
 	}
 	if (args[0] == _server->getPassword())
@@ -45,6 +46,6 @@ void CmdPass::execute(User *user, Message *message)
 	}
 	else
 	{
-		this->reply(ERR_PASSWDMISMATCH(user->getNickname()), fd);
+		this->reply(serv_name, ERR_PASSWDMISMATCH(user->getNickname()), fd);
 	}
 }

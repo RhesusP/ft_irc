@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 17:57:44 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 01:00:11 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,37 @@ bool User::isRegistered(void) const
 	return false;
 }
 
+void User::addinChannel(Channel *chan)
+{
+	_channels.push_back(chan);
+}
+
+void User::removefromChannel(Channel *chan)
+{
+	for (size_t i = 0 ; i < _channels.size() ; i++)
+	{
+		if (_channels[i] == chan)
+		{
+			_channels.erase(_channels.begin() + i);
+			break;
+		}
+	}
+}
+
 bool User::operator==(User const & rhs) const
 {
 	return (_fd == rhs.getFD() && _nickname == rhs.getNickname());
+}
+
+std::ostream & operator<<(std::ostream & o, User const & rhs)
+{
+	o << "------------------------------" << std::endl;
+	o << "User (" << rhs.getFD() << ") " << std::endl;
+	o << "\tNickname: " << rhs.getNickname() << std::endl;
+	o << "\tUsername: " << rhs.getUsername() << std::endl;
+	o << "\tRealname: " << rhs.getRealname() << std::endl;
+	o << "\tHostname: " << rhs.getHostname() << std::endl;
+	o << "\tIsAuth: " << (rhs.getIsAuth() ? "true" : "false") << std::endl;
+	o << "------------------------------" << std::endl;
+	return o;
 }

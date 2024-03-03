@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:04:31 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 18:01:30 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 00:08:06 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ CmdUnknown::CmdUnknown(Server *server)
 
 CmdUnknown::~CmdUnknown(void){}
 
-void CmdUnknown::execute(User *user, Message *message)
+void CmdUnknown::execute(Message *message)
 {
-	this->reply(ERR_UNKNOWNCOMMAND(user->getNickname(),  message->getCommand()), user->getFD());
+	User *user = message->getAuthor();
+	this->reply(_server->getName(), ERR_UNKNOWNCOMMAND(user->getNickname(),  message->getCommand()), user->getFD());
 }

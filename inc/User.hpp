@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 17:56:59 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/02 23:52:55 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ private:
 	std::string _nickname;		// set by NICK command
 	std::string _hostname;		// set during connection process
 	bool _isAuth;
-	std::vector<Channel> _channels;
+	std::vector<Channel *> _channels;
 	Server*	_server;
 	std::string _msgStash;		// TODO implement if we lost a message while reading from several sockets
 
@@ -53,7 +53,12 @@ public:
 	void setIsAuth(bool auth);
 	bool isRegistered(void) const;
 
+	void addinChannel(Channel *chan);
+	void removefromChannel(Channel *chan);
+
 	bool operator==(User const & rhs) const;
 };
+
+std::ostream & operator<<(std::ostream & o, User const & rhs);
 
 #endif

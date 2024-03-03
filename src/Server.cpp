@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 18:29:38 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 19:58:09 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ void Server::addUser(int socket, char *ip, int port)
 	struct pollfd ufd;
 	ufd.fd = socket;
 	ufd.events = POLLIN;
-
 	_clients_fds.push_back(ufd);
 }
 
@@ -98,6 +97,7 @@ void Server::readData(User *user) {
 		{
 			buf[size] = '\0';
 			std::string data = buf;
+
 			formatRecv(data, user);
 		}
 	} while (1);
@@ -111,18 +111,14 @@ std::string timestr(std::time_t time)
 	return std::string(buffer);
 }
 
-ssize_t Server::sendData(std::string message, int fd)
+ssize_t Server::sendData(std::string sender, std::string message, int fd)
 {
 	std::time_t now = time(NULL);
 
-	message = "@time=" + timestr(now) + + " :" + _name + " " + message;
+	message = "@time=" + timestr(now) + " :" + sender + " " + message;
 	if (message[message.size() - 1] != '\n' && message[message.size() - 2] != '\r')
 		message += "\r\n";
-
-	std::cout << "Sending message" << std::endl;
-	std::cout << "\t📨: " << message;
-	std::cout << "\t👤: " << fd << std::endl;
-
+	PRINT_SEND(fd, message);
 	ssize_t size = send(fd, message.c_str(), message.size(), 0);
 	if ((unsigned int)size != message.size())
 		std::cerr << "Error: failed to send message to " << fd << std::endl;
@@ -143,9 +139,7 @@ void Server::formatRecv(std::string rec, User *user)
 			msg = rec.substr(0, pos - 1);
 		else
 			msg = rec.substr(0, pos);
-		std::stringstream ss;
-		ss << "Received message: '" << msg << "' from " << user->getFD() << " (auth: " << (user->getIsAuth() ? "true" : "false") << ")";
-		PRINT_INFO(ss.str());
+		PRINT_RECEIVED(user->getFD(), msg);
 		Message(this, user, msg);
 		stash = "";
 		rec.erase(0, pos + delimiter.length());
@@ -153,9 +147,14 @@ void Server::formatRecv(std::string rec, User *user)
 	stash = rec;
 }
 
-std::vector<User> Server::getUsers(void) const
+std::vector<User *> Server::getUsers(void)
 {
-	return _users;
+	std::vector<User *> res;
+	for (size_t i = 0 ; i < _users.size() ; i++)
+	{
+		res.push_back(&(_users[i]));
+	}
+	return res;
 }
 
 time_t Server::getCreationTime(void) const
@@ -163,7 +162,7 @@ time_t Server::getCreationTime(void) const
 	return _creation_time;
 }
 
-std::vector<struct pollfd> Server::getClientsFds(void) const
+std::vector<struct pollfd> Server::getClientsFds(void)
 {
 	return _clients_fds;
 }
@@ -173,17 +172,19 @@ std::string const & Server::getName(void) const
 	return _name;
 }
 
-void Server::addChannel(Channel &channel)	// TODO : check if channel already exists
+Channel *Server::addChannel(Channel channel)
 {
-	if (getChannel(channel.getName()) != NULL)
-	{
-		PRINT_ERROR("Error: channel " + channel.getName() + " already exists");
-		return;
-	}
-	_channels.push_back(channel);
+    if (getChannel(channel.getName()) != NULL)
+    {
+        PRINT_ERROR("Error: channel " + channel.getName() + " already exists");
+		return NULL;
+    }
+    _channels.push_back(channel);
+    PRINT_SUCCESS("Channel " + channel.getName() + " has been added to server");
+    return &(_channels.back());
 }
 
-void Server::removeChannel(Channel &channel)
+void Server::removeChannel(Channel channel)
 {
 	for (size_t i = 0 ; i < _channels.size() ; i++)
 	{
@@ -193,11 +194,17 @@ void Server::removeChannel(Channel &channel)
 			break;
 		}
 	}
+	PRINT_SUCCESS("Channel " + channel.getName() + " has been deleted from server");
 }
 
-std::vector<Channel> Server::getChannels(void) const
+std::vector<Channel *> Server::getChannels(void)
 {
-	return _channels;
+	std::vector<Channel *> res;
+	for (size_t i = 0 ; i < _channels.size() ; i++)
+	{
+		res.push_back(&(_channels[i]));
+	}
+	return res;
 }
 
 Channel *Server::getChannel(std::string const &name)
@@ -208,4 +215,20 @@ Channel *Server::getChannel(std::string const &name)
 			return &_channels.at(i);
 	}
 	return NULL;
+}
+
+std::ostream & operator<<(std::ostream & o, Server & rhs)
+{
+	o << "Server " << rhs.getName() << " created at " << timestr(rhs.getCreationTime()) << std::endl;
+	std::vector<Channel *> channels = rhs.getChannels();
+	for (size_t i = 0 ; i < channels.size() ; i++)
+	{
+		o << *channels[i] << std::endl;
+	}
+	std::vector<User *> users = rhs.getUsers();
+	for (size_t i = 0 ; i < users.size() ; i++)
+	{
+		o << *users[i] << std::endl;
+	}
+	return o;
 }

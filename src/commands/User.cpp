@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:16:24 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 18:01:39 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 00:18:35 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,21 @@ CmdUser::CmdUser(Server *server)
 
 CmdUser::~CmdUser(void){}
 
-void CmdUser::execute(User *user, Message *message)
+void CmdUser::execute(Message *message)
 {
-	std::string response;
+	User *user = message->getAuthor();
 	std::vector<std::string> args = message->getParameters();
 	int fd = user->getFD();
+	std::string serv_name = _server->getName();
 	
 	if (user->getUsername().size() > 0 || user->getRealname().size() > 0)
 	{
-		this->reply(ERR_ALREADYREGISTERED(user->getNickname()), fd);
+		this->reply(serv_name, ERR_ALREADYREGISTERED(user->getNickname()), fd);
 		return;
 	}
 	if (!(args.size() == 4 && args[0].size() > 0 && args[1] == "0" && args[2] == "*" && args[3].size() > 0))
 	{
-		this->reply(ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
+		this->reply(serv_name, ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
 		return;
 	}
 	user->setUsername(args[0]);
@@ -44,6 +45,6 @@ void CmdUser::execute(User *user, Message *message)
 
 	if (user->getIsAuth() && user->getNickname().size() > 0 && user->getUsername().size() > 0)
 	{
-		welcome(user);
+		welcome(message);
 	}
 }

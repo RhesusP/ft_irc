@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:43:33 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 16:44:24 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/03 01:33:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ class Channel
 {
 private:
 	Server *_server;
-	std::vector<User> _members;
-	std::vector<User> _operators;
+	std::vector<User*> _members;
+	std::vector<User*> _operators;
 	std::string _name;
 	std::string _topic;
 	std::string _key;	// password
@@ -33,17 +33,25 @@ private:
 
 public:
 	Channel(Server *server);
-	Channel(Server *server, std::string const & name, User &founder);
-	Channel(Server *server, std::string const & name, std::string const & key, User &founder);
+	Channel(Server *server, std::string const & name, User *founder);
+	Channel(Server *server, std::string const & name, std::string const & key, User *founder);
 	~Channel(void);
 
-	void addMember(User &user);
-	void removeMember(User &user);
-	void addOperator(User &user);
-	void removeOperator(User &user);
+	bool addRegularMember(User *user);
+	void removeRegularMember(User *user);
 
-	std::vector<User> getMembers(void) const;
-	std::vector<User> getOperators(void) const;
+	void removeUser(User *user);
+	
+	void addOperator(User *user);
+	void removeOperator(User *user);
+
+	bool isInChannel(User *user);
+	bool isRegularMember(User *user) const;
+	bool isOperator(User *user) const;
+
+	std::vector<User*> getRegularMembers(void);
+	std::vector<User*> getOperators(void);
+	size_t nbMembers(void) const;
 	std::string const & getName(void) const;
 	std::string const & getTopic(void) const;
 	std::string const & getKey(void) const;
@@ -58,7 +66,13 @@ public:
 	// TODO check if it is the best solution
 	// bool isInviteOnly(void) const;
 
-	bool operator==(Channel const & rhs) const;
+	void broadcast(User *sender, std::string const & message);
+	void broadcast(Server *server, std::string const & message);
+
+	bool operator==(Channel const & rhs);
+	Channel& operator=(Channel & rhs);
 };
+
+std::ostream & operator<<(std::ostream & o, Channel & rhs);
 
 #endif
