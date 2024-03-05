@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 19:52:44 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 15:06:17 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ void CmdJoin::sendJoinMsg(User *user, Channel *chan)
 	std::vector<User*> chops = chan->getOperators();
 	for (size_t i = 0; i < chops.size() ; i++)
 	{
-		// std::cout << *chops[i] << std::endl;
-		// PRINT_WARNING("author nick: " + user->getNickname());
-		// PRINT_WARNING("chan: " + chan->getName());
-		// PRINT_WARNING("chop fd: " + chops[i]->getFD());
-		// PRINT_WARNING("chop nick: " + chops[i]->getNickname());
+		std::cout << *chops[i] << std::endl;
+		PRINT_WARNING("author nick: " + user->getNickname());
+		PRINT_WARNING("chan: " + chan->getName());
+		PRINT_WARNING("chop fd: " + chops[i]->getFD());
+
 		this->reply(serv_name, RPL_NAMREPLY(user->getNickname(), chan->getName(), "@" + chops[i]->getNickname()), user_fd);
 	}
 	for (size_t i = 0; i < chan->getRegularMembers().size() ; i++)
@@ -112,31 +112,31 @@ void CmdJoin::execute(Message *message)
 			PRINT_INFO("Channel " << it->first << " created by " << user->getNickname());
 			this->sendJoinMsg(user, _server->getChannel(it->first));
 		}
-		// else
-		// {
-		// 	// if key is wrong --> send error
-		// 	if (it->second != chan->getKey())
-		// 	{
-		// 		this->reply(serv_name, ERR_BADCHANNELKEY(user->getNickname(), name), user_fd);
-		// 		continue;
-		// 	}
-		// 	// if user is already in the channel --> ignore
-		// 	if (!chan->addRegularMember(user))
-		// 		continue;
-		// 	// if channel is full --> send error
-		// 	if (chan->getLimit() != -1 && (int)chan->nbMembers() + 1 > chan->getLimit())
-		// 	{
-		// 		this->reply(serv_name, ERR_CHANNELISFULL(user->getNickname(), name), user_fd);
-		// 		continue;
-		// 	}
-		// 	// TODO handle channel modes
-		// 	// TODO handle ban list
-		// 	// TODO handle 0 argument (equivalent to part command)
-		// 	else
-		// 	{
-		// 		this->sendJoinMsg(user, chan);
-		// 	}
-		// }
+		else
+		{
+			// if key is wrong --> send error
+			if (it->second != chan->getKey())
+			{
+				this->reply(serv_name, ERR_BADCHANNELKEY(user->getNickname(), name), user_fd);
+				continue;
+			}
+			// if user is already in the channel --> ignore
+			if (!chan->addRegularMember(user))
+				continue;
+			// if channel is full --> send error
+			if (chan->getLimit() != -1 && (int)chan->nbMembers() + 1 > chan->getLimit())
+			{
+				this->reply(serv_name, ERR_CHANNELISFULL(user->getNickname(), name), user_fd);
+				continue;
+			}
+			// TODO handle channel modes
+			// TODO handle ban list
+			// TODO handle 0 argument (equivalent to part command)
+			else
+			{
+				this->sendJoinMsg(user, chan);
+			}
+		}
 		it++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 19:51:45 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 15:05:56 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ std::ostream & operator<<(std::ostream & o, Channel & rhs)
 	std::vector<User*> members = rhs.getRegularMembers();
 	for (size_t i = 0 ; i < members.size() ; i++)
 	{
-		o << "\t" << "(" << members[i] << ") " << members[i]->getNickname() << std::endl;
+		o << "\t" << "(" << members[i]->getFD() << ") " << members[i]->getNickname() << std::endl;
 	}
 	o << "Operators: " << std::endl;
 	std::vector<User*> operators = rhs.getOperators();
