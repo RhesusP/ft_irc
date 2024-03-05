@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Commands.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 00:17:36 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 14:15:16 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,5 +106,14 @@ class CmdPart : public Command
 		~CmdPart(void);
 		void execute(Message *message);
 };
+
+class CmdMode : public Command
+{
+	public:
+		CmdMode(Server *server);
+		~CmdMode(void);
+		void execute(Message *message);
+		bool inputOk(std::string modes);
+}
 
 #endif

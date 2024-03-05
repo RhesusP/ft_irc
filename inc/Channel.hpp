@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:43:33 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 01:33:16 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 13:46:52 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ private:
 	std::string _topic;
 	std::string _key;	// password
 	int _limit;
-	int _mode[5];		// i t k o l
+	int _mode;		// i t k o l
 
 public:
 	Channel(Server *server);
@@ -56,7 +56,7 @@ public:
 	std::string const & getTopic(void) const;
 	std::string const & getKey(void) const;
 	int getLimit(void) const;
-	int const * getModes(void) const;
+	int const getModes(void) const;
 
 	void setTopic(std::string const & topic);
 	void setKey(std::string const & key);

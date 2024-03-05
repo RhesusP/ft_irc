@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 19:58:09 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 11:28:29 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,12 @@ void Server::removeUser(int socket)
 			break;
 		}
 	}
-	// for (size_t i = 0 ; i < _channels.size() ; i++)
-	// {
-	// 	if (_channels.at(i).isInChannel(user))
-	// 		_channels.at(i).removeUser(user);
-	// }
+	user = _users.at(index);
+	for (size_t i = 0 ; i < _channels.size() ; i++)
+	{
+		if (_channels.at(i).isInChannel(&user))
+			_channels.at(i).removeUser(&user);
+	}
 	_users.erase(_users.begin() + index);
 	for (size_t i = 0 ; i < _clients_fds.size() ; i++)
 	{

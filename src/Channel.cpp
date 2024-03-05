@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 19:51:45 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 13:46:43 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,7 @@ Channel::Channel(Server *server)
 	_topic = "";
 	_key = "";
 	_limit = -1;	// no limit
-	_mode[0] = 0;	// i
-	_mode[1] = 0;	// t
-	_mode[2] = 0;	// k
-	_mode[3] = 0;	// o
-	_mode[4] = 0;	// l
+	_mode = 0;		//i = 16, t = 8, k = 4, o = 2, l = 1
 }
 
 Channel::Channel(Server *server, std::string const & name, User *founder)
@@ -33,11 +29,7 @@ Channel::Channel(Server *server, std::string const & name, User *founder)
 	_topic = "";
 	_key = "";
 	_limit = -1;	// no limit
-	_mode[0] = 0;	// i
-	_mode[1] = 0;	// t
-	_mode[2] = 0;	// k
-	_mode[3] = 0;	// o
-	_mode[4] = 0;	// l
+	_mode = 0;		//i = 16, t = 8, k = 4, o = 2, l = 1
 	_operators.push_back(founder);
 }
 
@@ -48,11 +40,7 @@ Channel::Channel(Server *server, std::string const & name, std::string const & k
 	_topic = "";
 	_key = key;
 	_limit = -1;	// no limit
-	_mode[0] = 0;	// i
-	_mode[1] = 0;	// t
-	_mode[2] = 0;	// k
-	_mode[3] = 0;	// o
-	_mode[4] = 0;	// l
+	_mode = 0;		//i = 16, t = 8, k = 4, o = 2, l = 1
 	_operators.push_back(founder);
 }
 
@@ -170,6 +158,7 @@ void Channel::removeOperator(User *user)
 
 void Channel::removeUser(User *user)
 {
+	broadcast(user, RPL_QUIT(user->getNickname(), user->reason));
 	removeRegularMember(user);
 	removeOperator(user);
 }
@@ -209,7 +198,7 @@ int Channel::getLimit(void) const
 	return _limit;
 }
 
-int const * Channel::getModes(void) const
+int const Channel::getModes(void) const
 {
 	return _mode;
 }

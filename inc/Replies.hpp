@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 23:07:55 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 12:32:15 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@
 #define RPL_NAMREPLY(nick, channel, name)				"353 " + nick + " = " + channel + " :" + name + "\r\n"
 
 #define RPL_ENDOFNAMES(nick, channel)					"366 " + nick + " " + channel + " :End of /NAMES list\r\n"
+
+#define RPL_QUIT(nick, reason)							"QUIT :" + reason + "\r\n"
 
 #define ERR_UNKNOWNCOMMAND(nick, command) 				"421 " + nick + " " + command + " :Unknown command\r\n"
 

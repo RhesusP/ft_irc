@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 01:00:11 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 11:46:04 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,11 @@ std::string const & User::getRealname(void) const
 void User::setRealname(std::string const & realname)
 {
 	_realname = realname;
+}
+
+std::vector<Channel *> const & User::getChannels(void) const
+{
+	return (_channels);
 }
 
 std::string User::getIdentity(void) const

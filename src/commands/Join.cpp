@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 19:52:44 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 11:31:14 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,31 +112,31 @@ void CmdJoin::execute(Message *message)
 			PRINT_INFO("Channel " << it->first << " created by " << user->getNickname());
 			this->sendJoinMsg(user, _server->getChannel(it->first));
 		}
-		// else
-		// {
-		// 	// if key is wrong --> send error
-		// 	if (it->second != chan->getKey())
-		// 	{
-		// 		this->reply(serv_name, ERR_BADCHANNELKEY(user->getNickname(), name), user_fd);
-		// 		continue;
-		// 	}
-		// 	// if user is already in the channel --> ignore
-		// 	if (!chan->addRegularMember(user))
-		// 		continue;
-		// 	// if channel is full --> send error
-		// 	if (chan->getLimit() != -1 && (int)chan->nbMembers() + 1 > chan->getLimit())
-		// 	{
-		// 		this->reply(serv_name, ERR_CHANNELISFULL(user->getNickname(), name), user_fd);
-		// 		continue;
-		// 	}
-		// 	// TODO handle channel modes
-		// 	// TODO handle ban list
-		// 	// TODO handle 0 argument (equivalent to part command)
-		// 	else
-		// 	{
-		// 		this->sendJoinMsg(user, chan);
-		// 	}
-		// }
+		else
+		{
+			// if key is wrong --> send error
+			if (it->second != chan->getKey())
+			{
+				this->reply(serv_name, ERR_BADCHANNELKEY(user->getNickname(), name), user_fd);
+				continue;
+			}
+			// if user is already in the channel --> ignore
+			if (!chan->addRegularMember(user))
+				continue;
+			// if channel is full --> send error
+			if (chan->getLimit() != -1 && (int)chan->nbMembers() + 1 > chan->getLimit())
+			{
+				this->reply(serv_name, ERR_CHANNELISFULL(user->getNickname(), name), user_fd);
+				continue;
+			}
+			// TODO handle channel modes
+			// TODO handle ban list
+			// TODO handle 0 argument (equivalent to part command)
+			else
+			{
+				this->sendJoinMsg(user, chan);
+			}
+		}
 		it++;
 	}
 }

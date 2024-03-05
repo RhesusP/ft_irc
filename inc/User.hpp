@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
+/*   By: svanmeen <svanmeen@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 23:52:55 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/05 11:49:37 by svanmeen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,15 @@ public:
 	User(Server* server, int fd, std::string const & hostname, int port);
 	~User(void);
 
+	std::string reason;
+
 	std::string const & getNickname(void) const;
 	std::string const & getUsername(void) const;
 	std::string const & getRealname(void) const;
 	std::string const & getHostname(void) const;
 	std::string getIdentity(void) const;
+	
+	std::vector<Channel *> const & getChannels(void) const;
 
 	void setNickname(std::string const & nickname);
 	void setUsername(std::string const & username);
