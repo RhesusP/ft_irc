@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:56:39 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 11:52:41 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 12:21:02 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,5 @@ void CmdPart::execute(Message *message)
 		channel->removeUser(user);
 		this->reply(user->getIdentity(), "PART " + channels[i] + " :" + reason, fd);
 		channel->broadcast(user, "PART " + channels[i] + " :" + reason);
-		std::list<User*> members = channel->getRegularMembers();
-		std::list<User*> chops = channel->getOperators();
-		for (std::list<User*>::iterator it = chops.begin(); it != chops.end(); it++)
-		{
-			this->reply(serv_name, RPL_NAMREPLY(user->getNickname(), channel->getName(), "@" + (*it)->getNickname()), fd);
-		}
-		for (std::list<User*>::iterator it = members.begin(); it != members.end(); it++)
-		{
-			this->reply(serv_name, RPL_NAMREPLY(user->getNickname(), channel->getName(), (*it)->getNickname()), fd);
-		}
-		this->reply(serv_name, RPL_ENDOFNAMES(user->getNickname(), channel->getName()), fd);
 	}
 }
