@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 10:39:29 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 11:50:07 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,13 +142,13 @@ void Channel::addOperator(User *user)
 
 void Channel::removeOperator(User *user)
 {
-
-	for (std::list<User*>::iterator it = _members.begin() ; it != _members.end() ; it++)
+	PRINT_INFO("Removing " + user->getNickname() + " from operators of channel " + _name);
+	for (std::list<User*>::iterator it = _operators.begin() ; it != _operators.end() ; it++)
 	{
 		if (*it == user)
 		{
 			PRINT_INFO("Removing " + user->getNickname() + " from channel " + _name);
-			_members.erase(it);
+			_operators.erase(it);
 			user->removefromChannel(this);
 			break;
 		}
@@ -156,8 +156,9 @@ void Channel::removeOperator(User *user)
 	if (_operators.size() == 0 && _members.size() > 0)
 	{
 		User *new_operator = *_members.begin();
-		PRINT_INFO("No more operators in channel " + _name + ", setting " + new_operator->getNickname() + " as operator");
 		_operators.push_back(new_operator);
+		_members.erase(_members.begin());
+		PRINT_INFO("No more operators in channel " + _name + ", setting " + new_operator->getNickname() + " as operator");
 	}
 
 	else if (_operators.size() == 0 && _members.size() == 0)
@@ -169,8 +170,8 @@ void Channel::removeOperator(User *user)
 
 void Channel::removeUser(User *user)
 {
-	removeRegularMember(user);
 	removeOperator(user);
+	removeRegularMember(user);
 }
 
 std::list<User*> Channel::getRegularMembers(void)
