@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:43:33 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 01:33:16 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 10:37:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ class Channel
 {
 private:
 	Server *_server;
-	std::vector<User*> _members;
-	std::vector<User*> _operators;
+	std::list<User*> _members;
+	std::list<User*> _operators;
 	std::string _name;
 	std::string _topic;
 	std::string _key;	// password
@@ -46,11 +46,11 @@ public:
 	void removeOperator(User *user);
 
 	bool isInChannel(User *user);
-	bool isRegularMember(User *user) const;
-	bool isOperator(User *user) const;
+	bool isRegularMember(User *user);
+	bool isOperator(User *user);
 
-	std::vector<User*> getRegularMembers(void);
-	std::vector<User*> getOperators(void);
+	std::list<User*> getRegularMembers(void);
+	std::list<User*> getOperators(void);
 	size_t nbMembers(void) const;
 	std::string const & getName(void) const;
 	std::string const & getTopic(void) const;

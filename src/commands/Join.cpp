@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/05 15:06:17 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 10:46:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,15 @@ void CmdJoin::sendJoinMsg(User *user, Channel *chan)
 	this->reply(user_id, "JOIN " + chan->getName() + " * " + user_id , user_fd);
 	if (chan->getTopic().size() > 0)
 		this->reply(serv_name, RPL_TOPIC(user->getNickname(), chan->getName(), chan->getTopic()), user_fd);
-	std::vector<User*> members = chan->getRegularMembers();
-	std::vector<User*> chops = chan->getOperators();
-	for (size_t i = 0; i < chops.size() ; i++)
+	std::list<User*> members = chan->getRegularMembers();
+	std::list<User*> chops = chan->getOperators();
+	for (std::list<User*>::iterator it = chops.begin(); it != chops.end(); it++)
 	{
-		std::cout << *chops[i] << std::endl;
-		PRINT_WARNING("author nick: " + user->getNickname());
-		PRINT_WARNING("chan: " + chan->getName());
-		PRINT_WARNING("chop fd: " + chops[i]->getFD());
-
-		this->reply(serv_name, RPL_NAMREPLY(user->getNickname(), chan->getName(), "@" + chops[i]->getNickname()), user_fd);
+		this->reply(serv_name, RPL_NAMREPLY(user->getNickname(), chan->getName(), "@" + (*it)->getNickname()), user_fd);
 	}
-	for (size_t i = 0; i < chan->getRegularMembers().size() ; i++)
+	for (std::list<User*>::iterator it = members.begin(); it != members.end(); it++)
 	{
-		this->reply(serv_name, RPL_NAMREPLY(user->getNickname(), chan->getName(), members[i]->getNickname()), user_fd);
+		this->reply(serv_name, RPL_NAMREPLY(user->getNickname(), chan->getName(), (*it)->getNickname()), user_fd);
 	}
 	this->reply(serv_name, RPL_ENDOFNAMES(user->getNickname(), chan->getName()), user_fd);
 	

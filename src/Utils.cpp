@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 11:40:51 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/01 18:06:04 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 10:40:21 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,15 @@ std::string trim(const std::string & str, std::string charset)
 	}
 	size_t last = str.find_last_not_of(charset);
 	return str.substr(first, (last - first + 1));
+}
+
+
+std::vector<pollfd> lst_to_vec(std::list<pollfd> list)
+{
+	std::vector<pollfd> vec;
+	for (std::list<pollfd>::iterator it = list.begin(); it != list.end(); it++)
+	{
+		vec.push_back(*it);
+	}
+	return vec;
 }

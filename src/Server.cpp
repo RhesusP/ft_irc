@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 19:58:09 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 10:39:55 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,32 +26,24 @@ void Server::addUser(int socket, char *ip, int port)
 void Server::removeUser(int socket)
 {
 	User user;
-	size_t index;
-	for (size_t i = 0 ; i < _users.size() ; i++)
+	for (std::list<User>::iterator it = _users.begin(); it != _users.end(); it++)
 	{
-		if (_users.at(i).getFD() == socket)
+		if (it->getFD() == socket)
 		{
-			user = _users.at(i);
-			index = i;
+			user = *it;
+			_users.erase(it);
 			break;
 		}
 	}
-	// for (size_t i = 0 ; i < _channels.size() ; i++)
-	// {
-	// 	if (_channels.at(i).isInChannel(user))
-	// 		_channels.at(i).removeUser(user);
-	// }
-	_users.erase(_users.begin() + index);
-	for (size_t i = 0 ; i < _clients_fds.size() ; i++)
+	for (std::list<struct pollfd>::iterator it = _clients_fds.begin(); it != _clients_fds.end(); it++)
 	{
-		if (_clients_fds.at(i).fd == socket)
+		if (it->fd == socket)
 		{
-			_clients_fds.erase(_clients_fds.begin() + i);
+			_clients_fds.erase(it);
 			break;
 		}
 	}
 	close(socket);
-
 }
 
 void	Server::acceptNewConnection(void) {
@@ -147,12 +139,12 @@ void Server::formatRecv(std::string rec, User *user)
 	stash = rec;
 }
 
-std::vector<User *> Server::getUsers(void)
+std::list<User *> Server::getUsers(void)
 {
-	std::vector<User *> res;
-	for (size_t i = 0 ; i < _users.size() ; i++)
+	std::list<User *> res;
+	for (std::list<User>::iterator it = _users.begin(); it != _users.end(); it++)
 	{
-		res.push_back(&(_users[i]));
+		res.push_back(&(*it));
 	}
 	return res;
 }
@@ -162,7 +154,7 @@ time_t Server::getCreationTime(void) const
 	return _creation_time;
 }
 
-std::vector<struct pollfd> Server::getClientsFds(void)
+std::list<struct pollfd> Server::getClientsFds(void)
 {
 	return _clients_fds;
 }
@@ -186,33 +178,33 @@ Channel *Server::addChannel(Channel channel)
 
 void Server::removeChannel(Channel channel)
 {
-	for (size_t i = 0 ; i < _channels.size() ; i++)
+	for (std::list<Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
 	{
-		if (_channels.at(i) == channel)
+		if (*it == channel)
 		{
-			_channels.erase(_channels.begin() + i);
+			_channels.erase(it);
 			break;
 		}
 	}
 	PRINT_SUCCESS("Channel " + channel.getName() + " has been deleted from server");
 }
 
-std::vector<Channel *> Server::getChannels(void)
+std::list<Channel *> Server::getChannels(void)
 {
-	std::vector<Channel *> res;
-	for (size_t i = 0 ; i < _channels.size() ; i++)
+	std::list<Channel *> res;
+	for (std::list<Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
 	{
-		res.push_back(&(_channels[i]));
+		res.push_back(&(*it));
 	}
 	return res;
 }
 
 Channel *Server::getChannel(std::string const &name)
 {
-	for (size_t i = 0 ; i < _channels.size() ; i++)
+	for (std::list<Channel>::iterator it = _channels.begin(); it != _channels.end(); it++)
 	{
-		if (_channels.at(i).getName() == name)
-			return &_channels.at(i);
+		if (it->getName() == name)
+			return &(*it);
 	}
 	return NULL;
 }
@@ -220,15 +212,15 @@ Channel *Server::getChannel(std::string const &name)
 std::ostream & operator<<(std::ostream & o, Server & rhs)
 {
 	o << "Server " << rhs.getName() << " created at " << timestr(rhs.getCreationTime()) << std::endl;
-	std::vector<Channel *> channels = rhs.getChannels();
-	for (size_t i = 0 ; i < channels.size() ; i++)
+	std::list<Channel *> channels = rhs.getChannels();
+	for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
-		o << *channels[i] << std::endl;
+		o << **it << std::endl;
 	}
-	std::vector<User *> users = rhs.getUsers();
-	for (size_t i = 0 ; i < users.size() ; i++)
+	std::list<User *> users = rhs.getUsers();
+	for (std::list<User *>::iterator it = users.begin(); it != users.end(); it++)
 	{
-		o << *users[i] << std::endl;
+		o << **it << std::endl;
 	}
 	return o;
 }

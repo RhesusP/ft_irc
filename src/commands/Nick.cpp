@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 01:28:15 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 10:44:31 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ void CmdNick::execute(Message *message)
 		this->reply(serv_name, ERR_NONICKNAMEGIVEN(user->getNickname()), fd);
 		return;
 	}
-	std::vector<User *> users = _server->getUsers();
+	std::list<User *> users = _server->getUsers();
 
-	for (size_t i = 0 ; i < users.size() ; i++)
+	for (std::list<User *>::iterator it = users.begin(); it != users.end(); it++)
 	{
-		if (users[i]->getNickname() == args[0])
+		if ((*it)->getNickname() == args[0])
 		{
 			this->reply(serv_name, ERR_NICKNAMEINUSE(user->getNickname(), user->getNickname()), fd);
 			return;

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 16:53:24 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 09:59:34 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ private:
 	int _port;
 	std::string _password;
 	std::string _name;
-	std::vector<Channel> _channels;
-	std::vector<User> _users;
+	std::list<Channel> _channels;
+	std::list<User> _users;
 	
-	std::vector<struct pollfd> _clients_fds;				// clients by ufds
+	std::list<struct pollfd> _clients_fds;				// clients by ufds
 	std::time_t	_creation_time;
 	// std::queue<Message> _waitingList;
 	void formatRecv(std::string rec, User *usr);
@@ -64,11 +64,11 @@ public:
 	std::string const & getName(void) const;
 	int getSocket(void) const;
 	std::string getPassword(void) const;
-	std::vector<User *> getUsers(void);
+	std::list<User *> getUsers(void);
 	time_t getCreationTime(void) const;
-	std::vector<struct pollfd> getClientsFds(void);
+	std::list<struct pollfd> getClientsFds(void);
 
-	std::vector<Channel *> getChannels(void);
+	std::list<Channel *> getChannels(void);
 	Channel *getChannel(std::string const &name);
 	Channel *addChannel(Channel channel);
 	void removeChannel(Channel channel);

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 19:48:56 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 10:29:16 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,14 +187,6 @@ void Message::processMessage(void)
 			// if (this->_command == "PASS" || this->_command == "NICK" || this->_command == "USER")
 				// cmds[i]->execute(this);
 			cmds[i]->execute(this);
-			// _server->addChannel(Channel(_server, "test", _author));
-
-			// std::vector<Channel *> channels = _server->getChannels();
-			// for (size_t i = 0; i < channels.size(); i++)
-			// {
-			// 	std::cout << *channels[i] << std::endl;
-			// }
-
 			return;
 		}
 	}

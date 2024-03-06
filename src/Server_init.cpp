@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:53:42 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/03/03 19:53:59 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 11:02:44 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,18 +54,23 @@ void Server::initNetwork(void) {
 
 void Server::waitingForClient(void)
 {
-	int ret = poll(&_clients_fds[0], _users.size() + 1, -1);
+	std::vector<pollfd> client_fds = lst_to_vec(_clients_fds);
+	int ret = poll(&client_fds[0], _users.size() + 1, -1);
 	
 	if (ret == -1)
 		throw PollFailedException();
 	for (size_t i = 0 ; i < _users.size() + 1 ; i++)
 	{
-		if (_clients_fds[i].revents == 0)
+		if (client_fds[i].revents == 0)
 			continue;
-		if (_clients_fds[i].fd == _servSocket)
+		if (client_fds[i].fd == _servSocket)
 			acceptNewConnection();
 		else if (i > 0)
-			readData(&(_users[i - 1]));
+		{
+			std::list<User>::iterator it = _users.begin();
+			std::advance(it, i - 1);
+			readData(&(*it));
+		}
 	}	
 }
 

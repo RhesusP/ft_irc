@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/05 15:05:56 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/06 10:39:29 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,21 +65,21 @@ bool	Channel::isInChannel(User *user)
 	return false;
 }
 
-bool	Channel::isRegularMember(User *user) const
+bool	Channel::isRegularMember(User *user)
 {
-	for (size_t i = 0 ; i < _members.size() ; i++)
+	for (std::list<User*>::iterator it = _members.begin() ; it != _members.end() ; it++)
 	{
-		if (_members[i] == user)
+		if (*it == user)
 			return true;
 	}
 	return false;
 }
 
-bool	Channel::isOperator(User *user) const
+bool	Channel::isOperator(User *user)
 {
-	for (size_t i = 0 ; i < _operators.size() ; i++)
+	for (std::list<User*>::iterator it = _operators.begin() ; it != _operators.end() ; it++)
 	{
-		if (_operators[i] == user)
+		if (*it == user)
 			return true;
 	}
 	return false;
@@ -100,12 +100,12 @@ bool Channel::addRegularMember(User *user)
 
 void Channel::removeRegularMember(User *user)
 {
-	for (size_t i = 0 ; i < _members.size() ; i++)
+	for (std::list<User*>::iterator it = _members.begin() ; it != _members.end() ; it++)
 	{
-		if (_members[i] == user)
+		if (*it == user)
 		{
 			PRINT_INFO("Removing " + user->getNickname() + " from channel " + _name);
-			_members.erase(_members.begin() + i);
+			_members.erase(it);
 			user->removefromChannel(this);
 			return ;
 		}
@@ -119,16 +119,13 @@ void Channel::removeRegularMember(User *user)
 
 void Channel::addOperator(User *user)
 {
-	// std::cout << "addOperator" << std::endl;
-	// std::cout << "user: " << *user << std::endl;
-
 	if (isRegularMember(user))
 	{
-		for (size_t i = 0 ; i < _members.size() ; i++)
+		for (std::list<User*>::iterator it = _members.begin() ; it != _members.end() ; it++)
 		{
-			if (_members[i] == user)
+			if (*it == user)
 			{
-				_members.erase(_members.begin() + i);
+				_members.erase(it);
 				break;
 			}
 		}
@@ -138,7 +135,6 @@ void Channel::addOperator(User *user)
 	else
 	{
 		PRINT_INFO("User " + user->getNickname() + " added to operators of channel " + _name);
-		// std::cout << "user: " << user->getFD() << std::endl;
 		_operators.push_back(user);
 		user->addinChannel(this);
 	}
@@ -146,21 +142,24 @@ void Channel::addOperator(User *user)
 
 void Channel::removeOperator(User *user)
 {
-	for (size_t i = 0 ; i < _operators.size() ; i++)
+
+	for (std::list<User*>::iterator it = _members.begin() ; it != _members.end() ; it++)
 	{
-		if (_operators[i] == user)
+		if (*it == user)
 		{
-			_operators.erase(_operators.begin() + i);
+			PRINT_INFO("Removing " + user->getNickname() + " from channel " + _name);
+			_members.erase(it);
 			user->removefromChannel(this);
-			PRINT_INFO("Removing " + user->getNickname() + " from operators of channel " + _name);
-			return ;
+			break;
 		}
 	}
 	if (_operators.size() == 0 && _members.size() > 0)
 	{
-		PRINT_INFO("No more operators in channel " + _name + ", setting " + _members[0]->getNickname() + " as operator");
-		_operators.push_back(_members[0]);
+		User *new_operator = *_members.begin();
+		PRINT_INFO("No more operators in channel " + _name + ", setting " + new_operator->getNickname() + " as operator");
+		_operators.push_back(new_operator);
 	}
+
 	else if (_operators.size() == 0 && _members.size() == 0)
 	{
 		PRINT_INFO("No more members in channel " + _name + ", deleting it");
@@ -174,12 +173,12 @@ void Channel::removeUser(User *user)
 	removeOperator(user);
 }
 
-std::vector<User*> Channel::getRegularMembers(void)
+std::list<User*> Channel::getRegularMembers(void)
 {
 	return _members;
 }
 
-std::vector<User*> Channel::getOperators(void)
+std::list<User*> Channel::getOperators(void)
 {
 	return _operators;
 }
@@ -231,27 +230,27 @@ void Channel::setLimit(int limit)
 
 void Channel::broadcast(User* sender, std::string const & message)
 {
-	for (size_t i = 0 ; i < _operators.size() ; i++)
+	for (std::list<User*>::iterator it = _members.begin() ; it != _members.end() ; it++)
 	{
-		if (_operators[i] != sender)
-			_server->sendData(sender->getIdentity(), message,_operators[i]->getFD());
+		if (*it != sender)
+			_server->sendData(sender->getIdentity(), message,(*it)->getFD());
 	}
-	for (size_t i = 0 ; i < _members.size() ; i++)
+	for (std::list<User*>::iterator it = _operators.begin() ; it != _operators.end() ; it++)
 	{
-		if (_members[i] != sender)
-			_server->sendData(sender->getIdentity(), message,_members[i]->getFD());
+		if (*it != sender)
+			_server->sendData(sender->getIdentity(), message,(*it)->getFD());
 	}
 }
 
 void Channel::broadcast(Server *server, std::string const & message)
 {
-	for (size_t i = 0 ; i < _operators.size() ; i++)
+	for (std::list<User*>::iterator it = _members.begin() ; it != _members.end() ; it++)
 	{
-		server->sendData(server->getName(), message,_operators[i]->getFD());
+		_server->sendData(server->getName(), message,(*it)->getFD());
 	}
-	for (size_t i = 0 ; i < _members.size() ; i++)
+	for (std::list<User*>::iterator it = _operators.begin() ; it != _operators.end() ; it++)
 	{
-		server->sendData(server->getName(), message,_members[i]->getFD());
+		_server->sendData(server->getName(), message,(*it)->getFD());
 	}
 }
 
@@ -286,16 +285,16 @@ std::ostream & operator<<(std::ostream & o, Channel & rhs)
 	o << "Limit: " << rhs.getLimit() << std::endl;
 	o << "Mode: " << rhs.getModes()[0] << rhs.getModes()[1] << rhs.getModes()[2] << rhs.getModes()[3] << rhs.getModes()[4] << std::endl;
 	o << "Members: " << std::endl;
-	std::vector<User*> members = rhs.getRegularMembers();
-	for (size_t i = 0 ; i < members.size() ; i++)
+	std::list<User*> members = rhs.getRegularMembers();
+	for (std::list<User*>::iterator it = members.begin() ; it != members.end() ; it++)
 	{
-		o << "\t" << "(" << members[i]->getFD() << ") " << members[i]->getNickname() << std::endl;
+		o << "\t" << "(" << (*it)->getFD() << ") " << (*it)->getNickname() << std::endl;
 	}
 	o << "Operators: " << std::endl;
-	std::vector<User*> operators = rhs.getOperators();
-	for (size_t i = 0 ; i < operators.size() ; i++)
+	std::list<User*> operators = rhs.getOperators();
+	for (std::list<User*>::iterator it = operators.begin() ; it != operators.end() ; it++)
 	{
-		o << "\t" << "(" << operators[i]->getFD() << ") " << operators[i]->getNickname() << std::endl;
+		o << "\t" << "(" << (*it)->getFD() << ") " << (*it)->getNickname() << std::endl;
 	}
 	o << "------------------------------------------" << std::endl;
 	return o;
