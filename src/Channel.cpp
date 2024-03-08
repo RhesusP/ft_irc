@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 11:50:07 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/08 15:14:15 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ Channel::Channel(Server *server)
 	_topic = "";
 	_key = "";
 	_limit = -1;	// no limit
-	_mode[0] = 0;	// i
-	_mode[1] = 0;	// t
-	_mode[2] = 0;	// k
-	_mode[3] = 0;	// o
-	_mode[4] = 0;	// l
+	_is_invite_only = false;
+	_is_topic_restricted = false;
+	_creation_time = time(NULL);
 }
 
 Channel::Channel(Server *server, std::string const & name, User *founder)
@@ -33,12 +31,10 @@ Channel::Channel(Server *server, std::string const & name, User *founder)
 	_topic = "";
 	_key = "";
 	_limit = -1;	// no limit
-	_mode[0] = 0;	// i
-	_mode[1] = 0;	// t
-	_mode[2] = 0;	// k
-	_mode[3] = 0;	// o
-	_mode[4] = 0;	// l
+	_is_invite_only = false;
+	_is_topic_restricted = false;
 	_operators.push_back(founder);
+	_creation_time = time(NULL);
 }
 
 Channel::Channel(Server *server, std::string const & name, std::string const & key, User *founder)
@@ -48,12 +44,10 @@ Channel::Channel(Server *server, std::string const & name, std::string const & k
 	_topic = "";
 	_key = key;
 	_limit = -1;	// no limit
-	_mode[0] = 0;	// i
-	_mode[1] = 0;	// t
-	_mode[2] = 0;	// k
-	_mode[3] = 0;	// o
-	_mode[4] = 0;	// l
+	_is_invite_only = false;
+	_is_topic_restricted = false;
 	_operators.push_back(founder);
+	_creation_time = time(NULL);
 }
 
 Channel::~Channel(void) {}
@@ -80,6 +74,16 @@ bool	Channel::isOperator(User *user)
 	for (std::list<User*>::iterator it = _operators.begin() ; it != _operators.end() ; it++)
 	{
 		if (*it == user)
+			return true;
+	}
+	return false;
+}
+
+bool	Channel::isOperator(std::string const & nickname)
+{
+	for (std::list<User*>::iterator it = _operators.begin() ; it != _operators.end() ; it++)
+	{
+		if ((*it)->getNickname() == nickname)
 			return true;
 	}
 	return false;
@@ -209,9 +213,33 @@ int Channel::getLimit(void) const
 	return _limit;
 }
 
-int const * Channel::getModes(void) const
+bool Channel::isInviteOnly(void) const
 {
-	return _mode;
+	return _is_invite_only;
+}
+
+bool Channel::isTopicRestricted(void) const
+{
+	return _is_topic_restricted;
+}
+
+std::string Channel::getModes(void) const
+{
+	std::string res = "";
+	if (_limit != -1)
+		res += "+l";
+	if (_is_invite_only)
+		res += "i";
+	if (_is_topic_restricted)
+		res += "t";
+	if (_key.size() > 0)
+		res += "k";
+	return res;
+}
+
+std::time_t Channel::getCreationTime(void) const
+{
+	return _creation_time;
 }
 
 void Channel::setTopic(std::string const & topic)
@@ -227,6 +255,96 @@ void Channel::setKey(std::string const & key)
 void Channel::setLimit(int limit)
 {
 	_limit = limit;
+}
+void Channel::setInviteOnly(bool is_invite_only)
+{
+	_is_invite_only = is_invite_only;
+}
+
+void Channel::setTopicRestricted(bool is_topic_restricted)
+{
+	_is_topic_restricted = is_topic_restricted;
+}
+
+void Channel::addMode(char mode, std::string const & arg)
+{
+	std::cout << "Adding mode " << mode << " with arg " << arg << std::endl;
+	switch (mode)
+	{
+	case 'i':
+		try {
+			if (arg.size() > 10)
+				_server->sendData();	// TODO check the sender ;
+			int limit = atoi(arg.c_str());
+			if (limit > 0)
+				this->setLimit(limit);
+		} catch (std::exception & e) {}
+		break;
+	case 't':
+		this->setTopicRestricted(true);
+		break;
+	case 'k':
+		try {
+			if (arg.size() > 0)
+				this->setKey(arg);
+		} catch (std::exception & e) {}
+		break;
+	case 'o':
+		try {
+			User *target;
+			std::list<User *> lst = this->getRegularMembers();
+			for (std::list<User *>::iterator it = lst.begin() ; it != lst.end() ; it++)
+			{
+				if ((*it)->getNickname() == arg)
+				{
+					target = *it;
+					break;
+				}
+			}
+			if (target)
+			{
+				this->addOperator(target);
+				_server->sendData();
+			}
+			else
+			{
+				if (!this->isOperator(arg))
+					_server->sendData();
+			}
+		}
+		break;
+	case 'l':
+		/* code */
+		break;
+	default:
+		break;
+	}
+}
+
+void Channel::removeMode(char mode, std::string const & arg)
+{
+	std::cout << "Removing mode " << mode << " with arg " << arg << std::endl;
+	switch (mode)
+	{
+	case 'i':
+		/* code */
+		break;
+	case 't':
+		/* code */
+		break;
+	case 'k':
+		/* code */
+		break;
+	case 'o':
+		/* code */
+		break;
+	case 'l':
+		/* code */
+		break;
+	default:
+		break;
+	}
+	(void)arg;
 }
 
 void Channel::broadcast(User* sender, std::string const & message)
@@ -269,11 +387,8 @@ Channel& Channel::operator=(Channel & rhs)
 	_topic = rhs.getTopic();
 	_key = rhs.getKey();
 	_limit = rhs.getLimit();
-	_mode[0] = rhs.getModes()[0];
-	_mode[1] = rhs.getModes()[1];
-	_mode[2] = rhs.getModes()[2];
-	_mode[3] = rhs.getModes()[3];
-	_mode[4] = rhs.getModes()[4];
+	_is_invite_only = rhs.isInviteOnly();
+
 	return *this;
 }
 
@@ -284,7 +399,7 @@ std::ostream & operator<<(std::ostream & o, Channel & rhs)
 	o << "Topic: " << rhs.getTopic() << std::endl;
 	o << "Key: " << rhs.getKey() << std::endl;
 	o << "Limit: " << rhs.getLimit() << std::endl;
-	o << "Mode: " << rhs.getModes()[0] << rhs.getModes()[1] << rhs.getModes()[2] << rhs.getModes()[3] << rhs.getModes()[4] << std::endl;
+	o << "Mode: " << rhs.getModes() << std::endl;
 	o << "Members: " << std::endl;
 	std::list<User*> members = rhs.getRegularMembers();
 	for (std::list<User*>::iterator it = members.begin() ; it != members.end() ; it++)

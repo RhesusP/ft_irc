@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 10:39:55 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:10:08 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,6 @@ void Server::readData(User *user) {
 	} while (1);
 }
 
-std::string timestr(std::time_t time)
-{
-	struct tm *timeinfo = gmtime(&time);
-	char buffer[80];
-	strftime(buffer, 80, "%Y-%m-%dT%H:%M:%S.%Z", timeinfo);
-	return std::string(buffer);
-}
-
 ssize_t Server::sendData(std::string sender, std::string message, int fd)
 {
 	std::time_t now = time(NULL);
@@ -147,6 +139,16 @@ std::list<User *> Server::getUsers(void)
 		res.push_back(&(*it));
 	}
 	return res;
+}
+
+User* Server::getUser(std::string const &nickname)
+{
+	for (std::list<User>::iterator it = _users.begin(); it != _users.end(); it++)
+	{
+		if (it->getNickname() == nickname)
+			return &(*it);
+	}
+	return NULL;
 }
 
 time_t Server::getCreationTime(void) const

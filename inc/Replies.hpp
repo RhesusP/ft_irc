@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/02 23:07:55 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/08 11:39:37 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,12 @@
 
 #define RPL_ENDOFNAMES(nick, channel)					"366 " + nick + " " + channel + " :End of /NAMES list\r\n"
 
+#define RPL_UMODEIS(nick, mode)							"221 " + nick + " " + mode + "\r\n"
+
+#define RPL_CHANNELMODEIS(nick, channel, mode)			"324 " + nick + " " + channel + " " + mode + "\r\n"
+
+#define RPL_CREATIONTIME(nick, channel, time)			"329 " + nick + " " + channel + " " + time + "\r\n"
+
 #define ERR_UNKNOWNCOMMAND(nick, command) 				"421 " + nick + " " + command + " :Unknown command\r\n"
 
 #define ERR_NEEDMOREPARAMS(client, command)				"461 " + client + " " + command + " :Not enough parameters\r\n"
@@ -60,5 +66,13 @@
 #define ERR_NOSUCHCHANNEL(nick, channel)				"403 " + nick + " " + channel + " :No such channel\r\n"
 
 #define ERR_NOTONCHANNEL(nick, channel)					"442 " + nick + " " + channel + " :You're not on that channel\r\n"
+
+#define ERR_NOSUCHNICK(nick, target)					"401 " + nick + " " + target + " :No such nick/channel\r\n"
+
+#define ERR_USERSDONTMATCH(nick)						"502 " + nick + " :Can't change mode for other users\r\n"
+
+#define ERR_UMODEUNKNOWNFLAG(nick)						"501 " + nick + " :Unknown MODE flag\r\n"
+
+#define ERR_CHANOPRIVSNEEDED(nick, channel)				"482 " + nick + " " + channel + " :You're not channel operator\r\n"
 
 #endif

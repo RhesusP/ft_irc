@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:43:33 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 10:37:16 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/08 15:11:27 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ private:
 	std::string _topic;
 	std::string _key;	// password
 	int _limit;
-	int _mode[5];		// i t k o l
+	bool _is_invite_only;
+	bool _is_topic_restricted;
+	std::time_t	_creation_time;
 
 public:
 	Channel(Server *server);
@@ -48,20 +50,29 @@ public:
 	bool isInChannel(User *user);
 	bool isRegularMember(User *user);
 	bool isOperator(User *user);
+	bool isOperator(std::string const & nickname);
 
 	std::list<User*> getRegularMembers(void);
 	std::list<User*> getOperators(void);
 	size_t nbMembers(void) const;
-	std::string const & getName(void) const;
+	std::string const & getName(void) const;	
 	std::string const & getTopic(void) const;
 	std::string const & getKey(void) const;
 	int getLimit(void) const;
-	int const * getModes(void) const;
+	bool isInviteOnly(void) const;
+	bool isTopicRestricted(void) const;
+	std::string getModes(void) const;
 
 	void setTopic(std::string const & topic);
 	void setKey(std::string const & key);
 	void setLimit(int limit);
-	// void setMode();
+	void setInviteOnly(bool invite_only);
+	void setTopicRestricted(bool topic_restricted);
+
+	void addMode(char mode, std::string const & arg);
+	void removeMode(char mode, std::string const & arg);
+
+	std::time_t getCreationTime(void) const;
 
 	// TODO check if it is the best solution
 	// bool isInviteOnly(void) const;

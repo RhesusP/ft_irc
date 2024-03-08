@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 11:40:51 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 10:40:21 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/08 10:09:50 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,12 @@ std::vector<pollfd> lst_to_vec(std::list<pollfd> list)
 		vec.push_back(*it);
 	}
 	return vec;
+}
+
+std::string timestr(std::time_t time)
+{
+	struct tm *timeinfo = gmtime(&time);
+	char buffer[80];
+	strftime(buffer, 80, "%Y-%m-%dT%H:%M:%S.%Z", timeinfo);
+	return std::string(buffer);
 }

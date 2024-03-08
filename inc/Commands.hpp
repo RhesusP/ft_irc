@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 00:17:36 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/08 12:55:06 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,16 @@ class CmdPart : public Command
 	public:
 		CmdPart(Server *server);
 		~CmdPart(void);
+		void execute(Message *message);
+};
+
+class CmdMode : public Command
+{
+	private:
+		void handleModeString(std::vector<std::string> args, Channel *chan, User *user);
+	public:
+		CmdMode(Server *server);
+		~CmdMode(void);
 		void execute(Message *message);
 };
 

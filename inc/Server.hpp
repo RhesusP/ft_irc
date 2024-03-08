@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 09:59:34 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/08 09:25:06 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ public:
 	int getSocket(void) const;
 	std::string getPassword(void) const;
 	std::list<User *> getUsers(void);
+	User *getUser(std::string const &nickname);
 	time_t getCreationTime(void) const;
 	std::list<struct pollfd> getClientsFds(void);
 
