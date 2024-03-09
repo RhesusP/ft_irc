@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 23:58:59 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 00:36:22 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,7 @@
 #define ERR_USERONCHANNEL(nick, user, channel)			"443 " + nick + " " + user + " " + channel + " :is already on channel\r\n"
 
 #define ERR_INVALIDKEY(nick, channel)					"475 " + nick + " " + channel + " :Invalid channel key\r\n"
+
+#define ERR_USERNOTINCHANNEL(nick, user, channel)		"441 " + nick + " " + user + " " + channel + " :They aren't on that channel\r\n"
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 22:31:03 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 00:47:20 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,8 @@ void Message::getParameters(std::string const &raw)
 
 void Message::processMessage(void)
 {
-	int nb_cmds = 11;
-	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC"};
+	int nb_cmds = 12;
+	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC", "KICK"};
 	CmdMotd cmdMotd(_server);
 	CmdNick cmdNick(_server);
 	CmdPass cmdPass(_server);
@@ -154,6 +154,7 @@ void Message::processMessage(void)
 	CmdPart CmdPart(_server);
 	CmdMode CmdMode(_server);
 	CmdTopic CmdTopic(_server);
+	CmdKick CmdKick(_server);
 
 	Command* cmds[nb_cmds] = {
 		&cmdMotd,
@@ -166,7 +167,8 @@ void Message::processMessage(void)
 		&CmdJoin,
 		&CmdPart,
 		&CmdMode,
-		&CmdTopic
+		&CmdTopic,
+		&CmdKick
 	};
 	for (int i = 0; i < nb_cmds; i++)
 	{
