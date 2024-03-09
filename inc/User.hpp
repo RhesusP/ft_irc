@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 10:27:49 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 21:12:39 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ public:
 	std::string const & getRealname(void) const;
 	std::string const & getHostname(void) const;
 	std::string getIdentity(void) const;
+	std::list<Channel *> getChannels(void) const;
 
 	void setNickname(std::string const & nickname);
 	void setUsername(std::string const & username);

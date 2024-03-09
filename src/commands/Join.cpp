@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 20:47:27 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 21:22:08 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,7 @@ void CmdJoin::execute(Message *message)
 		std::string name = it->first;
 		if (chan == NULL)
 		{
-			_server->addChannel(Channel(_server, name, user));
-			if (it->second != "")
-				_server->getChannel(it->first)->setKey(it->second);
+			_server->addChannel(Channel(_server, name, user), user);
 			PRINT_INFO("Channel " << it->first << " created by " << user->getNickname());
 			this->sendJoinMsg(user, _server->getChannel(it->first));
 		}

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 10:10:08 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 21:21:37 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ std::string const & Server::getName(void) const
 	return _name;
 }
 
-Channel *Server::addChannel(Channel channel)
+Channel *Server::addChannel(Channel channel, User *founder)
 {
     if (getChannel(channel.getName()) != NULL)
     {
@@ -174,6 +174,7 @@ Channel *Server::addChannel(Channel channel)
 		return NULL;
     }
     _channels.push_back(channel);
+	founder->addinChannel(&(_channels.back()));
     PRINT_SUCCESS("Channel " + channel.getName() + " has been added to server");
     return &(_channels.back());
 }

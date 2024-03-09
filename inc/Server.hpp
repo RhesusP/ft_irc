@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 09:25:06 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 21:21:34 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ public:
 
 	std::list<Channel *> getChannels(void);
 	Channel *getChannel(std::string const &name);
-	Channel *addChannel(Channel channel);
+	Channel *addChannel(Channel channel, User *founder);
 	void removeChannel(Channel channel);
 };
 

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 10:28:25 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 21:24:06 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,11 @@ std::string User::getIdentity(void) const
 	return (nick + "!" + user + "@" + host);
 }
 
+std::list<Channel *> User::getChannels(void) const
+{
+	return _channels;
+}
+
 bool User::isRegistered(void) const
 {
 	if (_nickname.size() > 0 && _username.size() > 0 && _realname.size() > 0)
@@ -133,6 +138,12 @@ std::ostream & operator<<(std::ostream & o, User const & rhs)
 	o << "\tRealname: " << rhs.getRealname() << std::endl;
 	o << "\tHostname: " << rhs.getHostname() << std::endl;
 	o << "\tIsAuth: " << (rhs.getIsAuth() ? "true" : "false") << std::endl;
+	o << "\tChannels: " << std::endl;
+	std::list<Channel *> channels = rhs.getChannels();
+	for (std::list<Channel *>::const_iterator it = channels.begin(); it != channels.end(); it++)
+	{
+		o << "\t\t" << (*it)->getName() << std::endl;
+	}
 	o << "------------------------------" << std::endl;
 	return o;
 }
