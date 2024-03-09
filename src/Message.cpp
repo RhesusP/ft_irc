@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 09:08:01 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 22:31:03 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,6 @@ std::string Message::getCommand(std::string const &raw)
 		s = str.substr(0, endpos);
 	else
 		s = str;
-	for (unsigned int i = 0; i < s.size(); i++)
-	{
-		if (!isalpha(s[i]))
-			throw BadCommandException();
-	}
 	_command = s;
 	std::string rawCopy = str;
 	if (endpos != std::string::npos)
@@ -116,44 +111,38 @@ bool have_void_element(std::vector<std::string> & tab)
 void Message::getParameters(std::string const &raw)
 {
 	std::vector<std::string> tab = split(raw, " ");
+	std::vector<std::string> new_tab;
 	for (size_t i = 0 ; i < tab.size() ; i++)
 	{
 		if (tab[i][0] == ':')
 		{
-			// int index = i;
-			tab[i].erase(0, 1);
+			std::string remain = tab[i];
 			for (size_t j = i + 1; j < tab.size() ; j++)
 			{
-				tab[i].append(" " + tab[j]);
-				// index = j;
+				remain.append(" " + tab[j]);
 			}
-			for (size_t j = i + 1; j < tab.size() ; j++)
-			{
-				tab.erase(tab.begin() + j);
-				// index = j;
-			}
-			// tab.erase(tab.end() - 1);
+			new_tab.push_back(remain);
 			break;
 		}
-	}
-	while (have_void_element(tab))
-	{
-		for (size_t i = 0; i < tab.size() ; i++)
+		else
 		{
-			if ((tab[i]).size() == 0)
-			{
-				tab.erase(tab.begin() + i);
-				break;
-			}
+			new_tab.push_back(tab[i]);
 		}
 	}
-	_parameters = tab;
+	for (size_t i = 0; i < new_tab.size() ; i++)
+	{
+		if (new_tab[i][0] == ':')
+		{
+			new_tab[i].erase(0, 1);
+		}
+	}
+	_parameters = new_tab;
 }
 
 void Message::processMessage(void)
 {
-	int nb_cmds = 10;
-	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE"};
+	int nb_cmds = 11;
+	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC"};
 	CmdMotd cmdMotd(_server);
 	CmdNick cmdNick(_server);
 	CmdPass cmdPass(_server);
@@ -164,6 +153,7 @@ void Message::processMessage(void)
 	CmdJoin CmdJoin(_server);
 	CmdPart CmdPart(_server);
 	CmdMode CmdMode(_server);
+	CmdTopic CmdTopic(_server);
 
 	Command* cmds[nb_cmds] = {
 		&cmdMotd,
@@ -175,7 +165,8 @@ void Message::processMessage(void)
 		&cmdUser,
 		&CmdJoin,
 		&CmdPart,
-		&CmdMode
+		&CmdMode,
+		&CmdTopic
 	};
 	for (int i = 0; i < nb_cmds; i++)
 	{
@@ -209,6 +200,7 @@ Message::Message(Server *server, User *user, std::string const &raw)
 	_raw = getCommand(_raw);
 	getParameters(_raw);
 	_author = user;
+	std::cout << *this;
 	processMessage();
 }
 

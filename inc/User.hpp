@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 21:12:39 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 23:47:04 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ public:
 
 	void addinChannel(Channel *chan);
 	void removefromChannel(Channel *chan);
+	bool isOnChannel(Channel *chan);
 
 	bool operator==(User const & rhs) const;
 };

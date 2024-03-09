@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 21:24:06 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 23:47:30 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,16 @@ void User::removefromChannel(Channel *chan)
 			break;
 		}
 	}
+}
+
+bool User::isOnChannel(Channel *chan)
+{
+	for (std::list<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
+	{
+		if (*it == chan)
+			return true;
+	}
+	return false;
 }
 
 bool User::operator==(User const & rhs) const

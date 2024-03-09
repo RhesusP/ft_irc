@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 20:33:43 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 23:58:59 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@
 
 #define RPL_TOPIC(nick, channel, topic)					"332 " + nick + " " + channel + " :" + topic + "\r\n"
 
+#define RPL_NOTOPIC(nick, channel)						"331 " + nick + " " + channel + " :No topic is set\r\n"
+
+#define RPL_TOPICWHOTIME(nick, channel, setat)		"333 " + nick + " " + channel + " " + nick + " " + setat + "\r\n"
+
 #define RPL_NAMREPLY(nick, channel, name)				"353 " + nick + " = " + channel + " :" + name + "\r\n"
 
 #define RPL_ENDOFNAMES(nick, channel)					"366 " + nick + " " + channel + " :End of /NAMES list\r\n"
@@ -39,7 +43,7 @@
 
 #define RPL_CHANNELMODEIS(nick, channel, mode)			"324 " + nick + " " + channel + " " + mode + "\r\n"
 
-#define RPL_CREATIONTIME(nick, channel, time)			"329 " + nick + " " + channel + " " + time + "\r\n"
+#define RPL_CREATIONTIME(nick, channel, timestamp)			"329 " + nick + " " + channel + " " + timestamp + "\r\n"
 
 #define ERR_UNKNOWNCOMMAND(nick, command) 				"421 " + nick + " " + command + " :Unknown command\r\n"
 

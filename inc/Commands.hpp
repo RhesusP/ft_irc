@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 12:55:06 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 20:59:06 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,14 @@ class CmdMode : public Command
 	public:
 		CmdMode(Server *server);
 		~CmdMode(void);
+		void execute(Message *message);
+};
+
+class CmdTopic : public Command
+{
+	public:
+		CmdTopic(Server *server);
+		~CmdTopic(void);
 		void execute(Message *message);
 };
 

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 21:21:37 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 22:03:46 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,6 @@ void Server::readData(User *user) {
 		{
 			buf[size] = '\0';
 			std::string data = buf;
-
 			formatRecv(data, user);
 		}
 	} while (1);
