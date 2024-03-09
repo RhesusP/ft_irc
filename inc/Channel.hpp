@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:43:33 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 15:11:27 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/08 19:19:14 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,8 @@ public:
 	void setInviteOnly(bool invite_only);
 	void setTopicRestricted(bool topic_restricted);
 
-	void addMode(char mode, std::string const & arg);
-	void removeMode(char mode, std::string const & arg);
+	void addMode(char mode, std::string const & arg, User *sender);
+	void removeMode(char mode, std::string const & arg, User *sender);
 
 	std::time_t getCreationTime(void) const;
 

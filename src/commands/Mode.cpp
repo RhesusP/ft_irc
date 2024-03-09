@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 09:07:07 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 14:11:34 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/08 19:19:04 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void CmdMode::handleModeString(std::vector<std::string> args, Channel *chan, Use
 		}
 		// std::cout << "Mode: " << modeString[i] << std::endl;
 		// std::cout << "Arg: " << (j < mode_args.size() ? mode_args[j] : "NULL") << std::endl;
-		add ? chan->addMode(modeString[i], j < mode_args.size() ? mode_args[j] : NULL) : chan->removeMode(modeString[i],j < mode_args.size() ? mode_args[j] : NULL);
+		add ? chan->addMode(modeString[i], j < mode_args.size() ? mode_args[j] : "", user) : chan->removeMode(modeString[i],j < mode_args.size() ? mode_args[j] : "", user);
 		j++;
 	}
 	(void)chan;

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 10:46:16 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 20:47:27 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,7 @@ void CmdJoin::execute(Message *message)
 		chan_pwd[chans[i]] = keys.size() > i ? keys[i] : "";
 	}
 
-	std::map<std::string, std::string>::iterator it = chan_pwd.begin();
-	while (it != chan_pwd.end())
+	for (std::map<std::string, std::string>::iterator it = chan_pwd.begin(); it != chan_pwd.end(); it++)
 	{
 		// if channel name is invalid --> send error
 		if (!isChanNameValid(it->first))
@@ -110,28 +109,42 @@ void CmdJoin::execute(Message *message)
 		else
 		{
 			// if key is wrong --> send error
-			if (it->second != chan->getKey())
+			if (chan->getKey().size() > 0)
 			{
-				this->reply(serv_name, ERR_BADCHANNELKEY(user->getNickname(), name), user_fd);
+				if (it->second.size() == 0)
+				{
+					this->reply(serv_name, ERR_BADCHANNELKEY(user->getNickname(), name), user_fd);
+					continue;
+				}
+				else if (it->second != chan->getKey())
+				{
+					this->reply(serv_name, ERR_INVALIDKEY(user->getNickname(), name), user_fd);
+					continue;
+				}
+			}
+			// if channel is invite-only --> send error
+			if (chan->isInviteOnly())	// TODO handle invite only
+			{
+				this->reply(serv_name, ERR_INVITEONLYCHAN(user->getNickname(), name), user_fd);
 				continue;
 			}
-			// if user is already in the channel --> ignore
-			if (!chan->addRegularMember(user))
-				continue;
 			// if channel is full --> send error
 			if (chan->getLimit() != -1 && (int)chan->nbMembers() + 1 > chan->getLimit())
 			{
 				this->reply(serv_name, ERR_CHANNELISFULL(user->getNickname(), name), user_fd);
 				continue;
 			}
-			// TODO handle channel modes
-			// TODO handle ban list
 			// TODO handle 0 argument (equivalent to part command)
+			// if user is already in the channel --> ignore
+			if (!chan->addRegularMember(user))
+			{
+				this->reply(serv_name, ERR_USERONCHANNEL(user->getNickname(), user->getNickname(), name), user_fd);
+				continue;
+			}
 			else
 			{
 				this->sendJoinMsg(user, chan);
 			}
 		}
-		it++;
 	}
 }

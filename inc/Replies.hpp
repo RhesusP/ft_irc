@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 11:39:37 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 20:33:43 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,15 @@
 #define ERR_UMODEUNKNOWNFLAG(nick)						"501 " + nick + " :Unknown MODE flag\r\n"
 
 #define ERR_CHANOPRIVSNEEDED(nick, channel)				"482 " + nick + " " + channel + " :You're not channel operator\r\n"
+
+#define ERR_INVITEONLYCHAN(nick, channel)				"473 " + nick + " " + channel + " :Cannot join channel (+i)\r\n"
+
+#define ERR_INVALIDMODEPARAM(nick, target, mode, arg, desc)	"696 " + nick + " " + target + " " + mode + " " + arg + " :" + desc + "\r\n"
+
+#define ERR_UNKNOWNMODE(nick, mode)						"472 " + nick + " " + mode + " :is unknown mode char to me\r\n"
+
+#define ERR_USERONCHANNEL(nick, user, channel)			"443 " + nick + " " + user + " " + channel + " :is already on channel\r\n"
+
+#define ERR_INVALIDKEY(nick, channel)					"475 " + nick + " " + channel + " :Invalid channel key\r\n"
 
 #endif

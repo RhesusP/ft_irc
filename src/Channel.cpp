@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 15:14:15 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/09 20:27:26 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,85 +266,130 @@ void Channel::setTopicRestricted(bool is_topic_restricted)
 	_is_topic_restricted = is_topic_restricted;
 }
 
-void Channel::addMode(char mode, std::string const & arg)
+void Channel::addMode(char mode, std::string const & arg, User *sender)
 {
-	std::cout << "Adding mode " << mode << " with arg " << arg << std::endl;
+	// std::cout << "Adding mode " << mode << " with arg " << arg << std::endl;
+	int limit;
+	User *target;
+	std::list<User *> lst;
 	switch (mode)
 	{
-	case 'i':
-		try {
-			if (arg.size() > 10)
-				_server->sendData();	// TODO check the sender ;
-			int limit = atoi(arg.c_str());
-			if (limit > 0)
-				this->setLimit(limit);
-		} catch (std::exception & e) {}
+	case 'l':
+		limit = atoi(arg.c_str());
+		if (arg.size() > 10 || limit < 1)
+		{
+			_server->sendData(_server->getName(), ERR_INVALIDMODEPARAM(sender->getNickname(), this->getName(), "MODE +l", arg, "limit is not valid"), sender->getFD());
+			return ;
+		}
+		this->setLimit(limit);
+		this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+l " + arg));
+		_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+l " + arg), sender->getFD());
 		break;
 	case 't':
 		this->setTopicRestricted(true);
+		this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+t"));
+		_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+t"), sender->getFD());
 		break;
 	case 'k':
-		try {
-			if (arg.size() > 0)
-				this->setKey(arg);
-		} catch (std::exception & e) {}
-		break;
-	case 'o':
-		try {
-			User *target;
-			std::list<User *> lst = this->getRegularMembers();
-			for (std::list<User *>::iterator it = lst.begin() ; it != lst.end() ; it++)
-			{
-				if ((*it)->getNickname() == arg)
-				{
-					target = *it;
-					break;
-				}
-			}
-			if (target)
-			{
-				this->addOperator(target);
-				_server->sendData();
-			}
-			else
-			{
-				if (!this->isOperator(arg))
-					_server->sendData();
-			}
+		if (arg.size() > 0)
+		{
+			this->setKey(arg);
+			this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+k"));
+			_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+k"), sender->getFD());
+		}
+		else
+		{
+			_server->sendData(_server->getName(), ERR_INVALIDMODEPARAM(sender->getNickname(), this->getName(), "MODE +k", "", "key is missing"), sender->getFD());
+			return ;
 		}
 		break;
-	case 'l':
-		/* code */
+	case 'o':
+		lst = this->getRegularMembers();
+		for (std::list<User *>::iterator it = lst.begin() ; it != lst.end() ; it++)
+		{
+			if ((*it)->getNickname() == arg)
+			{
+				target = *it;
+				break;
+			}
+		}
+		if (target)
+		{
+			this->addOperator(target);
+			this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+o " + arg));
+			_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+o " + arg), sender->getFD());
+		}
+		else
+		{
+			if (!this->isOperator(arg))
+				_server->sendData(_server->getName(), ERR_NOTONCHANNEL(sender->getNickname(), this->getName()), sender->getFD());
+		}
+		break;
+	case 'i':
+		this->setInviteOnly(true);
+		this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+i"));
+		_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "+i"), sender->getFD());
 		break;
 	default:
+		_server->sendData(_server->getName(), ERR_UNKNOWNMODE(sender->getNickname(), mode), sender->getFD());
 		break;
 	}
 }
 
-void Channel::removeMode(char mode, std::string const & arg)
+void Channel::removeMode(char mode, std::string const & arg, User *sender)
 {
 	std::cout << "Removing mode " << mode << " with arg " << arg << std::endl;
 	switch (mode)
 	{
-	case 'i':
-		/* code */
+	case 'l':
+		if (this->getLimit() != -1)
+		{
+			this->setLimit(-1);
+			this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-l"));
+			_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-l"), sender->getFD());
+		}
 		break;
 	case 't':
-		/* code */
+		if (this->isTopicRestricted())
+		{
+			this->setTopicRestricted(false);
+			this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-t"));
+			_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-t"), sender->getFD());
+		}
 		break;
 	case 'k':
-		/* code */
+		if (this->getKey().size() > 0)
+		{
+			this->setKey("");
+			this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-k"));
+			_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-k"), sender->getFD());
+		}
 		break;
 	case 'o':
-		/* code */
+		if (this->isOperator(arg))
+		{
+			this->removeOperator(_server->getUser(arg));
+			this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-o " + arg));
+			_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-o " + arg), sender->getFD());
+		}
+		else
+		{
+			if (!this->isRegularMember(_server->getUser(arg)))
+				_server->sendData(_server->getName(), ERR_NOTONCHANNEL(sender->getNickname(), this->getName()), sender->getFD());
+		}
 		break;
-	case 'l':
-		/* code */
+	case 'i':
+		if (this->isInviteOnly())
+		{
+			this->setInviteOnly(false);
+			this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-i"));
+			_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-i"), sender->getFD());
+		}
 		break;
 	default:
+		_server->sendData(_server->getName(), ERR_UNKNOWNMODE(sender->getNickname(), mode), sender->getFD());
 		break;
 	}
-	(void)arg;
 }
 
 void Channel::broadcast(User* sender, std::string const & message)
