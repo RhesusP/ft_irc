@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 00:26:51 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 00:50:21 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,14 @@ class CmdKick : public Command
 	public:
 		CmdKick(Server *server);
 		~CmdKick(void);
+		void execute(Message *message);
+};
+
+class CmdInvite : public Command
+{
+	public:
+		CmdInvite(Server *server);
+		~CmdInvite(void);
 		void execute(Message *message);
 };
 

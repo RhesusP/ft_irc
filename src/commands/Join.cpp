@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 21:22:08 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 01:32:46 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,19 +120,25 @@ void CmdJoin::execute(Message *message)
 					continue;
 				}
 			}
-			// if channel is invite-only --> send error
-			if (chan->isInviteOnly())	// TODO handle invite only
-			{
-				this->reply(serv_name, ERR_INVITEONLYCHAN(user->getNickname(), name), user_fd);
-				continue;
-			}
 			// if channel is full --> send error
 			if (chan->getLimit() != -1 && (int)chan->nbMembers() + 1 > chan->getLimit())
 			{
 				this->reply(serv_name, ERR_CHANNELISFULL(user->getNickname(), name), user_fd);
 				continue;
 			}
-			// TODO handle 0 argument (equivalent to part command)
+			// if channel is invite-only --> send error
+			if (chan->isInviteOnly())
+			{
+				if (user->isInvitedTo(chan))
+				{
+					user->removeFromInviteList(chan);
+				}
+				else
+				{
+					this->reply(serv_name, ERR_INVITEONLYCHAN(user->getNickname(), name), user_fd);
+					continue;
+				}
+			}
 			// if user is already in the channel --> ignore
 			if (!chan->addRegularMember(user))
 			{
@@ -143,6 +149,7 @@ void CmdJoin::execute(Message *message)
 			{
 				this->sendJoinMsg(user, chan);
 			}
+			// TODO handle 0 argument (equivalent to part command)
 		}
 	}
 }

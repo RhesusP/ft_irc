@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 23:47:30 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 01:45:51 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,38 @@ bool User::isOnChannel(Channel *chan)
 	for (std::list<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
 	{
 		if (*it == chan)
+			return true;
+	}
+	return false;
+}
+
+void User::inviteToChannel(Channel *chan)
+{
+	_invite_list.push_back(chan);
+}
+
+void User::removeFromInviteList(Channel *chan)
+{
+	for (std::list<Channel *>::iterator it = _invite_list.begin(); it != _invite_list.end(); it++)
+	{
+		if (*it == chan)
+		{
+			_invite_list.erase(it);
+			break;
+		}
+	}
+}
+
+std::list<Channel *> User::getInviteList(void)
+{
+	return _invite_list;
+}
+
+bool User::isInvitedTo(Channel *channel)
+{
+	for (std::list<Channel *>::iterator it = _invite_list.begin(); it != _invite_list.end(); it++)
+	{
+		if (*it == channel)
 			return true;
 	}
 	return false;

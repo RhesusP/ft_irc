@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 00:36:22 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 01:43:57 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@
 #define RPL_CHANNELMODEIS(nick, channel, mode)			"324 " + nick + " " + channel + " " + mode + "\r\n"
 
 #define RPL_CREATIONTIME(nick, channel, timestamp)			"329 " + nick + " " + channel + " " + timestamp + "\r\n"
+
+#define RPL_INVITING(nick, target, channel)				"341 " + nick + " " + target + " " + channel + "\r\n"
+
+#define RPL_INVITELIST(nick, channel)					"346 " + nick + " " + channel + "\r\n"
+
+#define RPL_ENDOFINVITELIST(nick)						"347 " + nick + " :End of /INVITE list\r\n" 
 
 #define ERR_UNKNOWNCOMMAND(nick, command) 				"421 " + nick + " " + command + " :Unknown command\r\n"
 

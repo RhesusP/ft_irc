@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:44:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 23:47:04 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 01:46:04 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ private:
 	std::string _hostname;		// set during connection process
 	bool _isAuth;
 	std::list<Channel *> _channels;
+	std::list<Channel *> _invite_list;
 	Server*	_server;
 	std::string _msgStash;		// TODO implement if we lost a message while reading from several sockets
 
@@ -57,6 +58,11 @@ public:
 	void addinChannel(Channel *chan);
 	void removefromChannel(Channel *chan);
 	bool isOnChannel(Channel *chan);
+
+	void inviteToChannel(Channel *chan);
+	void removeFromInviteList(Channel *chan);
+	std::list<Channel *> getInviteList(void);
+	bool isInvitedTo(Channel *chan);
 
 	bool operator==(User const & rhs) const;
 };
