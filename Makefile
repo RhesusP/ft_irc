@@ -6,7 +6,7 @@
 #    By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/15 02:00:37 by cbernot           #+#    #+#              #
-#    Updated: 2024/03/10 00:50:09 by cbernot          ###   ########.fr        #
+#    Updated: 2024/03/10 01:53:51 by cbernot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ LST_SRC	=	main.cpp \
 			Channel.cpp \
 			Exceptions.cpp Message.cpp Utils.cpp \
 
-LST_CMD = Pass.cpp Commands.cpp Unknown.cpp Quit.cpp User.cpp Nick.cpp Motd.cpp Ping.cpp Join.cpp Part.cpp Mode.cpp Topic.cpp Kick.cpp Invite.cpp
+LST_CMD = Pass.cpp Commands.cpp Unknown.cpp Quit.cpp User.cpp Nick.cpp Motd.cpp Ping.cpp Join.cpp Part.cpp Mode.cpp Topic.cpp Kick.cpp Invite.cpp Privmsg.cpp
 
 # Directories
 DIR_INC	=	inc/

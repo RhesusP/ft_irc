@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 00:50:21 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 01:54:03 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,14 @@ class CmdInvite : public Command
 	public:
 		CmdInvite(Server *server);
 		~CmdInvite(void);
+		void execute(Message *message);
+};
+
+class CmdPrivmsg : public Command
+{
+	public:
+		CmdPrivmsg(Server *server);
+		~CmdPrivmsg(void);
 		void execute(Message *message);
 };
 

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 01:43:57 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 02:12:19 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@
 #define RPL_INVITELIST(nick, channel)					"346 " + nick + " " + channel + "\r\n"
 
 #define RPL_ENDOFINVITELIST(nick)						"347 " + nick + " :End of /INVITE list\r\n" 
+
+#define RPL_PRIVMSG(target, text)						"PRIVMSG " + target + " :" + text + "\r\n"
 
 #define ERR_UNKNOWNCOMMAND(nick, command) 				"421 " + nick + " " + command + " :Unknown command\r\n"
 
@@ -96,5 +98,11 @@
 #define ERR_INVALIDKEY(nick, channel)					"475 " + nick + " " + channel + " :Invalid channel key\r\n"
 
 #define ERR_USERNOTINCHANNEL(nick, user, channel)		"441 " + nick + " " + user + " " + channel + " :They aren't on that channel\r\n"
+
+#define ERR_NORECIPIENT(nick, command)					"411 " + nick + " :No recipient given (" + command + ")\r\n"
+
+#define ERR_NOTEXTTOSEND(nick)							"412 " + nick + " :No text to send\r\n"
+
+#define ERR_CANNOTSENDTOCHAN(nick, channel)				"404 " + nick + " " + channel + " :Cannot send to channel\r\n"
 
 #endif
