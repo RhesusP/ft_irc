@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 22:03:46 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:32:56 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void Server::addUser(int socket, char *ip, int port)
 	_clients_fds.push_back(ufd);
 }
 
-void Server::removeUser(int socket)
+void Server::removeUser(int socket, std::string const & reason)
 {
 	User user;
 	for (std::list<User>::iterator it = _users.begin(); it != _users.end(); it++)
@@ -35,6 +35,15 @@ void Server::removeUser(int socket)
 			break;
 		}
 	}
+
+	// remove user from all channels
+	std::list<Channel *> channels = user.getChannels();
+	for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
+	{
+		(*it)->broadcast(&user, RPL_QUIT(reason));
+		(*it)->removeUser(&user);
+	}
+
 	for (std::list<struct pollfd>::iterator it = _clients_fds.begin(); it != _clients_fds.end(); it++)
 	{
 		if (it->fd == socket)
@@ -75,14 +84,14 @@ void Server::readData(User *user) {
 			if (errno != EAGAIN && errno != EWOULDBLOCK)
 			{
 				PRINT_ERROR("Error: failed to read data from socket " + user->getFD());
-				removeUser(user->getFD());
+				removeUser(user->getFD(), "Failed to contact client");
 			}
 			break;
 		}
 		else if (size == 0)
 		{
 			std::cout << "User " << user->getFD() << " disconnected" << std::endl;
-			removeUser(user->getFD());
+			removeUser(user->getFD(), "Client disconnected");
 			break;
 		}
 		else

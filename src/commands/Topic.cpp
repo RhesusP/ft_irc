@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 20:59:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 00:12:08 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 03:13:53 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,10 @@ void CmdTopic::execute(Message *message)
 	else if (args.size() == 2)
 	{
 		std::string topic = args[1];
+		if (topic.size() > TOPICLEN)
+		{
+			topic = topic.substr(0, TOPICLEN);
+		}
 		if (!channel)
 		{
 			this->reply(_server->getName(), ERR_NOSUCHCHANNEL(user->getNickname(), channel_name), fd);

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 10:25:05 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 00:08:16 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:30:50 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,17 @@ CmdQuit::~CmdQuit(void){}
 
 void CmdQuit::execute(Message *message)
 {
-	(void)message;
-	// std::string response;
-	// std::vector<std::string> args = message->getParameters();
-	// int fd = user->getFD();
+	User *user = message->getAuthor();
+	std::vector<std::string> args = message->getParameters();
+	std::string serv_name = _server->getName();
+	int fd = user->getFD();
 
-	// this->reply("ERROR: " + user->getNickname() + " quit the server.", fd);
-	// // TODO send quit message to all user's channels
-	
-	
-	// this->reply("ERROR :Closing Link: " + user->getNickname() + " (" + args[0] + ")", fd);
+	std::string reason = args.size() > 0 ? args[0] : "Client quit";
+	std::list<Channel*> channels = user->getChannels();
+	for (std::list<Channel*>::iterator it = channels.begin(); it != channels.end(); it++)
+	{
+		(*it)->broadcast(user, RPL_QUIT(reason));
+		(*it)->removeUser(user);
+	}
+	_server->removeUser(fd, reason);
 }

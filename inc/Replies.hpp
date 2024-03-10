@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 02:44:23 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:22:53 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #define RPL_YOURHOST(nick, hostname)					"002 " + nick + " :Your host is " + hostname + ", running version 1\r\n"
 
 #define RPL_CREATED(nick, datetime)						"003 " + nick + " :This server was created " + datetime + "\r\n"
+
+#define RPL_ISUPPORT(nick, support)						"005 " + nick + " " + support + "\r\n"
 
 #define RPL_LUSERCLIENT(nick, user_nb)					"251 " + nick + " :There are " + user_nb + " users on 1 server\r\n"
 
@@ -56,6 +58,8 @@
 #define RPL_WHOREPLY(nick, channel, username, host, nickname, flags, realname)	"352 " + nick + " " + channel + " " + username + " " + host + " " + SERVER_NAME + " " + nickname + " " + flags + " :0 " + realname + "\r\n"
 
 #define RPL_ENDOFWHO(nick, mask)						"315 " + nick + " " + mask + " :End of /WHO list\r\n"
+
+#define RPL_QUIT(reason)								(std::string("QUIT :") + reason + "\r\n")
 
 #define ERR_UNKNOWNCOMMAND(nick, command) 				"421 " + nick + " " + command + " :Unknown command\r\n"
 

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 11:40:51 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 10:09:50 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:47:08 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,18 @@
 std::vector<std::string>	split(std::string str, std::string delimiter)
 {
 	std::vector<std::string> res;
-	unsigned int pos = 0;
-	int del_len = delimiter.size();
-	while (pos < str.size())
-	{
-		pos = str.find(delimiter);
-		res.push_back(str.substr(0, pos));
-		str.erase(0, pos + del_len);		
-	}
-	if (str.size() > 0 && str != res.back())
-	{
-		res.push_back(str);
-	}
-	return res;
+    size_t pos = 0;
+    size_t del_len = delimiter.size();
+    while ((pos = str.find(delimiter)) != std::string::npos)
+    {
+        res.push_back(str.substr(0, pos));
+        str.erase(0, pos + del_len);
+    }
+    if (!str.empty())
+    {
+        res.push_back(str);
+    }
+    return res;
 }
 
 std::string trim(const std::string & str, std::string charset)
@@ -65,4 +64,24 @@ std::string timestr(std::time_t time)
 	char buffer[80];
 	strftime(buffer, 80, "%Y-%m-%dT%H:%M:%S.%Z", timeinfo);
 	return std::string(buffer);
+}
+
+bool isUsernameValid(std::string username)
+{
+	if (username.size() < 1 || username.size() > USERLEN)
+	{
+		return false;
+	}
+	if (username[0] == ':' || username[0] == '#' || username[0] == '&' || username[0] == '~' || username[0] == '+' || username[0] == '%')
+	{
+		return false;
+	}
+	for (size_t i = 0; i < username.size(); i++)
+	{
+		if (username[i] == ',' || username[i] == '\r' || username[i] == '\n' || username[i] == '\t')
+		{
+			return false;
+		}
+	}
+	return true;
 }

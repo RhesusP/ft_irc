@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/09 21:21:34 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:20:17 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ public:
 	
 	void initNetwork(void);
 	void addUser(int socket, char *ip, int port);
-	void removeUser(int socket);
+	void removeUser(int socket, std::string const & reason);
 	void readData(User *User);
 	void acceptNewConnection(void);
 	ssize_t sendData(std::string sender, std::string message, int fd);

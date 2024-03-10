@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:56:39 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/06 21:25:08 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:59:17 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void CmdPart::execute(Message *message)
 	std::vector<std::string> channels = split(args[0], ",");
 	std::string reason = args.size() > 1 ? args[1] : "";
 
-	for (size_t i = 0; i < channels.size(); i++)
+	for (size_t i = 0; i < channels.size() && i < TARGMAX; i++)
 	{
 		Channel *channel = _server->getChannel(channels[i]);
 		if (!channel)
@@ -70,6 +70,6 @@ void CmdPart::execute(Message *message)
 		channel->removeUser(user);
 		this->reply(user->getIdentity(), "PART " + channels[i] + " :" + reason, fd);
 		channel->broadcast(user, "PART " + channels[i] + " :" + reason);
-		sendUserList(_server, user, channel);
+		// sendUserList(_server, user, channel);
 	}
 }

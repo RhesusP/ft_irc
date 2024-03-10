@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:16:24 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 00:18:35 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:51:28 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ void CmdUser::execute(Message *message)
 	{
 		this->reply(serv_name, ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
 		return;
+	}
+	if (args[0].size() > USERLEN)
+	{
+		args[0] = args[0].substr(0, USERLEN);
 	}
 	user->setUsername(args[0]);
 	std::cout << "Set username to " << user->getUsername() << std::endl;

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/08 10:53:42 by svanmeen          #+#    #+#             */
-/*   Updated: 2024/03/06 11:02:44 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:27:36 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,6 @@ void	Server::setSocketNonBlocking(int fd)
 	{
 		PRINT_ERROR("Error: failed to set socket non-blocking");
 		if (fd != _servSocket)
-			removeUser(fd);
+			removeUser(fd, "");
 	}
 }

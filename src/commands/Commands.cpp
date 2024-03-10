@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:44:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 00:19:45 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 03:09:38 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,16 @@ void Command::welcome(Message *message)
 	this->reply(serv_name, RPL_WELCOME(user->getNickname(), serv_name, user->getIdentity()), fd);
 	this->reply(serv_name, RPL_YOURHOST(user->getNickname(), serv_name), fd);
 	this->reply(serv_name, RPL_CREATED(user->getNickname(), creationTimeString), fd);
-	// TODO need to send RPL_ISUPPORT
+	std::stringstream support;
+	support << "CASEMAPPING=ascii";
+	support << ",CHANNELLEN=" << CHANNELLEN;
+	support << ",CHANTYPES=#";
+	support << ",NICKLEN=" << NICKLEN;
+	support << "SILENCE";
+	support << ",TARGMAX=" << TARGMAX;
+	support << ",TOPICLEN=" << TOPICLEN;
+	support << ",USERLEN=" << USERLEN;
+	this->reply(serv_name, RPL_ISUPPORT(user->getNickname(), support.str()), fd);
 	std::stringstream ss;
 	ss << _server->getUsers().size();
 	this->reply(serv_name, RPL_LUSERCLIENT(user->getNickname(), ss.str()), fd);

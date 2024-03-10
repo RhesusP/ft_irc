@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 01:32:46 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 20:59:22 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool CmdJoin::isChanNameValid (std::string const & name)
 {
-	if (name.size() < 1)
+	if (name.size() < 1 || name.size() > CHANNELLEN)
 		return false;
 	if (name[0] != '#' && name[0] != '&')
 		return false;
@@ -79,14 +79,27 @@ void CmdJoin::execute(Message *message)
 	// if too many parameters --> ignore
 	if (args.size() > 2)
 		return;
+	// Act as PART command for all users channels
+	if (args.size() == 1 && args[0].size() == 1 && args[0][0] == '0')
+	{
+		std::list<Channel*> channels = user->getChannels();
+		for (std::list<Channel*>::iterator it = channels.begin(); it != channels.end(); it++)
+		{
+			Channel *chan = *it;
+			chan->removeUser(user);
+			this->reply(user->getNickname(), "PART " + chan->getName(), user_fd);
+			chan->broadcast(user, "PART " + chan->getName());
+			PRINT_INFO("User " << user->getNickname() << " left channel " << chan->getName());
+		}
+		return;
+	}
 	std::vector<std::string> chans = split(args[0], ",");
 	std::vector<std::string> keys = args.size() == 2 ? split(args[1], ",") : std::vector<std::string>();
 	std::map<std::string, std::string> chan_pwd;
-	for (size_t i = 0 ; i < chans.size() ; i++)
+	for (size_t i = 0 ; i < chans.size() && i < TARGMAX ; i++)
 	{
 		chan_pwd[chans[i]] = keys.size() > i ? keys[i] : "";
 	}
-
 	for (std::map<std::string, std::string>::iterator it = chan_pwd.begin(); it != chan_pwd.end(); it++)
 	{
 		// if channel name is invalid --> send error

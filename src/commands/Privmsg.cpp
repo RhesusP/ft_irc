@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 01:54:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 02:18:18 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 21:04:46 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void CmdPrivmsg::execute(Message *message)
 				continue ;
 			}
 			channel->broadcast(user, RPL_PRIVMSG(targets[i], text));
-			this->reply(user->getNickname(), RPL_PRIVMSG(targets[i], text), fd);
 		}
 		// send message to a user
 		else
@@ -69,7 +68,6 @@ void CmdPrivmsg::execute(Message *message)
 				continue ;
 			}
 			_server->sendData(user->getNickname(), RPL_PRIVMSG(targets[i], text), target->getFD());
-			_server->sendData(user->getNickname(), RPL_PRIVMSG(targets[i], text), fd);
 		}
 	}
 }
