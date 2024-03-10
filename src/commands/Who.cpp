@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 02:24:47 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 02:46:33 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:08:59 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ CmdWho::CmdWho(Server *server)
 	_need_registration = false;
 }
 
-CmdWho::~CmdWho(void){}
+CmdWho::~CmdWho(void) {}
 
 void CmdWho::execute(Message *message)
 {
@@ -27,7 +27,7 @@ void CmdWho::execute(Message *message)
 	std::vector<std::string> args = message->getParameters();
 	int fd = user->getFD();
 	std::string serv_name = _server->getName();
-	
+
 	if (args.size() > 0)
 	{
 		std::string mask = args[0];
@@ -38,7 +38,7 @@ void CmdWho::execute(Message *message)
 			if (channel == NULL)
 			{
 				this->reply(serv_name, RPL_ENDOFWHO(user->getNickname(), mask), fd);
-				return ;
+				return;
 			}
 			std::list<User *> chops = channel->getOperators();
 			for (std::list<User *>::iterator it = chops.begin(); it != chops.end(); it++)
@@ -59,7 +59,7 @@ void CmdWho::execute(Message *message)
 			if (target == NULL)
 			{
 				this->reply(serv_name, RPL_ENDOFWHO(user->getNickname(), mask), fd);
-				return ;
+				return;
 			}
 			else
 			{

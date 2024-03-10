@@ -6,15 +6,15 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:44:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 03:09:38 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:44:31 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../inc/Commands.hpp"
 
-Command::Command(){}
+Command::Command() {}
 
-Command::~Command(void){}
+Command::~Command(void) {}
 
 bool Command::getNeedAuth(void) const
 {
@@ -26,7 +26,8 @@ bool Command::getNeedRegistration(void) const
 	return _need_registration;
 }
 
-void Command::execute(Message *message) {
+void Command::execute(Message *message)
+{
 	(void)message;
 }
 
@@ -55,14 +56,13 @@ void Command::welcome(Message *message)
 	std::stringstream ss;
 	ss << _server->getUsers().size();
 	this->reply(serv_name, RPL_LUSERCLIENT(user->getNickname(), ss.str()), fd);
-	ss.clear();
 	std::stringstream ss1;
 	ss1 << _server->getClientsFds().size() - 1;
 	this->reply(serv_name, RPL_LUSERME(user->getNickname(), ss1.str()), fd);
 	motd.execute(message);
 }
 
-int  Command::reply(std::string sender, std::string response, int fd)
+int Command::reply(std::string sender, std::string response, int fd)
 {
 	return (_server->sendData(sender, response, fd));
 }

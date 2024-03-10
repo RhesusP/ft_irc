@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:46:35 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 00:08:47 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:05:14 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ CmdPass::CmdPass(Server *server)
 	_need_registration = false;
 }
 
-CmdPass::~CmdPass(void){}
+CmdPass::~CmdPass(void) {}
 
 void CmdPass::execute(Message *message)
 {
@@ -42,7 +42,7 @@ void CmdPass::execute(Message *message)
 	{
 		user->setIsAuth(true);
 		PRINT_SUCCESS("User " << user->getFD() << " is now authentified");
-		return ;
+		return;
 	}
 	else
 	{

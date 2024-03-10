@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 10:25:05 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 20:30:50 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:05:43 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ CmdQuit::CmdQuit(Server *server)
 	_need_registration = false;
 }
 
-CmdQuit::~CmdQuit(void){}
+CmdQuit::~CmdQuit(void) {}
 
 void CmdQuit::execute(Message *message)
 {
@@ -29,8 +29,8 @@ void CmdQuit::execute(Message *message)
 	int fd = user->getFD();
 
 	std::string reason = args.size() > 0 ? args[0] : "Client quit";
-	std::list<Channel*> channels = user->getChannels();
-	for (std::list<Channel*>::iterator it = channels.begin(); it != channels.end(); it++)
+	std::list<Channel *> channels = user->getChannels();
+	for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
 		(*it)->broadcast(user, RPL_QUIT(reason));
 		(*it)->removeUser(user);

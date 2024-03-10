@@ -6,13 +6,13 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 20:59:22 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:01:33 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../inc/Commands.hpp"
 
-bool CmdJoin::isChanNameValid (std::string const & name)
+bool CmdJoin::isChanNameValid(std::string const &name)
 {
 	if (name.size() < 1 || name.size() > CHANNELLEN)
 		return false;
@@ -22,9 +22,9 @@ bool CmdJoin::isChanNameValid (std::string const & name)
 	{
 		if (name[i] == ' ' || name[i] == ',' || name[i] == '\r' || name[i] == '\n' || name[i] == '\t')
 			return false;
+		if (i > 0 && name[i] == 'G' && name[i - 1] == '^')
+			return false;
 	}
-	if (name.find("^G") != std::string::npos)
-		return false;
 	return true;
 }
 
@@ -34,21 +34,21 @@ void CmdJoin::sendJoinMsg(User *user, Channel *chan)
 	std::string user_id = user->getIdentity();
 	int user_fd = user->getFD();
 
-	this->reply(user_id, "JOIN " + chan->getName() + " * " + user_id , user_fd);
+	this->reply(user_id, "JOIN " + chan->getName() + " * " + user_id, user_fd);
 	if (chan->getTopic().size() > 0)
 		this->reply(serv_name, RPL_TOPIC(user->getNickname(), chan->getName(), chan->getTopic()), user_fd);
-	std::list<User*> members = chan->getRegularMembers();
-	std::list<User*> chops = chan->getOperators();
-	for (std::list<User*>::iterator it = chops.begin(); it != chops.end(); it++)
+	std::list<User *> members = chan->getRegularMembers();
+	std::list<User *> chops = chan->getOperators();
+	for (std::list<User *>::iterator it = chops.begin(); it != chops.end(); it++)
 	{
 		this->reply(serv_name, RPL_NAMREPLY(user->getNickname(), chan->getName(), "@" + (*it)->getNickname()), user_fd);
 	}
-	for (std::list<User*>::iterator it = members.begin(); it != members.end(); it++)
+	for (std::list<User *>::iterator it = members.begin(); it != members.end(); it++)
 	{
 		this->reply(serv_name, RPL_NAMREPLY(user->getNickname(), chan->getName(), (*it)->getNickname()), user_fd);
 	}
 	this->reply(serv_name, RPL_ENDOFNAMES(user->getNickname(), chan->getName()), user_fd);
-	
+
 	// send message to all users in the channel
 	chan->broadcast(user, "JOIN " + chan->getName() + " * " + user_id);
 	PRINT_INFO("User " << user->getNickname() << " joined channel " << chan->getName());
@@ -61,7 +61,7 @@ CmdJoin::CmdJoin(Server *server)
 	_need_registration = true;
 }
 
-CmdJoin::~CmdJoin(void){}
+CmdJoin::~CmdJoin(void) {}
 
 // no max channels for a user
 void CmdJoin::execute(Message *message)
@@ -70,7 +70,7 @@ void CmdJoin::execute(Message *message)
 	std::string serv_name = _server->getName();
 	int user_fd = user->getFD();
 	std::vector<std::string> args = message->getParameters();
-	
+
 	if (args.size() < 1)
 	{
 		this->reply(serv_name, ERR_NEEDMOREPARAMS(user->getNickname(), "JOIN"), user_fd);
@@ -82,8 +82,8 @@ void CmdJoin::execute(Message *message)
 	// Act as PART command for all users channels
 	if (args.size() == 1 && args[0].size() == 1 && args[0][0] == '0')
 	{
-		std::list<Channel*> channels = user->getChannels();
-		for (std::list<Channel*>::iterator it = channels.begin(); it != channels.end(); it++)
+		std::list<Channel *> channels = user->getChannels();
+		for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
 		{
 			Channel *chan = *it;
 			chan->removeUser(user);
@@ -96,7 +96,7 @@ void CmdJoin::execute(Message *message)
 	std::vector<std::string> chans = split(args[0], ",");
 	std::vector<std::string> keys = args.size() == 2 ? split(args[1], ",") : std::vector<std::string>();
 	std::map<std::string, std::string> chan_pwd;
-	for (size_t i = 0 ; i < chans.size() && i < TARGMAX ; i++)
+	for (size_t i = 0; i < chans.size() && i < TARGMAX; i++)
 	{
 		chan_pwd[chans[i]] = keys.size() > i ? keys[i] : "";
 	}
@@ -162,7 +162,6 @@ void CmdJoin::execute(Message *message)
 			{
 				this->sendJoinMsg(user, chan);
 			}
-			// TODO handle 0 argument (equivalent to part command)
 		}
 	}
 }

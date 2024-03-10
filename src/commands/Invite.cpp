@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 00:51:01 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 01:48:44 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 22:59:19 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ CmdInvite::CmdInvite(Server *server)
 	_need_registration = true;
 }
 
-CmdInvite::~CmdInvite(void){}
+CmdInvite::~CmdInvite(void) {}
 
 void CmdInvite::execute(Message *message)
 {
@@ -31,18 +31,18 @@ void CmdInvite::execute(Message *message)
 	if (args.size() > 0 && args.size() < 2)
 	{
 		reply(serv_name, ERR_NEEDMOREPARAMS(user->getNickname(), "INVITE"), fd);
-		return ;
+		return;
 	}
 	// Show invite list
 	if (args.size() == 0)
 	{
-		std::list<Channel*> invites = user->getInviteList();
+		std::list<Channel *> invites = user->getInviteList();
 		for (std::list<Channel *>::iterator it = invites.begin(); it != invites.end(); it++)
 		{
 			this->reply(serv_name, RPL_INVITELIST(user->getNickname(), (*it)->getName()), fd);
 		}
 		this->reply(serv_name, RPL_ENDOFINVITELIST(user->getNickname()), fd);
-		return ;
+		return;
 	}
 	std::string nick = args[0];
 	std::string channel_name = args[1];
@@ -53,27 +53,27 @@ void CmdInvite::execute(Message *message)
 	if (!channel)
 	{
 		reply(serv_name, ERR_NOSUCHCHANNEL(user->getNickname(), channel_name), fd);
-		return ;
+		return;
 	}
 	if (!target)
 	{
 		reply(serv_name, ERR_NOSUCHNICK(user->getNickname(), nick), fd);
-		return ;
+		return;
 	}
 	if (!user->isOnChannel(channel))
 	{
 		reply(serv_name, ERR_NOTONCHANNEL(user->getNickname(), channel_name), fd);
-		return ;
+		return;
 	}
 	if (!channel->isOperator(user))
 	{
 		reply(serv_name, ERR_CHANOPRIVSNEEDED(user->getNickname(), channel_name), fd);
-		return ;
+		return;
 	}
 	if (target->isOnChannel(channel))
 	{
 		reply(serv_name, ERR_USERONCHANNEL(user->getNickname(), nick, channel_name), fd);
-		return ;
+		return;
 	}
 	target->inviteToChannel(channel);
 	reply(user->getNickname(), RPL_INVITING(user->getNickname(), nick, channel_name), fd);

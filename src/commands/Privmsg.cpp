@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 01:54:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 21:04:46 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:05:39 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ CmdPrivmsg::CmdPrivmsg(Server *server)
 	_need_registration = true;
 }
 
-CmdPrivmsg::~CmdPrivmsg(void){}
+CmdPrivmsg::~CmdPrivmsg(void) {}
 
 void CmdPrivmsg::execute(Message *message)
 {
@@ -31,16 +31,16 @@ void CmdPrivmsg::execute(Message *message)
 	if (args.size() == 0)
 	{
 		reply(serv_name, ERR_NORECIPIENT(user->getNickname(), "PRIVMSG"), fd);
-		return ;
+		return;
 	}
 	else if (args.size() == 1)
 	{
 		reply(serv_name, ERR_NOTEXTTOSEND(user->getNickname()), fd);
-		return ;
+		return;
 	}
 	std::vector<std::string> targets = split(args[0], ",");
 	std::string text = args[1];
-	for (size_t i = 0; i < targets.size() ; i++)
+	for (size_t i = 0; i < targets.size(); i++)
 	{
 		// send message to a channel
 		if (targets[i][0] == '&' || targets[i][0] == '#')
@@ -49,12 +49,12 @@ void CmdPrivmsg::execute(Message *message)
 			if (channel == NULL)
 			{
 				reply(serv_name, ERR_CANNOTSENDTOCHAN(user->getNickname(), targets[i]), fd);
-				continue ;
+				continue;
 			}
 			if (!user->isOnChannel(channel))
 			{
 				reply(serv_name, ERR_CANNOTSENDTOCHAN(user->getNickname(), targets[i]), fd);
-				continue ;
+				continue;
 			}
 			channel->broadcast(user, RPL_PRIVMSG(targets[i], text));
 		}
@@ -65,7 +65,7 @@ void CmdPrivmsg::execute(Message *message)
 			if (target == NULL)
 			{
 				reply(serv_name, ERR_NOSUCHNICK(user->getNickname(), targets[i]), fd);
-				continue ;
+				continue;
 			}
 			_server->sendData(user->getNickname(), RPL_PRIVMSG(targets[i], text), target->getFD());
 		}

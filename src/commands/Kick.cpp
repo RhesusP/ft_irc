@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 00:27:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 00:47:29 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:01:43 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ CmdKick::CmdKick(Server *server)
 	_need_registration = true;
 }
 
-CmdKick::~CmdKick(void){}
+CmdKick::~CmdKick(void) {}
 
 void CmdKick::execute(Message *message)
 {
@@ -31,7 +31,7 @@ void CmdKick::execute(Message *message)
 	if (args.size() < 2)
 	{
 		reply(serv_name, ERR_NEEDMOREPARAMS(user->getNickname(), "KICK"), fd);
-		return ;
+		return;
 	}
 	std::string channel_name = args[0];
 	Channel *channel = _server->getChannel(channel_name);
@@ -40,31 +40,31 @@ void CmdKick::execute(Message *message)
 	if (!channel)
 	{
 		reply(serv_name, ERR_NOSUCHCHANNEL(user->getNickname(), channel_name), fd);
-		return ;
+		return;
 	}
 	if (!user->isOnChannel(channel))
 	{
 		reply(serv_name, ERR_NOTONCHANNEL(user->getNickname(), channel_name), fd);
-		return ;
+		return;
 	}
 	if (!channel->isOperator(user))
 	{
 		reply(serv_name, ERR_CHANOPRIVSNEEDED(user->getNickname(), channel_name), fd);
-		return ;
+		return;
 	}
 
-	for (size_t i = 0 ; i < targets.size() ; i++)
+	for (size_t i = 0; i < targets.size(); i++)
 	{
 		User *target = _server->getUser(targets[i]);
 		if (!target)
 		{
 			reply(serv_name, ERR_NOSUCHNICK(user->getNickname(), targets[i]), fd);
-			continue ;
+			continue;
 		}
 		if (!channel->isInChannel(target))
 		{
 			reply(serv_name, ERR_USERNOTINCHANNEL(user->getNickname(), targets[i], channel_name), fd);
-			continue ;
+			continue;
 		}
 		if (args.size() > 3)
 		{

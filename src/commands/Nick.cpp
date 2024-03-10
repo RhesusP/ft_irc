@@ -6,13 +6,13 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 20:34:04 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:03:54 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../inc/Commands.hpp"
 
-bool is_nickname_valid(std::string const & nick)
+bool CmdNick::is_nickname_valid(std::string const &nick)
 {
 	if (nick.size() < 1 || nick.size() > NICKLEN)
 		return false;
@@ -33,7 +33,7 @@ CmdNick::CmdNick(Server *server)
 	_need_registration = false;
 }
 
-CmdNick::~CmdNick(void){}
+CmdNick::~CmdNick(void) {}
 
 void CmdNick::execute(Message *message)
 {

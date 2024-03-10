@@ -6,13 +6,14 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 20:47:33 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:11:04 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/User.hpp"
 
-User::User(void) {
+User::User(void)
+{
 	_fd = -1;
 	_port = -1;
 	_username = "";
@@ -24,7 +25,8 @@ User::User(void) {
 
 User::~User(void) {}
 
-User::User(Server* server, int fd, std::string const & hostname, int port) {
+User::User(Server *server, int fd, std::string const &hostname, int port)
+{
 	std::cout << "User " << fd << " | " << hostname << " created" << std::endl;
 	_server = server;
 	_fd = fd;
@@ -36,11 +38,12 @@ User::User(Server* server, int fd, std::string const & hostname, int port) {
 	_isAuth = false;
 }
 
-int User::getFD(void) const {
+int User::getFD(void) const
+{
 	return _fd;
 }
 
-std::string const & User::getNickname(void) const
+std::string const &User::getNickname(void) const
 {
 	return _nickname;
 }
@@ -55,32 +58,32 @@ void User::setIsAuth(bool auth)
 	_isAuth = auth;
 }
 
-std::string const & User::getHostname(void) const
+std::string const &User::getHostname(void) const
 {
 	return _hostname;
 }
 
-std::string const & User::getUsername(void) const
+std::string const &User::getUsername(void) const
 {
 	return _username;
 }
 
-void User::setUsername(std::string const & username)
+void User::setUsername(std::string const &username)
 {
 	_username = username;
 }
 
-void User::setNickname(std::string const & nickname)
+void User::setNickname(std::string const &nickname)
 {
 	_nickname = nickname;
 }
 
-std::string const & User::getRealname(void) const
+std::string const &User::getRealname(void) const
 {
 	return _realname;
 }
 
-void User::setRealname(std::string const & realname)
+void User::setRealname(std::string const &realname)
 {
 	_realname = realname;
 }
@@ -166,12 +169,12 @@ bool User::isInvitedTo(Channel *channel)
 	return false;
 }
 
-bool User::operator==(User const & rhs) const
+bool User::operator==(User const &rhs) const
 {
 	return (_fd == rhs.getFD() && _nickname == rhs.getNickname());
 }
 
-std::ostream & operator<<(std::ostream & o, User const & rhs)
+std::ostream &operator<<(std::ostream &o, User const &rhs)
 {
 	o << "------------------------------" << std::endl;
 	o << "User (" << rhs.getFD() << ") " << std::endl;

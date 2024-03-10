@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 19:35:44 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/03 00:08:29 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:05:29 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ CmdPing::CmdPing(Server *server)
 	_need_registration = false;
 }
 
-CmdPing::~CmdPing(void){}
+CmdPing::~CmdPing(void) {}
 
 void CmdPing::execute(Message *message)
 {

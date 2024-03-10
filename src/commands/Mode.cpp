@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 09:07:07 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/08 19:19:04 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:02:34 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ CmdMode::CmdMode(Server *server)
 	_need_registration = false;
 }
 
-CmdMode::~CmdMode(void){}
+CmdMode::~CmdMode(void) {}
 
 void CmdMode::handleModeString(std::vector<std::string> args, Channel *chan, User *user)
 {
 	std::string modeString = args[1];
-	std::vector <std::string> mode_args;
-	
-	for (size_t i = 2 ; i < args.size(); i++)
+	std::vector<std::string> mode_args;
+
+	for (size_t i = 2; i < args.size(); i++)
 	{
 		std::vector<std::string> split_args = split(args[i], " ");
 		for (size_t j = 0; j < split_args.size(); j++)
@@ -34,12 +34,6 @@ void CmdMode::handleModeString(std::vector<std::string> args, Channel *chan, Use
 			mode_args.push_back(split_args[j]);
 		}
 	}
-	std::cout << "Mode string: " << modeString << std::endl;
-	for (size_t i = 0; i < mode_args.size(); i++)
-	{
-		std::cout << "Mode arg: " << mode_args[i] << std::endl;
-	}
-
 	if (modeString[0] != '+' && modeString[0] != '-')
 	{
 		this->reply(_server->getName(), ERR_UMODEUNKNOWNFLAG(user->getNickname()), 0);
@@ -47,16 +41,14 @@ void CmdMode::handleModeString(std::vector<std::string> args, Channel *chan, Use
 	}
 	bool add;
 	size_t j = 0;
-	for (size_t i = 0 ; i < modeString.size(); i++)
+	for (size_t i = 0; i < modeString.size(); i++)
 	{
 		if (modeString[i] == '+' || modeString[i] == '-')
 		{
 			add = modeString[i] == '+' ? true : false;
 			continue;
 		}
-		// std::cout << "Mode: " << modeString[i] << std::endl;
-		// std::cout << "Arg: " << (j < mode_args.size() ? mode_args[j] : "NULL") << std::endl;
-		add ? chan->addMode(modeString[i], j < mode_args.size() ? mode_args[j] : "", user) : chan->removeMode(modeString[i],j < mode_args.size() ? mode_args[j] : "", user);
+		add ? chan->addMode(modeString[i], j < mode_args.size() ? mode_args[j] : "", user) : chan->removeMode(modeString[i], j < mode_args.size() ? mode_args[j] : "", user);
 		j++;
 	}
 	(void)chan;
@@ -141,5 +133,3 @@ void CmdMode::execute(Message *message)
 		}
 	}
 }
-
-// /mode # +okl cbernot key 32

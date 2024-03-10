@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 20:59:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 03:13:53 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:05:57 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ CmdTopic::CmdTopic(Server *server)
 	_need_registration = true;
 }
 
-CmdTopic::~CmdTopic(void){}
+CmdTopic::~CmdTopic(void) {}
 
 void CmdTopic::execute(Message *message)
 {

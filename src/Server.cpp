@@ -6,11 +6,173 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 20:32:56 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:11:01 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Server.hpp"
+
+const char *BadPortException::what() const throw()
+{
+	return "Bad port";
+}
+
+const char *SocketFailedException::what() const throw()
+{
+	return "Socket creation failed";
+}
+
+const char *SetsockoptFailedException::what() const throw()
+{
+	return "Setsockopt failed";
+}
+
+const char *BindFailedException::what() const throw()
+{
+	return "Binding port failed";
+}
+
+const char *ListenFailedException::what() const throw()
+{
+	return "Listen failed";
+}
+
+const char *PollFailedException::what() const throw()
+{
+	return "Poll failed";
+}
+
+const char *setSocketNonBlockingException::what() const throw()
+{
+	return ("setSocketNonBlocking failed");
+}
+
+Server::Server(void)
+{
+	_password = "";
+	_port = 1234;
+	_name = SERVER_NAME;
+	_creation_time = time(NULL);
+}
+
+Server::Server(std::string port, std::string password)
+{
+	this->setPort(port);
+	this->_password = password;
+	_name = SERVER_NAME;
+	size = sizeof(sockaddr_in);
+	_creation_time = time(NULL);
+}
+
+Server::~Server(void)
+{
+	PRINT_INFO("Server destructor called");
+}
+
+void Server::initNetwork(void)
+{
+	int opt_val = 1;
+	_servSocket = socket(PF_INET, SOCK_STREAM, 0);
+	if (_servSocket == -1)
+		throw SocketFailedException();
+	if (setsockopt(_servSocket, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof(opt_val)) == -1)
+		throw SetsockoptFailedException();
+	struct pollfd ufd;
+	ufd.fd = _servSocket;
+	ufd.events = POLLIN;
+	_clients_fds.push_back(ufd);
+	setSocketNonBlocking(_servSocket);
+
+	sockaddr_in addr;
+
+	addr.sin_family = AF_INET;
+	addr.sin_port = htons(this->_port);
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	memset(&addr.sin_zero, '\0', 8);
+
+	if (bind(_servSocket, (struct sockaddr *)&addr, sizeof(struct sockaddr)) == -1)
+	{
+		close(_servSocket);
+		throw BindFailedException();
+	}
+	PRINT_SUCCESS("Server initialized on port " << this->getPort() << " and password \"" << this->getPassword() << "\" linked to socket " << this->getSocket());
+	if (listen(_servSocket, MAX_CON_QUEUE) == -1)
+		throw ListenFailedException();
+	PRINT_INFO("Server listening on port " << this->getPort());
+	while (1)
+	{
+		waitingForClient();
+	}
+}
+
+void Server::waitingForClient(void)
+{
+	std::vector<pollfd> client_fds = lst_to_vec(_clients_fds);
+	int ret = poll(&client_fds[0], _users.size() + 1, -1);
+
+	if (ret == -1)
+		throw PollFailedException();
+	for (size_t i = 0; i < _users.size() + 1; i++)
+	{
+		if (client_fds[i].revents == 0)
+			continue;
+		if (client_fds[i].fd == _servSocket)
+			acceptNewConnection();
+		else if (i > 0)
+		{
+			std::list<User>::iterator it = _users.begin();
+			std::advance(it, i - 1);
+			readData(&(*it));
+		}
+	}
+}
+
+void Server::setSocketNonBlocking(int fd)
+{
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
+	{
+		PRINT_ERROR("Error: failed to set socket non-blocking");
+		if (fd != _servSocket)
+			removeUser(fd, "");
+	}
+}
+
+int Server::getPort(void) const
+{
+	return _port;
+}
+
+int Server::getSocket(void) const
+{
+	return _servSocket;
+}
+
+std::string Server::getPassword(void) const
+{
+	return _password;
+}
+
+void Server::setPassword(std::string const &password)
+{
+	this->_password = password;
+}
+
+void Server::setPort(std::string const &port)
+{
+	int p;
+	size_t len = port.size();
+	if (len < 4 || len > 6)
+		throw BadPortException();
+	for (size_t i = 0; i < len; i++)
+	{
+		if (!isdigit(port[i]))
+			throw BadPortException();
+	}
+	p = std::atoi(port.c_str());
+	if (p < 1024 || p > 65535)
+		throw BadPortException();
+	this->_port = p;
+}
 
 void Server::addUser(int socket, char *ip, int port)
 {
@@ -23,7 +185,7 @@ void Server::addUser(int socket, char *ip, int port)
 	_clients_fds.push_back(ufd);
 }
 
-void Server::removeUser(int socket, std::string const & reason)
+void Server::removeUser(int socket, std::string const &reason)
 {
 	User user;
 	for (std::list<User>::iterator it = _users.begin(); it != _users.end(); it++)
@@ -55,12 +217,14 @@ void Server::removeUser(int socket, std::string const & reason)
 	close(socket);
 }
 
-void	Server::acceptNewConnection(void) {
+void Server::acceptNewConnection(void)
+{
 	int socket;
 	sockaddr_in usr;
 	socklen_t size = sizeof(sockaddr_in);
 	PRINT_INFO("New connection detected");
-	do {
+	do
+	{
 		socket = accept(_servSocket, (struct sockaddr *)&usr, &size);
 		if (socket == -1)
 		{
@@ -73,7 +237,8 @@ void	Server::acceptNewConnection(void) {
 	PRINT_SUCCESS("New connection accepted");
 }
 
-void Server::readData(User *user) {
+void Server::readData(User *user)
+{
 	char buf[BUFF_SIZE];
 	int size;
 	do
@@ -123,7 +288,7 @@ void Server::formatRecv(std::string rec, User *user)
 	std::string delimiter = "\n";
 	std::string msg;
 	size_t pos = 0;
-	
+
 	rec = stash + rec;
 	while ((pos = rec.find(delimiter)) != std::string::npos)
 	{
@@ -149,7 +314,7 @@ std::list<User *> Server::getUsers(void)
 	return res;
 }
 
-User* Server::getUser(std::string const &nickname)
+User *Server::getUser(std::string const &nickname)
 {
 	for (std::list<User>::iterator it = _users.begin(); it != _users.end(); it++)
 	{
@@ -169,22 +334,22 @@ std::list<struct pollfd> Server::getClientsFds(void)
 	return _clients_fds;
 }
 
-std::string const & Server::getName(void) const
+std::string const &Server::getName(void) const
 {
 	return _name;
 }
 
 Channel *Server::addChannel(Channel channel, User *founder)
 {
-    if (getChannel(channel.getName()) != NULL)
-    {
-        PRINT_ERROR("Error: channel " + channel.getName() + " already exists");
+	if (getChannel(channel.getName()) != NULL)
+	{
+		PRINT_ERROR("Error: channel " + channel.getName() + " already exists");
 		return NULL;
-    }
-    _channels.push_back(channel);
+	}
+	_channels.push_back(channel);
 	founder->addinChannel(&(_channels.back()));
-    PRINT_SUCCESS("Channel " + channel.getName() + " has been added to server");
-    return &(_channels.back());
+	PRINT_SUCCESS("Channel " + channel.getName() + " has been added to server");
+	return &(_channels.back());
 }
 
 void Server::removeChannel(Channel channel)
@@ -220,7 +385,7 @@ Channel *Server::getChannel(std::string const &name)
 	return NULL;
 }
 
-std::ostream & operator<<(std::ostream & o, Server & rhs)
+std::ostream &operator<<(std::ostream &o, Server &rhs)
 {
 	o << "Server " << rhs.getName() << " created at " << timestr(rhs.getCreationTime()) << std::endl;
 	std::list<Channel *> channels = rhs.getChannels();

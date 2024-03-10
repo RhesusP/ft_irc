@@ -6,16 +6,11 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 20:52:19 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 23:11:15 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/Message.hpp"
-
-const char *BadTagException::what() const throw()
-{
-	return "Bad tag";
-}
 
 Message::Message(void)
 {
@@ -33,7 +28,10 @@ std::string Message::getTags(std::string const &raw)
 	{
 		tag_tab = ::split(*it, "=");
 		if (tag_tab.size() > 2)
-			throw BadTagException();
+		{
+			std::cerr << "Error: invalid tag" << std::endl;
+			return "";
+		}
 		std::vector<std::string>::iterator ita = tag_tab.begin();
 		std::string key = *ita;
 		++ita;
@@ -80,7 +78,7 @@ std::string Message::getCommand(std::string const &raw)
 	return rawCopy;
 }
 
-void delete_space_element(std::vector<std::string> & tab)
+void delete_space_element(std::vector<std::string> &tab)
 {
 	std::vector<std::string>::iterator it_beg = tab.begin();
 	std::vector<std::string>::iterator it_temp;
@@ -98,9 +96,9 @@ void delete_space_element(std::vector<std::string> & tab)
 	}
 }
 
-bool have_void_element(std::vector<std::string> & tab)
+bool have_void_element(std::vector<std::string> &tab)
 {
-	for (size_t i = 0; i < tab.size() ; i++)
+	for (size_t i = 0; i < tab.size(); i++)
 	{
 		if ((tab[i]).size() == 0)
 			return true;
@@ -112,12 +110,12 @@ void Message::getParameters(std::string const &raw)
 {
 	std::vector<std::string> tab = split(raw, " ");
 	std::vector<std::string> new_tab;
-	for (size_t i = 0 ; i < tab.size() ; i++)
+	for (size_t i = 0; i < tab.size(); i++)
 	{
 		if (tab[i][0] == ':')
 		{
 			std::string remain = tab[i];
-			for (size_t j = i + 1; j < tab.size() ; j++)
+			for (size_t j = i + 1; j < tab.size(); j++)
 			{
 				remain.append(" " + tab[j]);
 			}
@@ -129,7 +127,7 @@ void Message::getParameters(std::string const &raw)
 			new_tab.push_back(tab[i]);
 		}
 	}
-	for (size_t i = 0; i < new_tab.size() ; i++)
+	for (size_t i = 0; i < new_tab.size(); i++)
 	{
 		if (new_tab[i][0] == ':')
 		{
@@ -142,7 +140,7 @@ void Message::getParameters(std::string const &raw)
 void Message::processMessage(void)
 {
 	int nb_cmds = 15;
-	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC", "KICK", "INVITE", "PRIVMSG", "WHO"};
+	std::string cmds_name[nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC", "KICK", "INVITE", "PRIVMSG", "WHO"};
 	CmdMotd cmdMotd(_server);
 	CmdNick cmdNick(_server);
 	CmdPass cmdPass(_server);
@@ -159,7 +157,7 @@ void Message::processMessage(void)
 	CmdPrivmsg CmdPrivmsg(_server);
 	CmdWho CmdWho(_server);
 
-	Command* cmds[nb_cmds] = {
+	Command *cmds[nb_cmds] = {
 		&cmdMotd,
 		&cmdNick,
 		&cmdPass,
@@ -174,8 +172,7 @@ void Message::processMessage(void)
 		&CmdKick,
 		&CmdInvite,
 		&CmdPrivmsg,
-		&CmdWho
-	};
+		&CmdWho};
 	for (int i = 0; i < nb_cmds; i++)
 	{
 		if (this->_command == cmds_name[i])
@@ -186,7 +183,7 @@ void Message::processMessage(void)
 				return;
 			}
 			// if (this->_command == "PASS" || this->_command == "NICK" || this->_command == "USER")
-				// cmds[i]->execute(this);
+			// cmds[i]->execute(this);
 			cmds[i]->execute(this);
 			return;
 		}
@@ -208,7 +205,6 @@ Message::Message(Server *server, User *user, std::string const &raw)
 	_raw = getCommand(_raw);
 	getParameters(_raw);
 	_author = user;
-	std::cout << *this;
 	processMessage();
 }
 
@@ -224,7 +220,7 @@ std::string const &Message::getSource(void)
 	return _source;
 }
 
-std::string const & Message::getCommand(void) const
+std::string const &Message::getCommand(void) const
 {
 	return _command;
 }
@@ -234,7 +230,7 @@ std::vector<std::string> Message::getParameters(void)
 	return _parameters;
 }
 
-User* Message::getAuthor(void) const
+User *Message::getAuthor(void) const
 {
 	return _author;
 }
