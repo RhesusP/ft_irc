@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 02:12:19 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 02:44:23 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,10 @@
 #define RPL_ENDOFINVITELIST(nick)						"347 " + nick + " :End of /INVITE list\r\n" 
 
 #define RPL_PRIVMSG(target, text)						"PRIVMSG " + target + " :" + text + "\r\n"
+
+#define RPL_WHOREPLY(nick, channel, username, host, nickname, flags, realname)	"352 " + nick + " " + channel + " " + username + " " + host + " " + SERVER_NAME + " " + nickname + " " + flags + " :0 " + realname + "\r\n"
+
+#define RPL_ENDOFWHO(nick, mask)						"315 " + nick + " " + mask + " :End of /WHO list\r\n"
 
 #define ERR_UNKNOWNCOMMAND(nick, command) 				"421 " + nick + " " + command + " :Unknown command\r\n"
 

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 01:54:29 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/10 02:25:27 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,8 @@ void Message::getParameters(std::string const &raw)
 
 void Message::processMessage(void)
 {
-	int nb_cmds = 14;
-	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC", "KICK", "INVITE", "PRIVMSG"};
+	int nb_cmds = 15;
+	std::string cmds_name [nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC", "KICK", "INVITE", "PRIVMSG", "WHO"};
 	CmdMotd cmdMotd(_server);
 	CmdNick cmdNick(_server);
 	CmdPass cmdPass(_server);
@@ -157,6 +157,7 @@ void Message::processMessage(void)
 	CmdKick CmdKick(_server);
 	CmdInvite CmdInvite(_server);
 	CmdPrivmsg CmdPrivmsg(_server);
+	CmdWho CmdWho(_server);
 
 	Command* cmds[nb_cmds] = {
 		&cmdMotd,
@@ -172,7 +173,8 @@ void Message::processMessage(void)
 		&CmdTopic,
 		&CmdKick,
 		&CmdInvite,
-		&CmdPrivmsg
+		&CmdPrivmsg,
+		&CmdWho
 	};
 	for (int i = 0; i < nb_cmds; i++)
 	{
