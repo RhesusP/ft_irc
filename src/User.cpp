@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:49 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:11:04 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 12:38:06 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,16 @@ std::string const &User::getHostname(void) const
 std::string const &User::getUsername(void) const
 {
 	return _username;
+}
+
+std::string const & User::getStash(void)
+{
+	return _stash;
+}
+
+void User::setStash(std::string const & stash)
+{
+	_stash = stash;
 }
 
 void User::setUsername(std::string const &username)

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 11:28:48 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 12:36:54 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,12 +284,11 @@ ssize_t Server::sendData(std::string sender, std::string message, int fd)
 
 void Server::formatRecv(std::string rec, User *user)
 {
-	static std::string stash = "";
 	std::string delimiter = "\n";
 	std::string msg;
 	size_t pos = 0;
 
-	rec = stash + rec;
+	rec = user->getStash() + rec;
 	while ((pos = rec.find(delimiter)) != std::string::npos)
 	{
 		if (rec.size() > 1 && rec.at(pos - 1) == '\r')
@@ -298,10 +297,10 @@ void Server::formatRecv(std::string rec, User *user)
 			msg = rec.substr(0, pos);
 		PRINT_RECEIVED(user->getFD(), msg);
 		Message(this, user, msg);
-		stash = "";
+		user->setStash("");
 		rec.erase(0, pos + delimiter.length());
 	}
-	stash = rec;
+	user->setStash(rec);
 }
 
 std::list<User *> Server::getUsers(void)

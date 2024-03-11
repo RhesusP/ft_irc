@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:10:50 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 13:38:36 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,12 +138,14 @@ void Channel::removeOperator(User *user)
 	{
 		if (*it == user)
 		{
-			PRINT_INFO("Removing " + user->getNickname() + " from channel " + _name);
-			_operators.erase(it);
+			it = _operators.erase(it);
 			user->removefromChannel(this);
 			break;
 		}
 	}
+
+	std::cout << *this << std::endl;
+	std::cout << *user << std::endl;
 	if (_operators.size() == 0 && _members.size() > 0)
 	{
 		User *new_operator = *_members.begin();
@@ -151,7 +153,6 @@ void Channel::removeOperator(User *user)
 		_members.erase(_members.begin());
 		PRINT_INFO("No more operators in channel " + _name + ", setting " + new_operator->getNickname() + " as operator");
 	}
-
 	else if (_operators.size() == 0 && _members.size() == 0)
 	{
 		PRINT_INFO("No more members in channel " + _name + ", deleting it");
