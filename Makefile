@@ -6,7 +6,7 @@
 #    By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/15 02:00:37 by cbernot           #+#    #+#              #
-#    Updated: 2024/03/10 22:31:31 by cbernot          ###   ########.fr        #
+#    Updated: 2024/03/11 10:53:19 by cbernot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,7 +48,7 @@ OBJS			:=	$(subst $(DIR_SRC), $(DIR_OBJ), $(SRCS:.cpp=.o))
 
 # Commands
 CC				:=	c++
-CFLAGS			:=	-Wall -Wextra -Werror -std=c++98
+CFLAGS			:=	-Wall -Wextra -Werror -g -std=c++98
 CI				:=	-I $(DIR_INC)
 RM				:=	rm -rf
 

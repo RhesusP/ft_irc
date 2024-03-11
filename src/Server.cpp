@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:11:01 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 11:28:48 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,11 +108,11 @@ void Server::initNetwork(void)
 void Server::waitingForClient(void)
 {
 	std::vector<pollfd> client_fds = lst_to_vec(_clients_fds);
-	int ret = poll(&client_fds[0], _users.size() + 1, -1);
+	int ret = poll(&client_fds[0], client_fds.size(), -1);
 
 	if (ret == -1)
 		throw PollFailedException();
-	for (size_t i = 0; i < _users.size() + 1; i++)
+	for (size_t i = 0; i < client_fds.size() ; i++)
 	{
 		if (client_fds[i].revents == 0)
 			continue;
@@ -222,7 +222,7 @@ void Server::acceptNewConnection(void)
 	int socket;
 	sockaddr_in usr;
 	socklen_t size = sizeof(sockaddr_in);
-	PRINT_INFO("New connection detected");
+	// PRINT_INFO("New connection detected");
 	do
 	{
 		socket = accept(_servSocket, (struct sockaddr *)&usr, &size);
@@ -234,7 +234,7 @@ void Server::acceptNewConnection(void)
 		}
 		addUser(socket, inet_ntoa(usr.sin_addr), htons(usr.sin_port));
 	} while (socket != -1);
-	PRINT_SUCCESS("New connection accepted");
+	// PRINT_SUCCESS("New connection accepted");
 }
 
 void Server::readData(User *user)
