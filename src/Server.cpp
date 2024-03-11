@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 12:36:54 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 16:10:56 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,6 @@ void Server::removeUser(int socket, std::string const &reason)
 			break;
 		}
 	}
-
 	// remove user from all channels
 	std::list<Channel *> channels = user.getChannels();
 	for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
