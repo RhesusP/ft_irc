@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 17:41:29 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 18:21:35 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void Server::waitingForClient(void)
 
 	if (ret == -1)
 		throw PollFailedException();
-	for (size_t i = 0; i < client_fds.size() ; i++)
+	for (size_t i = 0; i < client_fds.size(); i++)
 	{
 		if (client_fds[i].revents == 0)
 			continue;
@@ -289,6 +289,10 @@ void Server::formatRecv(std::string rec, User *user)
 	std::string msg;
 	size_t pos = 0;
 
+	if (rec.size() > 512)
+	{
+		rec.resize(510);
+	}
 	rec = user->getStash() + rec;
 	while ((pos = rec.find(delimiter)) != std::string::npos)
 	{
