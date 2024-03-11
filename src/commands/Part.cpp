@@ -6,13 +6,13 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:56:39 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:05:19 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 17:42:09 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../inc/Commands.hpp"
 
-void sendUserList(Server *server, User *user, Channel *channel)
+void CmdPart::sendUserList(Server *server, User *user, Channel *channel)
 {
 	std::string serv_name = server->getName();
 	std::list<User *> members = channel->getRegularMembers();
@@ -70,5 +70,10 @@ void CmdPart::execute(Message *message)
 		channel->removeUser(user);
 		this->reply(user->getIdentity(), "PART " + channels[i] + " :" + reason, fd);
 		channel->broadcast(user, "PART " + channels[i] + " :" + reason);
+		if (channel->isBotActivated())
+		{
+			CmdBot(_server).goodbye(channel, user);
+		}
+		sendUserList(_server, user, channel);
 	}
 }

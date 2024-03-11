@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 17:05:15 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 22:50:38 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 16:44:19 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,5 +112,9 @@
 #define ERR_NOTEXTTOSEND(nick)							"412 " + nick + " :No text to send\r\n"
 
 #define ERR_CANNOTSENDTOCHAN(nick, channel)				"404 " + nick + " " + channel + " :Cannot send to channel\r\n"
+
+#define ERR_BOT_ALREADY_ACTIVATED(nick, channel)		nick + " " + channel + " :Bot is already activated on this channel\r\n"
+
+#define ERR_BOT_ALREADY_DEACTIVATED(nick, channel)		nick + " " + channel + " :Bot is already deactivated on this channel\r\n"
 
 #endif

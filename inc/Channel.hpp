@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:43:33 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 22:50:46 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 17:09:40 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ private:
 	bool _is_invite_only;
 	bool _is_topic_restricted;
 	std::time_t _creation_time;
+	bool _is_bot_activated;
 
 public:
 	Channel(Server *server);
@@ -77,6 +78,11 @@ public:
 	// Reply
 	void broadcast(User *sender, std::string const &message);
 	void broadcast(Server *server, std::string const &message);
+	void broadcast(std::string const & sender, std::string const &message);
+
+	// Bot
+	bool isBotActivated(void) const;
+	void setBotActivated(bool activated);
 };
 
 std::ostream &operator<<(std::ostream &o, Channel &rhs);

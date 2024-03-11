@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 10:25:05 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:05:43 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 17:18:35 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,13 @@ void CmdQuit::execute(Message *message)
 
 	std::string reason = args.size() > 0 ? args[0] : "Client quit";
 	std::list<Channel *> channels = user->getChannels();
+	CmdBot CmdBot(_server);
 	for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
 		(*it)->broadcast(user, RPL_QUIT(reason));
 		(*it)->removeUser(user);
+		if ((*it)->isBotActivated())
+			CmdBot.goodbye(*it, user);
 	}
 	_server->removeUser(fd, reason);
 }

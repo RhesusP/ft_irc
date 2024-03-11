@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 11:40:51 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:11:07 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 16:36:30 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,13 @@ std::string timestr(std::time_t time)
 	char buffer[80];
 	strftime(buffer, 80, "%Y-%m-%dT%H:%M:%S.%Z", timeinfo);
 	return std::string(buffer);
+}
+
+std::string const & toupper(std::string &str)
+{
+	for (size_t i = 0; i < str.size(); i++)
+	{
+		str[i] = std::toupper(str[i]);
+	}
+	return str;
 }

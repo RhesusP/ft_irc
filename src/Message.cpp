@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:11:15 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 16:36:44 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,8 @@ void Message::getParameters(std::string const &raw)
 
 void Message::processMessage(void)
 {
-	int nb_cmds = 15;
-	std::string cmds_name[nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC", "KICK", "INVITE", "PRIVMSG", "WHO"};
+	int nb_cmds = 16;
+	std::string cmds_name[nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC", "KICK", "INVITE", "PRIVMSG", "WHO", "BOT"};
 	CmdMotd cmdMotd(_server);
 	CmdNick cmdNick(_server);
 	CmdPass cmdPass(_server);
@@ -156,6 +156,7 @@ void Message::processMessage(void)
 	CmdInvite CmdInvite(_server);
 	CmdPrivmsg CmdPrivmsg(_server);
 	CmdWho CmdWho(_server);
+	CmdBot CmdBot(_server);
 
 	Command *cmds[nb_cmds] = {
 		&cmdMotd,
@@ -172,10 +173,12 @@ void Message::processMessage(void)
 		&CmdKick,
 		&CmdInvite,
 		&CmdPrivmsg,
-		&CmdWho};
+		&CmdWho,
+		&CmdBot
+		};
 	for (int i = 0; i < nb_cmds; i++)
 	{
-		if (this->_command == cmds_name[i])
+		if (toupper(this->_command) == cmds_name[i])
 		{
 			if ((cmds[i]->getNeedAuth() && !_author->getIsAuth()) || (cmds[i]->getNeedRegistration() && !_author->isRegistered()))
 			{

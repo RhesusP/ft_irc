@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:03:54 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 16:28:05 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ bool CmdNick::is_nickname_valid(std::string const &nick)
 	if (nick.size() < 1 || nick.size() > NICKLEN)
 		return false;
 	if (nick[0] == ':' || nick[0] == '#' || nick[0] == '&' || nick[0] == '~' || nick[0] == '+' || nick[0] == '%')
+		return false;
+	if (nick == "bot")
 		return false;
 	for (size_t i = 0; i < nick.size(); i++)
 	{

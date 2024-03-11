@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 16:09:26 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 17:09:52 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ Channel::Channel(Server *server)
 	_limit = -1; // no limit
 	_is_invite_only = false;
 	_is_topic_restricted = false;
+	_is_bot_activated = false;
 	_creation_time = time(NULL);
 }
 
@@ -33,6 +34,7 @@ Channel::Channel(Server *server, std::string const &name, User *founder)
 	_limit = -1; // no limit
 	_is_invite_only = false;
 	_is_topic_restricted = false;
+	_is_bot_activated = false;
 	_operators.push_back(founder);
 	_creation_time = time(NULL);
 }
@@ -399,6 +401,28 @@ void Channel::broadcast(Server *server, std::string const &message)
 	{
 		_server->sendData(server->getName(), message, (*it)->getFD());
 	}
+}
+
+void Channel::broadcast(std::string const & sender, std::string const &message)
+{
+	for (std::list<User *>::iterator it = _members.begin(); it != _members.end(); it++)
+	{
+		_server->sendData(sender, message, (*it)->getFD());
+	}
+	for (std::list<User *>::iterator it = _operators.begin(); it != _operators.end(); it++)
+	{
+		_server->sendData(sender, message, (*it)->getFD());
+	}
+}
+
+bool Channel::isBotActivated(void) const
+{
+	return _is_bot_activated;
+}
+
+void Channel::setBotActivated(bool is_bot_activated)
+{
+	_is_bot_activated = is_bot_activated;
 }
 
 bool Channel::operator==(Channel const &rhs)

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 16:10:56 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 17:41:29 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,8 @@ void Server::removeUser(int socket, std::string const &reason)
 	{
 		(*it)->broadcast(&user, RPL_QUIT(reason));
 		(*it)->removeUser(&user);
+		if ((*it)->isBotActivated())
+			CmdBot(this).goodbye(*it, &user);
 	}
 
 	for (std::list<struct pollfd>::iterator it = _clients_fds.begin(); it != _clients_fds.end(); it++)

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:36:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:04:48 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 17:25:21 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,16 @@ public:
 	CmdWho(Server *server);
 	~CmdWho(void);
 	void execute(Message *message);
+};
+
+class CmdBot : public Command
+{
+public:
+	CmdBot(Server *server);
+	~CmdBot(void);
+	void execute(Message *message);
+	void welcome(Channel *channel, User *user);
+	void goodbye(Channel *channel, User *user);
 };
 
 #endif

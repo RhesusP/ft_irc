@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 14:19:56 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:01:33 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/11 17:41:59 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,10 @@ void CmdJoin::execute(Message *message)
 			else
 			{
 				this->sendJoinMsg(user, chan);
+				if (chan->isBotActivated())
+				{
+					CmdBot(_server).welcome(chan, user);
+				}
 			}
 		}
 	}
