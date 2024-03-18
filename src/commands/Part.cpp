@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 22:56:39 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 17:42:09 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/18 23:19:42 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,14 @@ void CmdPart::execute(Message *message)
 		}
 		channel->removeUser(user);
 		this->reply(user->getIdentity(), "PART " + channels[i] + " :" + reason, fd);
-		channel->broadcast(user, "PART " + channels[i] + " :" + reason);
-		if (channel->isBotActivated())
+		if (_server->getChannel(channel->getName()))
 		{
-			CmdBot(_server).goodbye(channel, user);
+			channel->broadcast(user, "PART " + channels[i] + " :" + reason);
+			if (channel->isBotActivated())
+			{
+				CmdBot(_server).goodbye(channel, user);
+			}
+			sendUserList(_server, user, channel);
 		}
-		sendUserList(_server, user, channel);
 	}
 }

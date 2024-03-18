@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 22:51:04 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/18 23:07:31 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ private:
 	std::list<Channel> _channels;
 	std::list<User> _users;
 	std::list<struct pollfd> _clients_fds;
+	std::vector<struct pollfd> _v_clients_fds;
 	std::time_t _creation_time;
 	socklen_t size;
 	void formatRecv(std::string rec, User *usr);
@@ -111,6 +112,7 @@ public:
 	// Network
 	void initNetwork(void);
 	ssize_t sendData(std::string sender, std::string message, int fd);
+	void shutdown(void);
 };
 
 std::ostream &operator<<(std::ostream &o, Server &rhs);

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:17:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 16:36:44 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/18 23:21:06 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,8 +185,6 @@ void Message::processMessage(void)
 				_server->sendData(_server->getName(), ERR_NOTREGISTERED(_author->getNickname()), _author->getFD());
 				return;
 			}
-			// if (this->_command == "PASS" || this->_command == "NICK" || this->_command == "USER")
-			// cmds[i]->execute(this);
 			cmds[i]->execute(this);
 			return;
 		}

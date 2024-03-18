@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 17:09:52 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/18 23:20:22 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,9 @@ bool Channel::addRegularMember(User *user)
 	return (true);
 }
 
-void Channel::removeRegularMember(User *user)
+bool Channel::removeRegularMember(User *user)
 {
+	bool ret = false;
 	for (std::list<User *>::iterator it = _members.begin(); it != _members.end(); it++)
 	{
 		if (*it == user)
@@ -100,7 +101,8 @@ void Channel::removeRegularMember(User *user)
 			PRINT_INFO("Removing " + user->getNickname() + " from channel " + _name);
 			_members.erase(it);
 			user->removefromChannel(this);
-			return;
+			ret = true;
+			break;
 		}
 	}
 	if (_operators.size() == 0 && _members.size() == 0)
@@ -108,6 +110,7 @@ void Channel::removeRegularMember(User *user)
 		PRINT_INFO("No more members in channel " + _name + ", deleting it");
 		_server->removeChannel(*this);
 	}
+	return ret;
 }
 
 void Channel::addOperator(User *user)
@@ -133,15 +136,17 @@ void Channel::addOperator(User *user)
 	}
 }
 
-void Channel::removeOperator(User *user)
+bool Channel::removeOperator(User *user)
 {
 	PRINT_INFO("Removing " + user->getNickname() + " from operators of channel " + _name);
+	bool ret = false;
 	for (std::list<User *>::iterator it = _operators.begin(); it != _operators.end(); it++)
 	{
 		if (*(*it) == *user)
 		{
 			it = _operators.erase(it);
 			user->removefromChannel(this);
+			ret = true;
 			break;
 		}
 	}
@@ -157,12 +162,13 @@ void Channel::removeOperator(User *user)
 		PRINT_INFO("No more members in channel " + _name + ", deleting it");
 		_server->removeChannel(*this);
 	}
+	return ret;
 }
 
 void Channel::removeUser(User *user)
 {
-	removeOperator(user);
-	removeRegularMember(user);
+	if (!removeOperator(user))
+		removeRegularMember(user);
 }
 
 std::list<User *> Channel::getRegularMembers(void)

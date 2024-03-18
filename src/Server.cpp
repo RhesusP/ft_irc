@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 18:21:35 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/18 23:21:25 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,16 +107,18 @@ void Server::initNetwork(void)
 
 void Server::waitingForClient(void)
 {
-	std::vector<pollfd> client_fds = lst_to_vec(_clients_fds);
-	int ret = poll(&client_fds[0], client_fds.size(), -1);
-
+	for (std::list<pollfd>::iterator it = _clients_fds.begin(); it != _clients_fds.end(); it++)
+	{
+		_v_clients_fds.push_back(*it);
+	}
+	int ret = poll(&_v_clients_fds[0], _v_clients_fds.size(), -1);
 	if (ret == -1)
 		throw PollFailedException();
-	for (size_t i = 0; i < client_fds.size(); i++)
+	for (size_t i = 0; i < _v_clients_fds.size(); i++)
 	{
-		if (client_fds[i].revents == 0)
+		if (_v_clients_fds[i].revents == 0)
 			continue;
-		if (client_fds[i].fd == _servSocket)
+		if (_v_clients_fds[i].fd == _servSocket)
 			acceptNewConnection();
 		else if (i > 0)
 		{
@@ -125,6 +127,7 @@ void Server::waitingForClient(void)
 			readData(&(*it));
 		}
 	}
+	_v_clients_fds.clear();
 }
 
 void Server::setSocketNonBlocking(int fd)
@@ -188,14 +191,15 @@ void Server::addUser(int socket, char *ip, int port)
 void Server::removeUser(int socket, std::string const &reason)
 {
 	User user;
+	size_t idx = 0;
 	for (std::list<User>::iterator it = _users.begin(); it != _users.end(); it++)
 	{
 		if (it->getFD() == socket)
 		{
 			user = *it;
-			_users.erase(it);
 			break;
 		}
+		idx++;
 	}
 	// remove user from all channels
 	std::list<Channel *> channels = user.getChannels();
@@ -387,6 +391,17 @@ Channel *Server::getChannel(std::string const &name)
 			return &(*it);
 	}
 	return NULL;
+}
+
+void Server::shutdown(void)
+{
+	for (std::list<struct pollfd>::iterator it = _clients_fds.begin(); it != _clients_fds.end(); it++)
+	{
+		std::cout << "Closing socket " << it->fd << std::endl;
+		close(it->fd);
+	}
+	_clients_fds.clear();
+	_v_clients_fds.clear();
 }
 
 std::ostream &operator<<(std::ostream &o, Server &rhs)

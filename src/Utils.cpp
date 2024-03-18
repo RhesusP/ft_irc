@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 11:40:51 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 16:36:30 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/18 23:20:08 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,6 @@ std::string trim(const std::string &str, std::string charset)
 	}
 	size_t last = str.find_last_not_of(charset);
 	return str.substr(first, (last - first + 1));
-}
-
-/**
- * @brief Convert a list of pollfd to a vector of pollfd
- *
- * @param list
- * @return std::vector<pollfd>
- */
-std::vector<pollfd> lst_to_vec(std::list<pollfd> list)
-{
-	std::vector<pollfd> vec;
-	for (std::list<pollfd>::iterator it = list.begin(); it != list.end(); it++)
-	{
-		vec.push_back(*it);
-	}
-	return vec;
 }
 
 /**

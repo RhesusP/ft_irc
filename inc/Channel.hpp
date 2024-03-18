@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:43:33 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 17:09:40 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/18 23:19:35 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,10 @@ public:
 
 	// Member management
 	bool addRegularMember(User *user);
-	void removeRegularMember(User *user);
+	bool removeRegularMember(User *user);
 	void removeUser(User *user);
 	void addOperator(User *user);
-	void removeOperator(User *user);
+	bool removeOperator(User *user);
 	bool isInChannel(User *user);
 	bool isRegularMember(User *user);
 	bool isOperator(User *user);
