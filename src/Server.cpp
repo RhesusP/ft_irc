@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:40 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/20 15:47:47 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/20 23:29:15 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,39 +188,50 @@ void Server::addUser(int socket, char *ip, int port)
 	_clients_fds.push_back(ufd);
 }
 
-void Server::removeUser(int socket, std::string const &reason)
+User *Server::getUser(int fd)
 {
-	User user;
-	size_t idx = 0;
 	for (std::list<User>::iterator it = _users.begin(); it != _users.end(); it++)
 	{
-		if (it->getFD() == socket)
-		{
-			user = *it;
-			break;
-		}
-		idx++;
+		if (it->getFD() == fd)
+			return &(*it);
+	}
+	return NULL;
+}
+
+void Server::removeUser(int socket, std::string const &reason)
+{
+	User *user = getUser(socket);
+	if (!user)
+	{
+		PRINT_ERROR("Error: failed to remove user from server");
+		return;
 	}
 	// remove user from all channels
-	std::list<Channel *> channels = user.getChannels();
+	std::list<Channel *> channels = user->getChannels();
 	for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
-		(*it)->broadcast(&user, RPL_QUIT(reason));
-		(*it)->removeUser(&user);
+		PRINT_INFO("Removing user " << user->getNickname() << " from channel " << (*it)->getName());
+		(*it)->broadcast(user, RPL_QUIT(reason));
+		(*it)->removeUser(user);
 		if (this->getChannel((*it)->getName()) && (*it)->isBotActivated())
-			CmdBot(this).goodbye(*it, &user);
+			CmdBot(this).goodbye(*it, user);
 	}
 
 	for (std::list<User>::iterator it = _users.begin() ; it != _users.end() ; it++)
 	{
-		if (user == (*it))
-			_users.remove(user);
+		if (*user == (*it))
+		{
+			PRINT_INFO("Removing user " << user->getNickname() << " from server");
+			_users.remove(*it);
+			break;
+		}
 	}
 
 	for (std::list<struct pollfd>::iterator it = _clients_fds.begin(); it != _clients_fds.end(); it++)
 	{
 		if (it->fd == socket)
 		{
+			PRINT_INFO("Removing socket " << socket << " from server");
 			_clients_fds.erase(it);
 			break;
 		}
@@ -252,22 +263,23 @@ void Server::readData(User *user)
 {
 	char buf[BUFF_SIZE];
 	int size;
+	int fd = user->getFD();
 	do
 	{
-		size = recv(user->getFD(), buf, BUFF_SIZE, 0);
+		size = recv(fd, buf, BUFF_SIZE, 0);
 		if (size == -1)
 		{
 			if (errno != EAGAIN && errno != EWOULDBLOCK)
 			{
-				PRINT_ERROR("Error: failed to read data from socket " + user->getFD());
-				removeUser(user->getFD(), "Failed to contact client");
+				PRINT_ERROR("Error: failed to read data from socket " << fd);
+				removeUser(fd, "Failed to contact client");
 			}
 			break;
 		}
 		else if (size == 0)
 		{
-			std::cout << "User " << user->getFD() << " disconnected" << std::endl;
-			removeUser(user->getFD(), "Client disconnected");
+			std::cout << "User " << fd << " disconnected" << std::endl;
+			removeUser(fd, "Client disconnected");
 			break;
 		}
 		else
@@ -298,6 +310,7 @@ void Server::formatRecv(std::string rec, User *user)
 	std::string delimiter = "\n";
 	std::string msg;
 	size_t pos = 0;
+	int fd = user->getFD();
 
 	if (rec.size() > 512)
 	{
@@ -312,6 +325,9 @@ void Server::formatRecv(std::string rec, User *user)
 			msg = rec.substr(0, pos);
 		PRINT_RECEIVED(user->getFD(), msg);
 		Message(this, user, msg);
+		user = getUser(fd);
+		if (!user)
+			return;
 		user->setStash("");
 		rec.erase(0, pos + delimiter.length());
 	}

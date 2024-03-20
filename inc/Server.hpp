@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:34:50 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/18 23:07:31 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/20 23:13:38 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ public:
 
 	// User management
 	User *getUser(std::string const &nickname);
+	User *getUser(int fd);
 	void addUser(int socket, char *ip, int port);
 	void removeUser(int socket, std::string const &reason);
 
