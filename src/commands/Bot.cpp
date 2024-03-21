@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:33:53 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/21 12:07:59 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/21 21:20:26 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ CmdBot::CmdBot(Server *server)
 
 CmdBot::~CmdBot(void) {}
 
-// Activate bot : /bot <channel> activate
-// Deactivate bot : /bot <channel> deactivate
+// Activate bot : /bot <channel> on
+// Deactivate bot : /bot <channel> off
 void CmdBot::execute(Message *message)
 {
 	User *user = message->getAuthor();
@@ -53,7 +53,7 @@ void CmdBot::execute(Message *message)
 		this->reply(serv_name, ERR_CHANOPRIVSNEEDED(user->getNickname(), channel_name), fd);
 		return;
 	}
-	if (args[1] == "activate")
+	if (args[1] == "on")
 	{
 		if (channel->isBotActivated())
 		{
@@ -63,7 +63,7 @@ void CmdBot::execute(Message *message)
 		channel->setBotActivated(true);
 		channel->broadcast("bot", RPL_PRIVMSG(channel->getName(), user->getNickname() + " activated the bot."));
 	}
-	else if (args[1] == "deactivate")
+	else if (args[1] == "off")
 	{
 		if (!channel->isBotActivated())
 		{
