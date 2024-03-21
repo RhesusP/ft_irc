@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/18 13:45:23 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/18 23:20:22 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/21 12:14:00 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,9 +359,16 @@ void Channel::removeMode(char mode, std::string const &arg, User *sender)
 	case 'o':
 		if (this->isOperator(arg))
 		{
-			this->removeOperator(_server->getUser(arg));
-			this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-o " + arg));
-			_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-o " + arg), sender->getFD());
+			if (_operators.size() > 1)
+			{
+				this->removeOperator(_server->getUser(arg));
+				this->broadcast(sender, RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-o " + arg));
+				_server->sendData(sender->getIdentity(), RPL_CHANNELMODEIS(sender->getNickname(), this->getName(), "-o " + arg), sender->getFD());
+			}
+			else
+			{
+				_server->sendData(_server->getName(), ERR_INVALIDMODEPARAM(sender->getNickname(), this->getName(), "MODE -o", arg, "You cannot remove your operator privileges if you are the only operator of the channel"), sender->getFD());
+			}
 		}
 		else
 		{

@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/10 00:27:28 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/10 23:01:43 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/21 14:34:55 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void CmdKick::execute(Message *message)
 			channel->broadcast(user, "KICK " + channel_name + " " + target->getNickname());
 			this->reply(user->getNickname(), "KICK " + channel_name + " " + target->getNickname(), fd);
 		}
+		sendUserList(_server, user, channel, channel_name);
 		channel->removeUser(target);
 	}
 }

@@ -6,27 +6,11 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/23 10:25:05 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/20 23:37:06 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/21 12:44:43 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../inc/Commands.hpp"
-
-void sendUserList(Server *server, User *user, Channel *channel)
-{
-	std::string serv_name = server->getName();
-	std::list<User *> members = channel->getRegularMembers();
-	std::list<User *> chops = channel->getOperators();
-	for (std::list<User *>::iterator it = chops.begin(); it != chops.end(); it++)
-	{
-		channel->broadcast(server, RPL_NAMREPLY(user->getNickname(), channel->getName(), "@" + (*it)->getNickname()));
-	}
-	for (std::list<User *>::iterator it = members.begin(); it != members.end(); it++)
-	{
-		channel->broadcast(server, RPL_NAMREPLY(user->getNickname(), channel->getName(), "@" + (*it)->getNickname()));
-	}
-	channel->broadcast(server, RPL_ENDOFNAMES(user->getNickname(), channel->getName()));
-}
 
 CmdQuit::CmdQuit(Server *server)
 {
@@ -49,10 +33,11 @@ void CmdQuit::execute(Message *message)
 	CmdBot CmdBot(_server);
 	for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
 	{
+		PRINT_INFO("remove user from channel " << (*it)->getName());
 		std::string channel_name = (*it)->getName();
 		(*it)->broadcast(user, RPL_QUIT(reason));
 		(*it)->removeUser(user);
-		sendUserList(_server, user, *it);
+		sendUserList(_server, user, *it, channel_name);
 		if (_server->getChannel(channel_name) && (*it)->isBotActivated())
 			CmdBot.goodbye(*it, user);
 	}

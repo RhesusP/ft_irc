@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:33:53 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 17:26:01 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/21 12:07:59 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void CmdBot::execute(Message *message)
 	{
 		if (channel->isBotActivated())
 		{
-			this->reply(serv_name, ERR_BOT_ALREADY_ACTIVATED(user->getNickname(), channel_name), fd);
+			channel->broadcast("bot", RPL_PRIVMSG(channel->getName(), "Bot is already activated on this channel."));
 			return;
 		}
 		channel->setBotActivated(true);
@@ -67,7 +67,7 @@ void CmdBot::execute(Message *message)
 	{
 		if (!channel->isBotActivated())
 		{
-			this->reply(serv_name, ERR_BOT_ALREADY_DEACTIVATED(user->getNickname(), channel_name), fd);
+			channel->broadcast("bot", RPL_PRIVMSG(channel->getName(), "Bot is already deactivated on this channel."));			
 			return;
 		}
 		channel->setBotActivated(false);

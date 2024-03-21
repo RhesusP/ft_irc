@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 18:55:13 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/11 16:28:05 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/21 13:28:50 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,9 @@ void CmdNick::execute(Message *message)
 	std::vector<std::string> args = message->getParameters();
 	int fd = user->getFD();
 	std::string serv_name = _server->getName();
+	bool is_rename = user->getNickname() == "" ? false : true;
+	std::string prev_identity = user->getIdentity();
+	std::list<Channel *> user_chans = user->getChannels();
 
 	if (args.size() != 1)
 	{
@@ -65,8 +68,15 @@ void CmdNick::execute(Message *message)
 		return;
 	}
 	user->setNickname(args[0]);
+	_server->sendData(prev_identity, "NICK " + args[0], fd);
+
 	PRINT_SUCCESS("User " << user->getFD() << " has been renamed");
-	if (user->getIsAuth() && user->getNickname().size() > 0 && user->getUsername().size() > 0)
+	for (std::list<Channel *>::iterator it = user_chans.begin() ; it != user_chans.end() ; it++)
+	{
+		// sendUserList(_server, user, *it, (*it)->getName());
+		(*it)->broadcast(prev_identity, "NICK " + args[0]);
+	}
+	if (!is_rename && user->getIsAuth() && user->getNickname().size() > 0 && user->getUsername().size() > 0)
 	{
 		welcome(message);
 	}

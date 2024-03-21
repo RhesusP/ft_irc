@@ -6,7 +6,7 @@
 /*   By: cbernot <cbernot@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/01 11:40:51 by cbernot           #+#    #+#             */
-/*   Updated: 2024/03/18 23:20:08 by cbernot          ###   ########.fr       */
+/*   Updated: 2024/03/21 12:44:17 by cbernot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,22 @@ std::string const & toupper(std::string &str)
 		str[i] = std::toupper(str[i]);
 	}
 	return str;
+}
+
+void sendUserList(Server *server, User *user, Channel *channel, std::string chan_name)
+{
+	if (!server->getChannel(chan_name))
+		return ;
+	std::string serv_name = server->getName();
+	std::list<User *> members = channel->getRegularMembers();
+	std::list<User *> chops = channel->getOperators();
+	for (std::list<User *>::iterator it = chops.begin(); it != chops.end(); it++)
+	{
+		channel->broadcast(server, RPL_NAMREPLY(user->getNickname(), channel->getName(), "@" + (*it)->getNickname()));
+	}
+	for (std::list<User *>::iterator it = members.begin(); it != members.end(); it++)
+	{
+		channel->broadcast(server, RPL_NAMREPLY(user->getNickname(), channel->getName(), "@" + (*it)->getNickname()));
+	}
+	channel->broadcast(server, RPL_ENDOFNAMES(user->getNickname(), channel->getName()));
 }
