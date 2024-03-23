@@ -262,7 +262,7 @@ void Channel::setTopicRestricted(bool is_topic_restricted)
 void Channel::addMode(char mode, std::string const &arg, User *sender)
 {
 	int limit;
-	User *target;
+	User *target = NULL;
 	std::list<User *> lst;
 	switch (mode)
 	{

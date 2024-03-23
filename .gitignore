@@ -21,3 +21,8 @@ ircserv
 
 # Subject
 *.subject.pdf
+
+# Scripts
+runserver
+killserver
+

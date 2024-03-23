@@ -139,8 +139,7 @@ void Message::getParameters(std::string const &raw)
 
 void Message::processMessage(void)
 {
-	int nb_cmds = 16;
-	std::string cmds_name[nb_cmds] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC", "KICK", "INVITE", "PRIVMSG", "WHO", "BOT"};
+	std::string cmds_name[16] = {"MOTD", "NICK", "PASS", "PING", "QUIT", "UNKNOWN", "USER", "JOIN", "PART", "MODE", "TOPIC", "KICK", "INVITE", "PRIVMSG", "WHO", "BOT"};
 	CmdMotd cmdMotd(_server);
 	CmdNick cmdNick(_server);
 	CmdPass cmdPass(_server);
@@ -158,7 +157,7 @@ void Message::processMessage(void)
 	CmdWho CmdWho(_server);
 	CmdBot CmdBot(_server);
 
-	Command *cmds[nb_cmds] = {
+	Command *cmds[16] = {
 		&cmdMotd,
 		&cmdNick,
 		&cmdPass,
