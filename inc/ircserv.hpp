@@ -36,6 +36,7 @@
 #define TARGMAX 20
 #define TOPICLEN 307
 #define USERLEN 18
+#define NBCMDS 16
 
 #include <iostream>
 #include <cerrno>
