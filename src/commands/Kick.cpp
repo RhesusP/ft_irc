@@ -61,6 +61,11 @@ void CmdKick::execute(Message *message)
 			reply(serv_name, ERR_NOSUCHNICK(user->getNickname(), targets[i]), fd);
 			continue;
 		}
+        if (user == target)
+        {
+            reply(serv_name, ERR_UNKNOWNERROR(user->getNickname(), "KICK", "you cannot kick yourself. Use /PART instead."), fd);
+            return ;
+        }
 		if (!channel->isInChannel(target))
 		{
 			reply(serv_name, ERR_USERNOTINCHANNEL(user->getNickname(), targets[i], channel_name), fd);
@@ -77,7 +82,7 @@ void CmdKick::execute(Message *message)
 			channel->broadcast(user, "KICK " + channel_name + " " + target->getNickname());
 			this->reply(user->getNickname(), "KICK " + channel_name + " " + target->getNickname(), fd);
 		}
-		sendUserList(_server, user, channel, channel_name);
 		channel->removeUser(target);
-	}
+        sendUserList(_server, user, channel, channel_name);
+    }
 }

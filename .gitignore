@@ -4,6 +4,8 @@
 # IDE
 .idea
 .vscode
+CMakeLists.txt
+cmake-build-debug
 
 # Logs
 logs

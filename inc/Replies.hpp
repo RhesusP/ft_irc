@@ -115,4 +115,6 @@
 
 #define ERR_NOPRIVS(nick, action)						"723" + nick + " " + action + " :Insufficient oper privileges."
 
+#define ERR_UNKNOWNERROR(nick, command, info)           "400 " + nick + " " + command + " :Unknown error " + info + "\r\n"
+
 #endif

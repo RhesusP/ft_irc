@@ -35,6 +35,7 @@ void CmdUser::execute(Message *message)
 	}
 	if (!(args.size() == 4 && args[0].size() > 0 && args[1] == "0" && args[2] == "*" && args[3].size() > 0))
 	{
+        this->reply(serv_name, ERR_UNKNOWNERROR(user->getNickname(), "USER", "Bad syntax. Use /USER username 0 * :realname"), fd);
 		this->reply(serv_name, ERR_NEEDMOREPARAMS(user->getNickname(), message->getCommand()), fd);
 		return;
 	}
