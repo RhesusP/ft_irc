@@ -15,164 +15,183 @@
 
 #include "ircserv.hpp"
 
-class Command
-{
+class Command {
 protected:
-	Server *_server;
-	bool _need_auth;
-	bool _need_registration;
+    Server *_server;
+    bool _need_auth;
+    bool _need_registration;
 
 public:
-	Command();
-	virtual ~Command(void);
-	virtual void execute(Message *message);
-	bool getNeedAuth(void) const;
-	bool getNeedRegistration(void) const;
-	void welcome(Message *message);
-	int reply(std::string sender, std::string response, int fd);
+    Command();
+
+    virtual ~Command(void);
+
+    virtual void execute(Message *message);
+
+    bool getNeedAuth(void) const;
+
+    bool getNeedRegistration(void) const;
+
+    void welcome(Message *message);
+
+    int reply(std::string sender, std::string response, int fd);
 };
 
-class CmdPass : public Command
-{
+class CmdPass : public Command {
 public:
-	CmdPass(Server *server);
-	~CmdPass(void);
-	void execute(Message *message);
+    CmdPass(Server *server);
+
+    ~CmdPass(void);
+
+    void execute(Message *message);
 };
 
-class CmdNick : public Command
-{
+class CmdNick : public Command {
+public:
+    CmdNick(Server *server);
+
+    ~CmdNick(void);
+
+    void execute(Message *message);
+};
+
+class CmdUser : public Command {
+public:
+    CmdUser(Server *server);
+
+    ~CmdUser(void);
+
+    void execute(Message *message);
+};
+
+class CmdQuit : public Command {
+public:
+    CmdQuit(Server *server);
+
+    ~CmdQuit(void);
+
+    void execute(Message *message);
+};
+
+class CmdUnknown : public Command {
+public:
+    CmdUnknown(Server *server);
+
+    ~CmdUnknown(void);
+
+    void execute(Message *message);
+};
+
+class CmdMotd : public Command {
+public:
+    CmdMotd(Server *server);
+
+    ~CmdMotd(void);
+
+    void execute(Message *message);
+};
+
+class CmdPing : public Command {
+public:
+    CmdPing(Server *server);
+
+    ~CmdPing(void);
+
+    void execute(Message *message);
+};
+
+class CmdJoin : public Command {
 private:
-	bool is_nickname_valid(std::string const &nick);
+    void sendJoinMsg(User *user, Channel *chan);
 
 public:
-	CmdNick(Server *server);
-	~CmdNick(void);
-	void execute(Message *message);
+    CmdJoin(Server *server);
+
+    ~CmdJoin(void);
+
+    void execute(Message *message);
 };
 
-class CmdUser : public Command
-{
-public:
-	CmdUser(Server *server);
-	~CmdUser(void);
-	void execute(Message *message);
-};
-
-class CmdQuit : public Command
-{
-public:
-	CmdQuit(Server *server);
-	~CmdQuit(void);
-	void execute(Message *message);
-};
-
-class CmdUnknown : public Command
-{
-public:
-	CmdUnknown(Server *server);
-	~CmdUnknown(void);
-	void execute(Message *message);
-};
-
-class CmdMotd : public Command
-{
-public:
-	CmdMotd(Server *server);
-	~CmdMotd(void);
-	void execute(Message *message);
-};
-
-class CmdPing : public Command
-{
-public:
-	CmdPing(Server *server);
-	~CmdPing(void);
-	void execute(Message *message);
-};
-
-class CmdJoin : public Command
-{
+class CmdPart : public Command {
 private:
-	bool isChanNameValid(std::string const &name);
-	void sendJoinMsg(User *user, Channel *chan);
+    void sendUserList(Server *server, User *user, Channel *channel);
 
 public:
-	CmdJoin(Server *server);
-	~CmdJoin(void);
-	void execute(Message *message);
+    CmdPart(Server *server);
+
+    ~CmdPart(void);
+
+    void execute(Message *message);
 };
 
-class CmdPart : public Command
-{
+class CmdMode : public Command {
 private:
-	void sendUserList(Server *server, User *user, Channel *channel);
+    void handleModeString(std::vector<std::string> args, Channel *chan, User *user);
 
 public:
-	CmdPart(Server *server);
-	~CmdPart(void);
-	void execute(Message *message);
+    CmdMode(Server *server);
+
+    ~CmdMode(void);
+
+    void execute(Message *message);
 };
 
-class CmdMode : public Command
-{
-private:
-	void handleModeString(std::vector<std::string> args, Channel *chan, User *user);
-
+class CmdTopic : public Command {
 public:
-	CmdMode(Server *server);
-	~CmdMode(void);
-	void execute(Message *message);
+    CmdTopic(Server *server);
+
+    ~CmdTopic(void);
+
+    void execute(Message *message);
 };
 
-class CmdTopic : public Command
-{
+class CmdKick : public Command {
 public:
-	CmdTopic(Server *server);
-	~CmdTopic(void);
-	void execute(Message *message);
+    CmdKick(Server *server);
+
+    ~CmdKick(void);
+
+    void execute(Message *message);
 };
 
-class CmdKick : public Command
-{
+class CmdInvite : public Command {
 public:
-	CmdKick(Server *server);
-	~CmdKick(void);
-	void execute(Message *message);
+    CmdInvite(Server *server);
+
+    ~CmdInvite(void);
+
+    void execute(Message *message);
 };
 
-class CmdInvite : public Command
-{
+class CmdPrivmsg : public Command {
 public:
-	CmdInvite(Server *server);
-	~CmdInvite(void);
-	void execute(Message *message);
+    CmdPrivmsg(Server *server);
+
+    ~CmdPrivmsg(void);
+
+    void execute(Message *message);
 };
 
-class CmdPrivmsg : public Command
-{
+class CmdWho : public Command {
 public:
-	CmdPrivmsg(Server *server);
-	~CmdPrivmsg(void);
-	void execute(Message *message);
+    CmdWho(Server *server);
+
+    ~CmdWho(void);
+
+    void execute(Message *message);
 };
 
-class CmdWho : public Command
-{
+class CmdBot : public Command {
 public:
-	CmdWho(Server *server);
-	~CmdWho(void);
-	void execute(Message *message);
-};
+    CmdBot(Server *server);
 
-class CmdBot : public Command
-{
-public:
-	CmdBot(Server *server);
-	~CmdBot(void);
-	void execute(Message *message);
-	void welcome(Channel *channel, User *user);
-	void goodbye(Channel *channel, User *user);
+    ~CmdBot(void);
+
+    void execute(Message *message);
+
+    void welcome(Channel *channel, User *user);
+
+    void goodbye(Channel *channel, User *user);
 };
 
 #endif

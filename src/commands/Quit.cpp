@@ -12,34 +12,36 @@
 
 #include "./../../inc/Commands.hpp"
 
-CmdQuit::CmdQuit(Server *server)
-{
-	_server = server;
-	_need_auth = false;
-	_need_registration = false;
+CmdQuit::CmdQuit(Server *server) {
+    _server = server;
+    _need_auth = false;
+    _need_registration = false;
 }
 
 CmdQuit::~CmdQuit(void) {}
 
-void CmdQuit::execute(Message *message)
-{
-	User *user = message->getAuthor();
-	std::vector<std::string> args = message->getParameters();
-	std::string serv_name = _server->getName();
-	int fd = user->getFD();
+/**
+ * @brief Execute the QUIT command which allows a user to disconnect from the server
+ * @details The user is removed from all channels and the server user list.
+ * @param message The QUIT message to process
+ */
+void CmdQuit::execute(Message *message) {
+    User *user = message->getAuthor();
+    std::vector<std::string> args = message->getParameters();
+    std::string serv_name = _server->getName();
+    int fd = user->getFD();
+    std::string reason = args.empty() ? "Client quit" : args[0];
+    std::list<Channel *> channels = user->getChannels();
+    CmdBot CmdBot(_server);
 
-	std::string reason = args.size() > 0 ? args[0] : "Client quit";
-	std::list<Channel *> channels = user->getChannels();
-	CmdBot CmdBot(_server);
-	for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++)
-	{
-		PRINT_INFO("remove user from channel " << (*it)->getName());
-		std::string channel_name = (*it)->getName();
-		(*it)->broadcast(user, RPL_QUIT(reason));
-		(*it)->removeUser(user);
-		sendUserList(_server, user, *it, channel_name);
-		if (_server->getChannel(channel_name) && (*it)->isBotActivated())
-			CmdBot.goodbye(*it, user);
-	}
-	_server->removeUser(fd, reason);
+    for (std::list<Channel *>::iterator it = channels.begin(); it != channels.end(); it++) {
+        PRINT_INFO("remove user from channel " << (*it)->getName());
+        std::string channel_name = (*it)->getName();
+        (*it)->broadcast(user, RPL_QUIT(reason));
+        (*it)->removeUser(user);
+        sendUserList(_server, user, *it, channel_name);
+        if (_server->getChannel(channel_name) && (*it)->isBotActivated())
+            CmdBot.goodbye(*it, user);
+    }
+    _server->removeUser(fd, reason);
 }

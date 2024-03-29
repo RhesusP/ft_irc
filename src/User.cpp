@@ -12,193 +12,172 @@
 
 #include "../inc/User.hpp"
 
-User::User(void)
-{
-	_fd = -1;
-	_port = -1;
-	_username = "";
-	_nickname = "";
-	_realname = "";
-	_hostname = "";
-	_isAuth = false;
+User::User(void) {
+    _fd = -1;
+    _port = -1;
+    _username = "";
+    _nickname = "";
+    _realname = "";
+    _hostname = "";
+    _isAuth = false;
+}
+
+User::User(Server *server, int fd, std::string const &hostname, int port) {
+    std::cout << "User " << fd << " | " << hostname << " created" << std::endl;
+    _server = server;
+    _fd = fd;
+    _hostname = hostname;
+    _port = port;
+    _username = "";
+    _nickname = "";
+    _realname = "";
+    _isAuth = false;
 }
 
 User::~User(void) {}
 
-User::User(Server *server, int fd, std::string const &hostname, int port)
-{
-	std::cout << "User " << fd << " | " << hostname << " created" << std::endl;
-	_server = server;
-	_fd = fd;
-	_hostname = hostname;
-	_port = port;
-	_username = "";
-	_nickname = "";
-	_realname = "";
-	_isAuth = false;
+bool User::operator==(User const &rhs) const {
+    return (_fd == rhs.getFD() && _nickname == rhs.getNickname());
 }
 
-int User::getFD(void) const
-{
-	return _fd;
+std::ostream &operator<<(std::ostream &o, User const &rhs) {
+    o << "------------------------------" << std::endl;
+    o << "User (" << rhs.getFD() << ") " << std::endl;
+    o << "\tNickname: " << rhs.getNickname() << std::endl;
+    o << "\tUsername: " << rhs.getUsername() << std::endl;
+    o << "\tRealname: " << rhs.getRealname() << std::endl;
+    o << "\tHostname: " << rhs.getHostname() << std::endl;
+    o << "\tIsAuth: " << (rhs.getIsAuth() ? "true" : "false") << std::endl;
+    o << "\tChannels: " << std::endl;
+    std::list<Channel *> channels = rhs.getChannels();
+    for (std::list<Channel *>::const_iterator it = channels.begin(); it != channels.end(); it++) {
+        o << "\t\t" << (*it)->getName() << std::endl;
+    }
+    o << "------------------------------" << std::endl;
+    return o;
 }
 
-std::string const &User::getNickname(void) const
-{
-	return _nickname;
+/* ************************************************************************** */
+/*                                GETTERS                                     */
+/* ************************************************************************** */
+
+int User::getFD(void) const {
+    return _fd;
 }
 
-bool User::getIsAuth(void) const
-{
-	return _isAuth;
+std::string const &User::getNickname(void) const {
+    return _nickname;
 }
 
-void User::setIsAuth(bool auth)
-{
-	_isAuth = auth;
+bool User::getIsAuth(void) const {
+    return _isAuth;
 }
 
-std::string const &User::getHostname(void) const
-{
-	return _hostname;
+std::string const &User::getHostname(void) const {
+    return _hostname;
 }
 
-std::string const &User::getUsername(void) const
-{
-	return _username;
+std::string const &User::getUsername(void) const {
+    return _username;
 }
 
-std::string const & User::getStash(void)
-{
-	return _stash;
+std::string const &User::getStash(void) {
+    return _stash;
 }
 
-void User::setStash(std::string const & stash)
-{
-	_stash = stash;
+std::string const &User::getRealname(void) const {
+    return _realname;
 }
 
-void User::setUsername(std::string const &username)
-{
-	_username = username;
+std::string User::getIdentity(void) const {
+    std::string nick, user, host;
+
+    nick = _nickname.empty() ? "*" : _nickname;
+    user = _username.empty() ? "*" : _username;
+    host = _hostname.empty() ? "*" : _hostname;
+    return (nick + "!" + user + "@" + host);
 }
 
-void User::setNickname(std::string const &nickname)
-{
-	_nickname = nickname;
+std::list<Channel *> User::getChannels(void) const {
+    return _channels;
 }
 
-std::string const &User::getRealname(void) const
-{
-	return _realname;
+bool User::isRegistered(void) const {
+    if (!_nickname.empty() && !_username.empty() && !_realname.empty())
+        return true;
+    return false;
 }
 
-void User::setRealname(std::string const &realname)
-{
-	_realname = realname;
+std::list<Channel *> User::getInviteList(void) {
+    return _invite_list;
 }
 
-std::string User::getIdentity(void) const
-{
-	std::string nick, user, host;
+/* ************************************************************************** */
+/*                                SETTERS                                     */
+/* ************************************************************************** */
 
-	nick = _nickname.empty() ? "*" : _nickname;
-	user = _username.empty() ? "*" : _username;
-	host = _hostname.empty() ? "*" : _hostname;
-	return (nick + "!" + user + "@" + host);
+void User::setIsAuth(bool auth) {
+    _isAuth = auth;
 }
 
-std::list<Channel *> User::getChannels(void) const
-{
-	return _channels;
+void User::setStash(std::string const &stash) {
+    _stash = stash;
 }
 
-bool User::isRegistered(void) const
-{
-	if (_nickname.size() > 0 && _username.size() > 0 && _realname.size() > 0)
-		return true;
-	return false;
+void User::setUsername(std::string const &username) {
+    _username = username;
 }
 
-void User::addinChannel(Channel *chan)
-{
-	_channels.push_back(chan);
+void User::setNickname(std::string const &nickname) {
+    _nickname = nickname;
 }
 
-void User::removefromChannel(Channel *chan)
-{
-	for (std::list<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
-	{
-		if (*it == chan)
-		{
-			_channels.erase(it);
-			break;
-		}
-	}
+void User::setRealname(std::string const &realname) {
+    _realname = realname;
 }
 
-bool User::isOnChannel(Channel *chan)
-{
-	for (std::list<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
-	{
-		if (*it == chan)
-			return true;
-	}
-	return false;
+/* ************************************************************************** */
+/*                           CHANNEL MANAGEMENT                               */
+/* ************************************************************************** */
+
+bool User::isOnChannel(Channel *chan) {
+    for (std::list<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+        if (*it == chan)
+            return true;
+    }
+    return false;
 }
 
-void User::inviteToChannel(Channel *chan)
-{
-	_invite_list.push_back(chan);
+void User::addinChannel(Channel *chan) {
+    _channels.push_back(chan);
 }
 
-void User::removeFromInviteList(Channel *chan)
-{
-	for (std::list<Channel *>::iterator it = _invite_list.begin(); it != _invite_list.end(); it++)
-	{
-		if (*it == chan)
-		{
-			_invite_list.erase(it);
-			break;
-		}
-	}
+void User::removefromChannel(Channel *chan) {
+    for (std::list<Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+        if (*it == chan) {
+            _channels.erase(it);
+            break;
+        }
+    }
 }
 
-std::list<Channel *> User::getInviteList(void)
-{
-	return _invite_list;
+bool User::isInvitedTo(Channel *channel) {
+    for (std::list<Channel *>::iterator it = _invite_list.begin(); it != _invite_list.end(); it++) {
+        if (*it == channel)
+            return true;
+    }
+    return false;
 }
 
-bool User::isInvitedTo(Channel *channel)
-{
-	for (std::list<Channel *>::iterator it = _invite_list.begin(); it != _invite_list.end(); it++)
-	{
-		if (*it == channel)
-			return true;
-	}
-	return false;
+void User::inviteToChannel(Channel *chan) {
+    _invite_list.push_back(chan);
 }
 
-bool User::operator==(User const &rhs) const
-{
-	return (_fd == rhs.getFD() && _nickname == rhs.getNickname());
-}
-
-std::ostream &operator<<(std::ostream &o, User const &rhs)
-{
-	o << "------------------------------" << std::endl;
-	o << "User (" << rhs.getFD() << ") " << std::endl;
-	o << "\tNickname: " << rhs.getNickname() << std::endl;
-	o << "\tUsername: " << rhs.getUsername() << std::endl;
-	o << "\tRealname: " << rhs.getRealname() << std::endl;
-	o << "\tHostname: " << rhs.getHostname() << std::endl;
-	o << "\tIsAuth: " << (rhs.getIsAuth() ? "true" : "false") << std::endl;
-	o << "\tChannels: " << std::endl;
-	std::list<Channel *> channels = rhs.getChannels();
-	for (std::list<Channel *>::const_iterator it = channels.begin(); it != channels.end(); it++)
-	{
-		o << "\t\t" << (*it)->getName() << std::endl;
-	}
-	o << "------------------------------" << std::endl;
-	return o;
+void User::removeFromInviteList(Channel *chan) {
+    for (std::list<Channel *>::iterator it = _invite_list.begin(); it != _invite_list.end(); it++) {
+        if (*it == chan) {
+            _invite_list.erase(it);
+            break;
+        }
+    }
 }
