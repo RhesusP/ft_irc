@@ -1,6 +1,7 @@
 <div align="center">
 
 # ft_irc
+
 #### My own Internet Relay Chat server
 
 <br />
@@ -17,40 +18,56 @@
 
 ## About
 
-This project was carried out as part of the [School 42](https://42.fr/en/homepage/) Common Core. The aim of this project is to discover the [IRC protocol](https://fr.wikipedia.org/wiki/Internet_Relay_Chat) and to create our own IRC server.&
+This project was carried out as part of the [School 42](https://42.fr/en/homepage/) Common Core. The aim of this project
+is to discover the [IRC protocol](https://fr.wikipedia.org/wiki/Internet_Relay_Chat) and to create our own IRC server
+using c++98.
 
 ## Authors
 
-| Author | GitHub profile |
-| - | - |
-| Samuel Vanmeenen Bachelard (svanmeen) | [@Lyptis](https://github.com/Lyptis) |
-| Camille Bernot (cbernot) | [@RhesusP](https://github.com/RhesusP) |
+| Author                                | GitHub profile                         |
+|---------------------------------------|----------------------------------------|
+| Samuel Vanmeenen Bachelard (svanmeen) | [@Lyptis](https://github.com/Lyptis)   |
+| Camille Bernot (cbernot)              | [@RhesusP](https://github.com/RhesusP) |
 
-## How IRC works ?
+## Subject requirements
 
-Here is our Figjam trying to describe the various features of the IRC protocol : [ft_irc FigJam](https://www.figma.com/file/uqmDSLjfm4qJeU6ryaQem4/ft_irc?type=whiteboard&node-id=0%3A1&t=kNFTmeqvafEZBXPM-1)
+- [x] Take a port and a password as parameters.
+- [x] The server must handle several clients at the same time without being blocked.
+- [x] Multi-threading is not allowed.
+- [x] Server must use only one `poll`
+- [x] Communication between the server and clients must be done using TCP/IP sockets.
+- [x] User must be able to set a nickname and a username, join a channel, send and receive messages (public or private).
+- [x] Server must be able to handle several channels.
+- [x] Regular users and channel operators must be implemented.
+- [x] The following commands must be implemented : `KICK`, `INVITE`, `TOPIC` and `MODE` (with modes `i`, `t`, `k`, `o`
+  and `l`).
+- [x] Server must be able to receive partial messages.
 
-## Replies
+## Commands implemented
 
-For the following commands : 
- - 
+| Command   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `PASS`    | Set a connection password to begin the registration process                                                                                                                                                                                                                                                                                                                                                                                       |
+| `USER`    | Specify a username and realname of a new user during registration process                                                                                                                                                                                                                                                                                                                                                                         |
+| `NICK`    | Set the user a nickname (or change the previous one)                                                                                                                                                                                                                                                                                                                                                                                              |
+| `MOTD`    | Display the Message Of The Day of the server                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `JOIN`    | Join one or several channels                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `KICK`    | Force remove a user from a channel                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `MODE`    | Display or set channel mode : <br/>- `+k` set a password to the channel<br/>- `-k` remove the password<br/>- `+i` set the channel as invite-only<br/>- `-i` remove the invite-only restriction<br/>- `+t` protect the channel topic<br/>- `-t` remove topic protection<br/>- `+o` give channel operator privileges to a user<br/>- `-o` remove channel operator privileges to a user<br/>- `+l` set a user limit<br/>- `-l` remove the user limit |
+| `TOPIC`   | Display of set the channel topic                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `INVITE`  | Invite a user to a channel                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `PART`    | Remove the user from the given channel(s)                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `QUIT`    | Terminate client's connection to the server                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `PRIVMSG` | Send a message to a user or a channel                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `WHO`     | Display infos about users                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `PING`    | Check that the server is still connected to the client                                                                                                                                                                                                                                                                                                                                                                                            |
+| `BOT`     | Activate or deactivate a bot that greets users in a channel                                                                                                                                                                                                                                                                                                                                                                                       |
 
-the reply prefix is 
-```txt
-:nick_k1000!user_k1000@masked-jfiv0p.rev.sfr.net
+## Usage
+
+```shell
+make && ./ircserv <port> <password>
 ```
-
-or 
-
-```
-:librenet.europnet.org
-```
-
-
-| Author | Prefix |
-| - | - |
-| Server | `@time=2024-02-29T19:55:43.036Z :librenet.europnet.org` |
-| Client |  |
 
 ## Useful Links
 
