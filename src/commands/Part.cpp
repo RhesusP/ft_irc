@@ -34,7 +34,7 @@ void CmdPart::sendUserList(Server *server, User *user, Channel *channel) {
         channel->broadcast(server, RPL_NAMREPLY(user->getNickname(), channel->getName(), "@" + (*it)->getNickname()));
     }
     for (std::list<User *>::iterator it = members.begin(); it != members.end(); it++) {
-        channel->broadcast(server, RPL_NAMREPLY(user->getNickname(), channel->getName(), "@" + (*it)->getNickname()));
+        channel->broadcast(server, RPL_NAMREPLY(user->getNickname(), channel->getName(), (*it)->getNickname()));
     }
     channel->broadcast(server, RPL_ENDOFNAMES(user->getNickname(), channel->getName()));
 }
