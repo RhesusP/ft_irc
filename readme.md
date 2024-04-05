@@ -10,10 +10,6 @@
 <br />
 <br />
 </div>
-
-> **⚠️ Warning**
-> This project is currently under development.
-
 <br />
 
 ## About
@@ -28,6 +24,8 @@ using c++98.
 |---------------------------------------|----------------------------------------|
 | Samuel Vanmeenen Bachelard (svanmeen) | [@Lyptis](https://github.com/Lyptis)   |
 | Camille Bernot (cbernot)              | [@RhesusP](https://github.com/RhesusP) |
+
+## Grade : 125/100 ✅✨
 
 ## Subject requirements
 
